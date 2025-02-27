@@ -1,0 +1,20 @@
+{
+  "extends": "@react-native/typescript-config/tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      //We will have to add the same thing in babel.config.js
+      "@app/screens": ["./src/screens"],
+      "@app/components": ["./src/components"],
+      "@app/context": ["./src/context/GlobalContext.ts"],
+      "@app/metrics": ["./src/utils/helpers/metrics.ts"],
+      "@app/services": ["./src/services/services.ts"],
+      "@app/constant": ["./src/utils/constant/constant.ts"],
+      "@types/context": ["./src/types/context/types.d.ts"],
+      "@app/icons": ["./assets/icons"],
+      "@app/styles": ["./src/styles/globalStyles.ts"],
+      "@app/hooks": ["./src/hooks"],
+      "@app/helpers": ["./src/utils/helpers"]
+    }
+  }
+}
