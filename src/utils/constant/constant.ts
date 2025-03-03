@@ -22,6 +22,15 @@ export const IMAGES = {
   FEMALE: require('../../../assets/images/female.png'),
   CANCEL: require('../../../assets/images/cancel.png'),
   HIGH_IMPORTANCE: require('../../../assets/images/high-importance.png'),
+  EDIT_PROFILE: require('../../../assets/images/edit-profile.png'),
+  NOTIFICATION_SETTINGS: require('../../../assets/images/notification-settings.png'),
+  PRIVACY_POLICY: require('../../../assets/images/privacy-policy.png'),
+  TERMS_AND_CONDITION: require('../../../assets/images/terms-and-condition.png'),
+  SIGN_OUT: require('../../../assets/images/sign-out.png'),
+  CLOSE_CIRCLE_BLACK: require('../../../assets/images/close-circle-black.png'),
+  CHEVRON_RIGHT_BUTTON: require('../../../assets/images/chevron-right-button.png'),
+  WASH_EARN_PROMO: require('../../../assets/images/wash-earn-promo.png'),
+  EARNING_POINTS_PROMO: require('../../../assets/images/earning-points-promo.png'),
 };
 
 export const ERROR_TYPE = {
