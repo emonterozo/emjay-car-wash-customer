@@ -23,3 +23,5 @@ export { default as BarGraph } from './BarGraph/BarGraph';
 export { default as FormTextInput } from './FormTextInput/FormTextInput';
 export { default as OTPInput } from './OTPInput/OTPInput';
 export { default as OTPScreen } from './OTPScreen/OTPScreen';
+export { default as AppHeaderImage } from './AppHeaderImage/AppHeaderImage';
+export { default as HorizontalLine } from './HorizontalLine/HorizontalLine';
