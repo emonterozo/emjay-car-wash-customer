@@ -141,7 +141,8 @@ const Register = () => {
         setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
 
         if (response.success && response.data) {
-          navigation.replace('RegistrationOtp', { user: response.data.user.id });
+          const { id, username } = response.data.user;
+          navigation.replace('RegistrationOtp', { user: id, username: username });
         } else {
           switch (response.status) {
             case 400:
@@ -381,8 +382,8 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     ...font.regular,
-    fontSize: 24,
-    lineHeight: 24,
+    fontSize: 20,
+    lineHeight: 20,
   },
 });
 

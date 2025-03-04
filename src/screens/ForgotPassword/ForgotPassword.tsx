@@ -249,8 +249,8 @@ const styles = StyleSheet.create({
   },
   textStyle: {
     ...font.regular,
-    fontSize: 24,
-    lineHeight: 24,
+    fontSize: 20,
+    lineHeight: 20,
   },
 });
 

@@ -41,8 +41,8 @@ const Login = () => {
     type: 'error',
   });
   const [input, setInput] = useState({
-    username: '',
-    password: '',
+    username: '09122011108',
+    password: 'test1234',
   });
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [isRemembered, setIsRemembered] = useState(false);
@@ -56,7 +56,8 @@ const Login = () => {
     if (response.success && response.data) {
       switch (response.status) {
         case 201:
-          navigation.navigate('RegistrationOtp', { user: response.data.user.id });
+          const { id, username } = response.data.user;
+          navigation.replace('RegistrationOtp', { user: id, username: username });
           break;
         default:
           const { user, accessToken, refreshToken } = response.data;
@@ -190,7 +191,7 @@ const Login = () => {
           </Pressable>
           <View style={styles.signupContainer}>
             <Text style={styles.label}>Don't have Account?</Text>
-            <TouchableOpacity onPress={() => handleNavigate('signup')}>
+            <TouchableOpacity onPress={() => handleNavigate('signup')} style={styles.signupButton}>
               <Text style={styles.signupText}>SIGN UP</Text>
             </TouchableOpacity>
           </View>
@@ -267,9 +268,14 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     ...font.regular,
-    fontSize: 24,
-    lineHeight: 24,
+    fontSize: 20,
+    lineHeight: 20,
     color: '#FFFFFF',
+  },
+  signupButton: {
+    borderBottomWidth: 1,
+    borderColor: color.primary,
+    paddingBottom: 1,
   },
   signupText: {
     ...font.bold,
@@ -280,7 +286,7 @@ const styles = StyleSheet.create({
   signupContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 3,
+    gap: 5,
     justifyContent: 'center',
   },
 });

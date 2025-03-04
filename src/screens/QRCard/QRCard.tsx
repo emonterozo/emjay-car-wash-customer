@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, SafeAreaView, StatusBar, Image, Text } from 'react-native';
+import { View, StyleSheet, SafeAreaView, StatusBar, Image, Text, ScrollView } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 
 import { color, font } from '@app/styles';
 import { AppHeaderImage, HorizontalLine } from '@app/components';
 import { IMAGES } from '@app/constant';
-import { ScrollView } from 'react-native-gesture-handler';
 
 const MESSAGE =
   'Show this to the Emjay Carwash & Detailing office staff every time you use our services to earn and redeem your rewards.';
@@ -13,7 +12,7 @@ const WASH_EARN_PROMO_MESSAGE =
   'Keep your ride spotless and earn rewards! Every time you avail a wash service, you’ll earn 1 point based on your vehicle type and size. Once you collect 10 points, you can redeem a FREE wash service on your next visit. Stay fresh, stay rewarded!';
 const EARN_POINTS_PROMO_MESSAGE =
   "Beyond the wash promo, you’ll also earn points for every service you avail! Use your accumulated points to redeem services or enjoy discounts on our exclusive promotions. Stay tuned for exciting deals and make the most of your visits! Don't miss out start earning today!";
-const Scan = () => {
+const QRCard = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const CARD_WIDTH = 392 + 24;
@@ -62,7 +61,7 @@ const Scan = () => {
             styles.marginBottom24,
           ]}
         >
-          Exclusive Emjay Auto Spa Promos!
+          Exclusive EmJay Auto Spa Promos!
         </Text>
 
         <ScrollView
@@ -228,4 +227,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Scan;
+export default QRCard;

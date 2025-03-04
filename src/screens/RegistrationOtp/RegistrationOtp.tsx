@@ -1,18 +1,11 @@
-import React, { useContext, useEffect, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  Text,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import React, { useContext, useState } from 'react';
+import { View, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import { useRoute } from '@react-navigation/native';
 
+import { ScreenStatusProps } from '../../types/services/types';
 import { RegistrationOtpRouteProp } from '../../types/navigation/types';
 import { color } from '@app/styles';
-import { AppHeader, Toast } from '@app/components';
+import { AppHeader, LoadingAnimation, OTPScreen, Toast } from '@app/components';
 import { otpRequest, otpVerifyRequest } from '@app/services';
 import { ERR_NETWORK } from '@app/constant';
 import GlobalContext from '@app/context';
@@ -26,11 +19,8 @@ const errorMessages: Record<number | string, string> = {
 };
 
 const RegistrationOtp = () => {
-  const { user } = useRoute<RegistrationOtpRouteProp>().params;
+  const { user, username } = useRoute<RegistrationOtpRouteProp>().params;
   const { setUser } = useContext(GlobalContext);
-  const [otp, setOtp] = useState('');
-  const [timer, setTimer] = useState(300);
-  const [resendDisabled, setResendDisabled] = useState(true);
   const [toast, setToast] = useState<{
     isVisible: boolean;
     message: string;
@@ -40,10 +30,17 @@ const RegistrationOtp = () => {
     message: '',
     type: 'success',
   });
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
+    isLoading: false,
+    hasError: false,
+    type: 'error',
+  });
 
   const sendOtp = async () => {
+    setScreenStatus({ ...screenStatus, isLoading: true });
     const response = await otpRequest(user);
 
+    setScreenStatus({ ...screenStatus, isLoading: false });
     if (response.success && response.data) {
       setToast({
         isVisible: true,
@@ -60,9 +57,11 @@ const RegistrationOtp = () => {
     }
   };
 
-  const submitOtp = async () => {
+  const submitOtp = async (otp: string) => {
+    setScreenStatus({ ...screenStatus, isLoading: true });
     const response = await otpVerifyRequest({ user, otp });
 
+    setScreenStatus({ ...screenStatus, isLoading: false });
     if (response.success && response.data) {
       const { user: userData, accessToken, refreshToken } = response.data;
       setUser({
@@ -80,32 +79,12 @@ const RegistrationOtp = () => {
     }
   };
 
-  useEffect(() => {
-    let interval: NodeJS.Timeout;
-
-    if (timer > 0) {
-      interval = setInterval(() => {
-        setTimer((prev) => prev - 1);
-      }, 1000);
-    } else {
-      setResendDisabled(false);
-    }
-
-    return () => clearInterval(interval);
-  }, [timer]);
-
-  const handleResend = () => {
-    setOtp('');
-    setTimer(300);
-    setResendDisabled(true);
-    sendOtp();
-  };
-
   const onClose = () => setToast({ ...toast, isVisible: false });
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
-      <AppHeader title="Register" />
+      <AppHeader title="Verification" />
+      <LoadingAnimation isLoading={screenStatus.isLoading} />
       <Toast
         isVisible={toast.isVisible}
         message={toast.message}
@@ -114,38 +93,11 @@ const RegistrationOtp = () => {
         onClose={onClose}
       />
       <View style={styles.content}>
-        <Text style={styles.title}>Enter OTP</Text>
-        <Text style={styles.subtitle}>We have sent a 6-digit code to your phone.</Text>
-
-        <TextInput
-          style={styles.input}
-          placeholder="Enter OTP"
-          keyboardType="numeric"
-          value={otp}
-          onChangeText={setOtp}
-          maxLength={6}
+        <OTPScreen
+          number={`+63${username.slice(1)}`}
+          onSubmit={(otp) => submitOtp(otp)}
+          onResend={sendOtp}
         />
-
-        <Text style={styles.timer}>
-          {timer > 0
-            ? `Resend in ${Math.floor(timer / 60)}:${(timer % 60).toString().padStart(2, '0')}`
-            : 'You can now resend OTP'}
-        </Text>
-
-        <TouchableOpacity
-          style={[styles.resendButton, resendDisabled && styles.disabledButton]}
-          onPress={handleResend}
-          disabled={resendDisabled}
-        >
-          <Text style={styles.resendText}>Resend OTP</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.resendButton, otp.length < 6 && styles.disabledButton]}
-          onPress={submitOtp}
-          disabled={otp.length < 6}
-        >
-          <Text style={styles.resendText}>Submit</Text>
-        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -157,50 +109,8 @@ const styles = StyleSheet.create({
     backgroundColor: color.background,
   },
   content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 25,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  subtitle: {
-    fontSize: 16,
-    marginBottom: 20,
-    color: '#666',
-    textAlign: 'center',
-  },
-  input: {
-    width: '80%',
-    height: 50,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 10,
-    textAlign: 'center',
-    fontSize: 20,
-    marginBottom: 20,
-  },
-  timer: {
-    fontSize: 16,
-    color: '#666',
-    marginBottom: 10,
-  },
-  resendButton: {
-    backgroundColor: '#007bff',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginVertical: 5,
-  },
-  disabledButton: {
-    backgroundColor: '#ccc',
-  },
-  resendText: {
-    color: '#fff',
-    fontSize: 16,
+    marginTop: '20%',
+    marginHorizontal: 25,
   },
 });
 

@@ -92,7 +92,7 @@ export type UnAuthStackParamList = {
   Login: undefined;
   Register: undefined;
   ForgotPassword: undefined;
-  RegistrationOtp: { user: string };
+  RegistrationOtp: { user: string; username: string };
 };
 
 export type NavigationProp = StackScreenProps<AuthStackParamList>['navigation'];

@@ -13,10 +13,10 @@ const AuthStack = createStackNavigator<AuthStackParamList>();
 
 const Navigation = () => {
   const [user, setUser] = useState<TUser>({
-    id: '1234',
-    first_name: 'Eric',
-    last_name: 'Monterozo',
-    gender: 'FEMALE',
+    id: '',
+    first_name: '',
+    last_name: '',
+    gender: '',
     username: '',
     accessToken: '',
     refreshToken: '',

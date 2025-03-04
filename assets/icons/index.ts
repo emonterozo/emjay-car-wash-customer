@@ -33,3 +33,4 @@ export { default as EditIcon } from './EditIcon';
 export { default as CloseIcon } from './CloseIcon';
 export { default as ConsumablesListIcon } from './ConsumablesListIcon';
 export { default as HollowCircleIcon } from './HollowCircleIcon';
+export { default as FreeIcon } from './FreeIcon';

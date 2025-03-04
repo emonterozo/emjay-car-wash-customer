@@ -7,6 +7,7 @@ import {
   OtpVerifyPayload,
   UserResponse,
   SignupPayload,
+  ServicesResponse,
 } from '../types/services/types';
 
 export const requestHeader = (accessToken: string) => {
@@ -44,5 +45,23 @@ export const otpRequest = (user: string): ApiResponse<UserResponse> => {
   return apiRequest<{ user: string }, UserResponse>(`${Config.API_BASE_URL}/customers/otp`, {
     method: 'post',
     data: { user },
+  });
+};
+
+export const getServicesRequest = (
+  accessToken: string,
+  field?: string,
+  direction?: 'asc' | 'desc',
+  limit?: number,
+  offset?: number,
+): ApiResponse<ServicesResponse> => {
+  return apiRequest<null, ServicesResponse>(`${Config.API_BASE_URL}/services`, {
+    method: 'get',
+    headers: requestHeader(accessToken),
+    params: {
+      order_by: JSON.stringify({ field: field ?? 'ratings', direction: direction ?? 'desc' }),
+      limit,
+      offset,
+    },
   });
 };

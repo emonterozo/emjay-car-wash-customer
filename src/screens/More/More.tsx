@@ -14,7 +14,7 @@ import { AppHeaderImage, HorizontalLine } from '@app/components';
 import { IMAGES } from '@app/constant';
 import { ScrollView } from 'react-native-gesture-handler';
 
-const Settings = () => {
+const More = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.content}>
@@ -47,21 +47,6 @@ const Settings = () => {
               style={[styles.image, styles.imageContainer]}
             />
             <Text style={[styles.itemText, styles.colorGrey]}>Notification Settings</Text>
-          </View>
-
-          <Image
-            source={IMAGES.CHEVRON_RIGHT_BUTTON}
-            style={[styles.image, styles.imageContainer]}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.itemRow, styles.verticalGap]} onPress={() => {}}>
-          <View style={styles.leftGroup}>
-            <Image
-              source={IMAGES.SETTINGS_INACTIVE}
-              style={[styles.image, styles.imageContainer]}
-            />
-            <Text style={[styles.itemText, styles.colorGrey]}>Settings</Text>
           </View>
 
           <Image
@@ -178,4 +163,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Settings;
+export default More;

@@ -3,15 +3,16 @@ import { SizeKey } from '../../types/constant/types';
 export const IMAGES = {
   EM_JAY: require('../../../assets/images/emjay.png'),
   EMPTY_STATE: require('../../../assets/images/no-data.png'),
-  SCAN: require('../../../assets/images/scan.png'),
+  QR_ACTIVE: require('../../../assets/images/qr-active.png'),
+  QR_INACTIVE: require('../../../assets/images/qr-inactive.png'),
   HOME_ACTIVE: require('../../../assets/images/home-active.png'),
   HOME_INACTIVE: require('../../../assets/images/home-inactive.png'),
-  MESSAGES_ACTIVE: require('../../../assets/images/messages-active.png'),
-  MESSAGES_INACTIVE: require('../../../assets/images/messages-inactive.png'),
-  TRANSACTIONS_ACTIVE: require('../../../assets/images/transactions-active.png'),
-  TRANSACTIONS_INACTIVE: require('../../../assets/images/transactions-inactive.png'),
-  SETTINGS_ACTIVE: require('../../../assets/images/settings-active.png'),
-  SETTINGS_INACTIVE: require('../../../assets/images/settings-inactive.png'),
+  SERVICE_ACTIVE: require('../../../assets/images/service-active.png'),
+  SERVICE_INACTIVE: require('../../../assets/images/service-inactive.png'),
+  HISTORY_ACTIVE: require('../../../assets/images/history-active.png'),
+  HISTORY_INACTIVE: require('../../../assets/images/history-inactive.png'),
+  MORE_ACTIVE: require('../../../assets/images/more-active.png'),
+  MORE_INACTIVE: require('../../../assets/images/more-inactive.png'),
   CALENDAR_ACTIVE: require('../../../assets/images/calendar-active.png'),
   CALENDAR_INACTIVE: require('../../../assets/images/calendar-inactive.png'),
   AVATAR_BOY: require('../../../assets/images/avatar-boy.png'),
@@ -31,6 +32,9 @@ export const IMAGES = {
   CHEVRON_RIGHT_BUTTON: require('../../../assets/images/chevron-right-button.png'),
   WASH_EARN_PROMO: require('../../../assets/images/wash-earn-promo.png'),
   EARNING_POINTS_PROMO: require('../../../assets/images/earning-points-promo.png'),
+  POINTS: require('../../../assets/images/points.png'),
+  MOTORCYCLE: require('../../../assets/images/motorcycle.png'),
+  CAR: require('../../../assets/images/car.png'),
 };
 
 export const ERROR_TYPE = {

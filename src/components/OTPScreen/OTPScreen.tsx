@@ -1,188 +1,228 @@
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   View,
-  Pressable,
   StyleSheet,
+  Dimensions,
+  Text,
+  TextInput,
+  Pressable,
+  TouchableOpacity,
   Keyboard,
-  KeyboardAvoidingView,
-  Platform,
 } from 'react-native';
-import { OTPInput } from '..';
 
-export type MobileOTPScreenProps = {
-  number?: string;
-  updateUrl?: string;
-  onPressUpdate: () => void;
+import { color, font } from '@app/styles';
+
+type OTPScreenProps = {
+  number: string;
+  length?: number;
+  onSubmit: (otp: string) => void;
+  onResend: () => void;
 };
 
-export type EmailOtpScreenProps = {
-  email?: string;
-};
+const OTPScreen = ({ length = 6, number, onSubmit, onResend }: OTPScreenProps) => {
+  const [otp, setOtp] = useState(new Array(length).fill(''));
+  const inputsRef = useRef<Array<TextInput | null>>([]);
+  const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
+  const [timer, setTimer] = useState(300);
+  const [showResend, setShowResend] = useState(false);
 
-export type OTPPropsBase = {
-  headerTitle: string;
-  onResendCode: () => void;
-  onSubmit: () => void;
-  onBack: () => void;
-  resendAllowed: boolean;
-  remainingTime: string;
-  isResendLoading: boolean;
-} & OTPInputProps;
+  const handleChange = (value: string, index: number) => {
+    if (isNaN(parseInt(value, 10))) {
+      return;
+    }
 
-export type OTPScreenProps =
-  | (OTPPropsBase & { type: 'mobile' } & MobileOTPScreenProps)
-  | (OTPPropsBase & { type: 'email' } & EmailOtpScreenProps);
+    const newOtp = [...otp];
+    newOtp[index] = value;
+    setOtp(newOtp);
 
-export type OTPInputProps = {
-  maxLength?: number;
-  otp: string;
-  setOtp: Dispatch<SetStateAction<string>>;
-};
-
-const OTPScreen = (props: OTPScreenProps) => {
-  const {
-    maxLength = 6,
-    type,
-    headerTitle,
-    onResendCode,
-    onSubmit,
-    otp,
-    setOtp,
-    onBack,
-    resendAllowed,
-    remainingTime,
-    isResendLoading,
-  } = props;
-
-  const handlePressSubmit = () => {
-    Keyboard.dismiss();
-    onSubmit();
-  };
-
-  const formattedNumber = (number: string) => {
-    return `${number.slice(0, 3)} ●●● ●●● ${number.slice(number.length - 4, number.length)}`;
-  };
-
-  const handlePressBack = () => {
-    onBack();
-    setOtp('');
-  };
-
-  const isDisplayMobileEmail = () => {
-    switch (type) {
-      case 'mobile':
-        return props.number !== undefined;
-      case 'email':
-        return props.email !== undefined;
+    // Move to the next input if value is entered
+    if (value && index < length - 1) {
+      inputsRef.current[index + 1]?.focus();
     }
   };
 
+  const handleBackspace = (value: string, index: number) => {
+    const newOtp = [...otp];
+
+    if (!value && index > 0) {
+      newOtp[index - 1] = '';
+      setOtp(newOtp);
+      inputsRef.current[index - 1]?.focus();
+    } else {
+      newOtp[index] = '';
+      setOtp(newOtp);
+    }
+  };
+
+  const isOtpComplete = otp.every((digit) => digit.trim() !== '');
+
+  useEffect(() => {
+    const countdown = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdown);
+          setShowResend(true); // Show resend button after 5 minutes
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(countdown);
+  }, []);
+
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    return `${minutes}:${seconds < 10 ? `0${seconds}` : seconds}`;
+  };
+
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
-      keyboardVerticalOffset={Platform.select({
-        ios: 45,
-      })}
-    >
-      <View>
-        {/* <Header
-          titleTestID="otp-header-title"
-          title={headerTitle}
-          headerIconOnPress={handlePressBack}
-          headerIconTestID="otp-header-icon"
-        /> */}
-        <View style={styles.top}>
-          {/* {type === 'mobile' ? <IconMessage /> : <IconEmail />}
-          <Typography variant="title" size="semi-bold-sm">
-            {type === 'mobile' ? 'Verify via mobile' : 'Check your email'}
-          </Typography> */}
+    <View>
+      <View style={styles.content}>
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.title}>Enter Verification Code</Text>
+          <Text style={styles.description}>
+            {`Enter the 6-digit code sent to ${number}. This code is valid for the next 5 minutes.`}
+          </Text>
         </View>
-        <View style={[styles.middle]}>
-          {/* <View style={styles.gap}>
-            <Typography variant="description" size="sm">
-              {`Enter the ${maxLength}-digit code we sent to${
-                type === 'mobile' ? ' the number connected to the account' : ''
-              }`}
-            </Typography>
-            {isDisplayMobileEmail() && (
-              <Typography variant="title" size="bold-xs">
-                {type === 'mobile' ? formattedNumber(props.number!) : props.email}
-              </Typography>
-            )}
-            {type === 'mobile' && (
-              <Pressable onPress={props.onPressUpdate}>
-                <Typography variant="interactions" size="md" color={colors.ui.primary}>
-                  Not my number anymore
-                </Typography>
-              </Pressable>
-            )}
-          </View> */}
-          <OTPInput otp={otp} setOtp={setOtp} />
-          {/* <View style={styles.gap}>
-            <Typography variant="description" size="sm" color={colors.text.clear}>
-              {resendAllowed
-                ? 'Haven’t received your code yet?'
-                : `Resend code in ${remainingTime}`}
-            </Typography>
-            {isResendLoading && <CircularLoader size={35} />}
-            {resendAllowed && !isResendLoading && (
-              <Pressable onPress={onResendCode}>
-                <Typography variant="interactions" size="lg" color={colors.ui.primary}>
-                  Send a new code
-                </Typography>
-              </Pressable>
-            )}
-          </View> */}
+        <View style={styles.otpContainer}>
+          {otp.map((digit, index) => (
+            <TextInput
+              key={index}
+              ref={(ref) => (inputsRef.current[index] = ref)}
+              style={[styles.input, focusedIndex === index && styles.filled]}
+              keyboardType="numeric"
+              maxLength={1}
+              value={digit}
+              onChangeText={(value) => handleChange(value, index)}
+              onKeyPress={({ nativeEvent }) =>
+                nativeEvent.key === 'Backspace' && handleBackspace(digit, index)
+              }
+              placeholder="-"
+              placeholderTextColor="#888888"
+              onFocus={() => setFocusedIndex(index)}
+              onBlur={() => setFocusedIndex(null)}
+            />
+          ))}
         </View>
-      </View>
-      {/* <KeyboardAvoidingView behavior="height">
-        <LinearGradient
-          start={{ x: 0, y: 0 }}
-          end={{ x: 0, y: 1 }}
-          colors={['#FBFDFF1A', '#F5F8FC']}
-          style={styles.gradient}
+        <Pressable
+          style={({ pressed }) => [
+            styles.button,
+            isOtpComplete && { backgroundColor: color.primary },
+            pressed && { backgroundColor: color.primary_pressed_state },
+          ]}
+          disabled={!isOtpComplete}
+          onPress={() => {
+            Keyboard.dismiss();
+            onSubmit(otp.join(''));
+          }}
         >
-          <Button
-            testID="submit-button"
-            disabled={otp.length < maxLength}
-            type="standard"
-            variant="primary"
-            size="lg"
-            title="Submit"
-            onPress={handlePressSubmit}
-          />
-        </LinearGradient>
-      </KeyboardAvoidingView> */}
-    </KeyboardAvoidingView>
+          <Text style={[styles.buttonText, !isOtpComplete && { color: color.primary }]}>
+            Continue
+          </Text>
+        </Pressable>
+      </View>
+      <View style={styles.resendContainer}>
+        <Text style={styles.resendDescription}>Didn't get the code?</Text>
+        {showResend ? (
+          <TouchableOpacity
+            style={styles.resendButton}
+            onPress={() => {
+              Keyboard.dismiss();
+              onResend();
+              setOtp(new Array(length).fill(''));
+            }}
+          >
+            <Text style={styles.resend}>Resend code</Text>
+          </TouchableOpacity>
+        ) : (
+          <Text style={styles.resend}>Resend in {formatTime(timer)}</Text>
+        )}
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  content: {
+    gap: 40,
   },
-  top: {
+  descriptionContainer: {
+    gap: 16,
+    alignItems: 'center',
+  },
+  title: {
+    ...font.bold,
+    fontSize: 24,
+    lineHeight: 24,
+    color: '#050303',
+  },
+  description: {
+    ...font.regular,
+    fontSize: 16,
+    lineHeight: 16,
+    color: '#888888',
+  },
+  otpContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 12,
-    padding: 25,
+    gap: 5,
   },
-  middle: {
-    padding: 20,
-    height: 368,
+  input: {
+    width: (Dimensions.get('window').width - 75) / 6,
+    height: 71,
+    textAlign: 'center',
+    borderWidth: 1,
+    borderRadius: 24,
+    borderColor: '#888888',
+    ...font.regular,
+    fontSize: 20,
+    lineHeight: 20,
+    color: '#000000',
   },
-  gap: {
-    gap: 8,
+  filled: {
+    borderColor: color.primary,
   },
-  gradient: {
-    flex: 1,
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
+  button: {
+    paddingHorizontal: 12,
+    paddingVertical: 16,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'transparent',
+    borderWidth: 1,
+    borderColor: color.primary,
+  },
+  buttonText: {
+    ...font.regular,
+    fontSize: 20,
+    lineHeight: 20,
+    color: '#F3F2EF',
+  },
+  resendContainer: {
+    marginTop: 24,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: 5,
+  },
+  resendDescription: {
+    ...font.regular,
+    fontSize: 16,
+    lineHeight: 16,
+    color: '#888888',
+  },
+  resend: {
+    ...font.regular,
+    fontSize: 16,
+    lineHeight: 16,
+    color: color.primary_pressed_state,
+  },
+  resendButton: {
+    borderBottomWidth: 1,
+    borderColor: color.primary_pressed_state,
+    paddingBottom: 1,
   },
 });
 

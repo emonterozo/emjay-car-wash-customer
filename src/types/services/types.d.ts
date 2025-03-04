@@ -43,6 +43,7 @@ export type SignupPayload = {
 export type UserResponse = {
   user: {
     id: string;
+    username: string;
   };
   errors: ErrorProps[];
 };
@@ -50,4 +51,28 @@ export type UserResponse = {
 export type OtpVerifyPayload = {
   user: string;
   otp: string;
+};
+
+export type Price = {
+  size: string;
+  price: number;
+  points: number;
+  earning_points: number;
+};
+
+export type Service = {
+  id: string;
+  title: string;
+  description: string;
+  image: string;
+  type: VehicleType;
+  ratings: number;
+  reviews_count: number;
+  last_review: string | null;
+  price_list: Price[];
+};
+
+export type ServicesResponse = {
+  services: Service[];
+  errors: ErrorProps[];
 };
