@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -9,11 +9,18 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 
 import { color, font } from '@app/styles';
-import { IMAGES } from '@app/constant';
+import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { ScreenStatusProps } from '../../types/services/types';
+import { getWashPoints } from '@app/services';
+import GlobalContext from '@app/context';
+import { ErrorModal, LoadingAnimation } from '@app/components';
 
 const Home = () => {
+  const { user } = useContext(GlobalContext);
+  const isFocused = useIsFocused();
   const [count, setCount] = useState({
     car: [
       {
@@ -60,21 +67,90 @@ const Home = () => {
     { key: 'car', count: 40 },
     { key: 'motorcycle', count: 10 },
   ]);
+  const [points, setPoints] = useState(0);
   const [selected, setSelected] = useState<keyof typeof count>('car');
+  const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
+    isLoading: false,
+    hasError: false,
+    type: 'error',
+  });
+
+  const fetchTransaction = async () => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+    const response = await getWashPoints(user.accessToken, user.id);
+
+    if (response.success && response.data) {
+      const { moto_wash_service_count, car_wash_service_count } = response.data.customer;
+      setPoints(response.data.customer.points);
+      setCount({
+        car: car_wash_service_count,
+        motorcycle: moto_wash_service_count,
+      });
+      const carTotalCount = car_wash_service_count.reduce((sum, item) => sum + item.count, 0);
+      const motorcycleTotalCount = moto_wash_service_count.reduce(
+        (sum, item) => sum + item.count,
+        0,
+      );
+
+      setOptions([
+        {
+          key: 'car',
+          count: carTotalCount,
+        },
+        {
+          key: 'motorcycle',
+          count: motorcycleTotalCount,
+        },
+      ]);
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+    } else {
+      setScreenStatus({
+        isLoading: false,
+        type: response.error === ERR_NETWORK ? 'connection' : 'error',
+        hasError: true,
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchTransaction();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isFocused]);
+
+  const getSelected = () => {
+    const value = options.find((option) => option.key === selected);
+
+    return value?.count;
+  };
+
+  const onCancel = () => {
+    setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
+      <LoadingAnimation isLoading={screenStatus.isLoading} type="modal" />
+      <ErrorModal
+        type={screenStatus.type}
+        isVisible={screenStatus.hasError}
+        onCancel={onCancel}
+        onRetry={fetchTransaction}
+      />
       <View style={styles.heading}>
         <View style={styles.greetingContainer}>
-          <Text style={styles.greeting}>Hello, John Doe! {'\u{1F44B}'}</Text>
+          <Text
+            style={styles.greeting}
+          >{`Hello, ${user.first_name} ${user.last_name}! \u{1F44B}`}</Text>
           <Text style={styles.subHeader}>What service do you need today?</Text>
         </View>
         <Image source={IMAGES.AVATAR_BOY} style={styles.avatar} resizeMode="contain" />
       </View>
       <View style={styles.pointsContainer}>
         <View style={styles.content}>
-          <Text style={styles.points}>1,020 Points</Text>
+          <Text style={styles.points}>{`${points.toLocaleString()} Points`}</Text>
           <Text style={styles.label}>
             Earn more points by availing services to unlock free rewards!
           </Text>
@@ -114,7 +190,7 @@ const Home = () => {
             } Wash Service`}</Text>
             <View style={styles.countView}>
               <Text style={styles.countLabel}>Total Wash Count:</Text>
-              <Text style={styles.countValue}>40</Text>
+              <Text style={styles.countValue}>{getSelected()}</Text>
             </View>
             <ScrollView
               horizontal
@@ -164,6 +240,7 @@ const styles = StyleSheet.create({
   },
   greetingContainer: {
     gap: 5,
+    flex: 1,
   },
   greeting: {
     ...font.regular,

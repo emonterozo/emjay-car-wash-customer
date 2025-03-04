@@ -8,6 +8,7 @@ import {
   UserResponse,
   SignupPayload,
   ServicesResponse,
+  WashPointsResponse,
 } from '../types/services/types';
 
 export const requestHeader = (accessToken: string) => {
@@ -64,4 +65,17 @@ export const getServicesRequest = (
       offset,
     },
   });
+};
+
+export const getWashPoints = (
+  accessToken: string,
+  user: string,
+): ApiResponse<WashPointsResponse> => {
+  return apiRequest<null, WashPointsResponse>(
+    `${Config.API_BASE_URL}/customers/${user}/wash-points`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+    },
+  );
 };

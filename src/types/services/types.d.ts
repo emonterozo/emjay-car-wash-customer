@@ -76,3 +76,18 @@ export type ServicesResponse = {
   services: Service[];
   errors: ErrorProps[];
 };
+
+export type ServiceCount = {
+  size: string;
+  count: number;
+};
+
+export type WashPointsResponse = {
+  customer: {
+    id: string;
+    points: number;
+    car_wash_service_count: ServiceCount[];
+    moto_wash_service_count: ServiceCount[];
+  };
+  errors: ErrorProps[];
+};
