@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, StyleSheet, SafeAreaView, StatusBar, Image, Text, ScrollView } from 'react-native';
 import QRCode from 'react-native-qrcode-svg';
 
 import { color, font } from '@app/styles';
 import { AppHeaderImage, HorizontalLine } from '@app/components';
 import { IMAGES } from '@app/constant';
+import GlobalContext from '@app/context';
 
 const MESSAGE =
   'Show this to the Emjay Carwash & Detailing office staff every time you use our services to earn and redeem your rewards.';
@@ -13,6 +14,7 @@ const WASH_EARN_PROMO_MESSAGE =
 const EARN_POINTS_PROMO_MESSAGE =
   "Beyond the wash promo, you’ll also earn points for every service you avail! Use your accumulated points to redeem services or enjoy discounts on our exclusive promotions. Stay tuned for exciting deals and make the most of your visits! Don't miss out start earning today!";
 const QRCard = () => {
+  const { user } = useContext(GlobalContext);
   const [activeIndex, setActiveIndex] = useState(0);
 
   const CARD_WIDTH = 392 + 24;
@@ -36,7 +38,7 @@ const QRCard = () => {
           <HorizontalLine />
         </View>
         <View style={[styles.qrContainer, styles.marginBottom24]}>
-          <QRCode value="1" />
+          <QRCode value={user.id} />
         </View>
         <Text
           style={[

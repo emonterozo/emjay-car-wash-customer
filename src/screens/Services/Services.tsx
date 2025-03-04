@@ -132,7 +132,7 @@ const Services = () => {
       return type === 'points' ? service?.points : service?.earning_points;
     }
 
-    return type === 'points' ? priceList[0].points : `${priceList[0].earning_points}`;
+    return type === 'points' ? priceList[0].points : priceList[0].earning_points;
   };
 
   return (
@@ -191,7 +191,9 @@ const Services = () => {
                   <View style={styles.pointsContainer}>
                     <FreeIcon />
                     <Text style={styles.points}>
-                      {getServicePricePoints(item.price_list, 'points')}
+                      {getServicePricePoints(item.price_list, 'points') > 0
+                        ? `${getServicePricePoints(item.price_list, 'points')} points`
+                        : '10 wash'}
                     </Text>
                   </View>
                 </View>
@@ -203,10 +205,11 @@ const Services = () => {
                 <Text style={styles.priceValue}>{getServicePrice(item.price_list)}</Text>
               </View>
               <View style={styles.earningContainer}>
-                <Text style={styles.earningPoints}>{`Earn ${getServicePricePoints(
-                  item.price_list,
-                  'earning_points',
-                )} Points!`}</Text>
+                <Text style={styles.earningPoints}>
+                  {getServicePricePoints(item.price_list, 'earning_points') > 0
+                    ? `Earn ${getServicePricePoints(item.price_list, 'earning_points')} Points!`
+                    : 'Earn 1 Wash Count!'}
+                </Text>
               </View>
             </View>
           </View>
@@ -328,6 +331,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    flex: 1,
   },
   points: {
     ...font.regular,
@@ -338,6 +342,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    flex: 1,
   },
   details: {
     gap: 8,
