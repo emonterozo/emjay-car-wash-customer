@@ -18,6 +18,7 @@ import {
   AppHeader,
   Button,
   ConfirmationModal,
+  ErrorModal,
   FormTextInput,
   LoadingAnimation,
   Toast,
@@ -25,11 +26,14 @@ import {
 import { EyeCloseIcon, EyeOpenIcon } from '@app/icons';
 import { areObjectsEqual } from '@app/helpers';
 import { useNativeBackHandler } from '@app/hooks';
+import { forgotPasswordRequest } from '@app/services';
+import { ERR_NETWORK } from '@app/constant';
+import { UnAuthNavigationProp } from '../../types/navigation/types';
 
 type FormValues = {
   contactNumber: string | undefined;
-  password: string;
-  confirmPassword: string;
+  password: string | undefined;
+  confirmPassword: string | undefined;
 };
 
 type Errors = {
@@ -44,7 +48,11 @@ const validationSchema = Yup.object({
       /^09[0-9]{9}$/,
       'Phone Number must be 11 digits long, starting with "09", and contain only numbers',
     ),
-  password: Yup.string().required('Password is required'),
+  password: Yup.string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters long')
+    .matches(/\d/, 'Password must contain at least one number')
+    .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
   confirmPassword: Yup.string()
     .required('Confirm Password is required')
     // @ts-ignore
@@ -52,7 +60,7 @@ const validationSchema = Yup.object({
 });
 
 const ForgoPassword = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<UnAuthNavigationProp>();
   const [passwordSecure, setPasswordSecure] = useState({
     password: true,
     confirmPassword: true,
@@ -60,8 +68,8 @@ const ForgoPassword = () => {
   const [errors, setErrors] = useState<Errors>({});
   const initialFormValues: FormValues = {
     contactNumber: undefined,
-    password: '',
-    confirmPassword: '',
+    password: undefined,
+    confirmPassword: undefined,
   };
   const [formValues, setFormValues] = useState<FormValues>(initialFormValues);
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
@@ -69,8 +77,12 @@ const ForgoPassword = () => {
     hasError: false,
     type: 'error',
   });
-  const [isToastVisible, setIsToastVisible] = useState(false);
+
   const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
+  const [toast, setToast] = useState({
+    isVisible: false,
+    message: '',
+  });
 
   const toggleSecureEntry = (key: keyof typeof passwordSecure) => {
     setPasswordSecure({
@@ -84,8 +96,36 @@ const ForgoPassword = () => {
       .validate(formValues, { abortEarly: false })
       .then(async (_validData) => {
         setErrors({});
+        setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
 
-        console.log('test');
+        const response = await forgotPasswordRequest(formValues.contactNumber!);
+
+        setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+
+        if (response.success && response.data) {
+          const { id, username } = response.data.user;
+          navigation.replace('ForgotPasswordOtp', {
+            user: id,
+            username: username,
+            password: formValues.password!,
+          });
+        } else {
+          switch (response.status) {
+            case 404:
+              setToast({
+                isVisible: true,
+                message: 'Oops! This account doesn’t seem to exist. Try registering instead.',
+              });
+              break;
+            default:
+              setScreenStatus({
+                isLoading: false,
+                type: response.error === ERR_NETWORK ? 'connection' : 'error',
+                hasError: true,
+              });
+              break;
+          }
+        }
       })
       .catch((err) => {
         const errorMessages: Errors = err.inner.reduce((acc: Errors, curr: ValidationError) => {
@@ -93,7 +133,10 @@ const ForgoPassword = () => {
           return acc;
         }, {});
         setErrors(errorMessages);
-        setIsToastVisible(true);
+        setToast({
+          isVisible: true,
+          message: 'Please complete the required fields before proceeding.',
+        });
       });
   };
 
@@ -109,7 +152,7 @@ const ForgoPassword = () => {
     setFormValues({ ...formValues, [key]: value });
   };
 
-  const onToastClose = () => setIsToastVisible(false);
+  const onToastClose = () => setToast({ isVisible: false, message: '' });
 
   const handlePressBack = () => {
     if (areObjectsEqual(initialFormValues, formValues)) {
@@ -135,18 +178,22 @@ const ForgoPassword = () => {
     }
   };
 
+  const onCancel = () => {
+    setScreenStatus({ ...screenStatus, hasError: false });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
-      <AppHeader title="Register" onBack={handlePressBack} />
+      <AppHeader title="Forgot Password" onBack={handlePressBack} />
       <LoadingAnimation isLoading={screenStatus.isLoading} />
       <View>
-        {/* <ErrorModal
+        <ErrorModal
           type={screenStatus.type}
           isVisible={screenStatus.hasError}
           onCancel={onCancel}
-          onRetry={type === 'Add' ? handleAddEmployee : handleUpdateEmployee}
-        /> */}
+          onRetry={handleSubmit}
+        />
         <ConfirmationModal
           type="Register"
           isVisible={isConfirmationVisible}
@@ -155,8 +202,8 @@ const ForgoPassword = () => {
         />
       </View>
       <Toast
-        isVisible={isToastVisible}
-        message="Please complete the required fields before proceeding."
+        isVisible={toast.isVisible}
+        message={toast.message}
         duration={3000}
         type="error"
         onClose={onToastClose}

@@ -10,6 +10,7 @@ import {
   ServicesResponse,
   WashPointsResponse,
   CustomerQueueResponse,
+  ForgotPasswordVerifyPayload,
 } from '../types/services/types';
 
 export const requestHeader = (accessToken: string) => {
@@ -73,7 +74,7 @@ export const getWashPoints = (
   user: string,
 ): ApiResponse<WashPointsResponse> => {
   return apiRequest<null, WashPointsResponse>(
-    `${Config.API_BASE_URL}/customers/${user}/wash-points`,
+    `${Config.API_BASE_URL}/customers/${user}/wash-points-promos`,
     {
       method: 'get',
       headers: requestHeader(accessToken),
@@ -87,6 +88,28 @@ export const getCustomerQueue = (accessToken: string): ApiResponse<CustomerQueue
     {
       method: 'get',
       headers: requestHeader(accessToken),
+    },
+  );
+};
+
+export const forgotPasswordRequest = (username: string): ApiResponse<UserResponse> => {
+  return apiRequest<{ username: string }, UserResponse>(
+    `${Config.API_BASE_URL}/customers/forgot/password`,
+    {
+      method: 'post',
+      data: { username },
+    },
+  );
+};
+
+export const forgotPasswordVerifyRequest = (
+  payload: ForgotPasswordVerifyPayload,
+): ApiResponse<LoginResponse> => {
+  return apiRequest<ForgotPasswordVerifyPayload, LoginResponse>(
+    `${Config.API_BASE_URL}/customers/forgot/password/verify`,
+    {
+      method: 'put',
+      data: payload,
     },
   );
 };

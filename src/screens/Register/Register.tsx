@@ -54,8 +54,8 @@ type FormValues = {
   birthDate: Date | undefined;
   gender: Option | undefined;
   contactNumber: string | undefined;
-  password: string;
-  confirmPassword: string;
+  password: string | undefined;
+  confirmPassword: string | undefined;
 };
 
 type Errors = {
@@ -79,7 +79,11 @@ const validationSchema = Yup.object({
       /^09[0-9]{9}$/,
       'Phone Number must be 11 digits long, starting with "09", and contain only numbers',
     ),
-  password: Yup.string().required('Password is required'),
+  password: Yup.string()
+    .required('Password is required')
+    .min(8, 'Password must be at least 8 characters long')
+    .matches(/\d/, 'Password must contain at least one number')
+    .matches(/[!@#$%^&*(),.?":{}|<>]/, 'Password must contain at least one special character'),
   confirmPassword: Yup.string()
     .required('Confirm Password is required')
     // @ts-ignore
@@ -133,7 +137,7 @@ const Register = () => {
           contact_number: formValues.contactNumber as string,
           gender: formValues.gender?.label as GenderType,
           birth_date: format(formValues.birthDate!, 'yyyy-MM-dd'),
-          password: formValues.password,
+          password: formValues.password!,
         };
 
         const response = await signupRequest(payload);

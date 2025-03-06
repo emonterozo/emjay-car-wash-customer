@@ -1,18 +1,14 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image, ImageSourcePropType } from 'react-native';
-// import { useNavigation } from '@react-navigation/native';
-// import { NavigationProp } from '../../types/navigation/types';
+import { View, Text, StyleSheet, Image, ImageSourcePropType } from 'react-native';
 import { color, font } from '@app/styles';
-import { IMAGES } from '@app/constant';
 
 type NewAppHeaderProps = {
   imageSource: ImageSourcePropType;
   title: string;
   subtitle?: string;
-  onPressRight?: () => void;
 };
 
-const NewAppHeader = ({ imageSource, title, subtitle, onPressRight }: NewAppHeaderProps) => {
+const NewAppHeader = ({ imageSource, title, subtitle }: NewAppHeaderProps) => {
   // const navigation = useNavigation<NavigationProp>();
 
   return (
@@ -27,11 +23,6 @@ const NewAppHeader = ({ imageSource, title, subtitle, onPressRight }: NewAppHead
         <Text style={styles.title}>{title}</Text>
         {subtitle && <Text style={styles.subtitle}>{subtitle}</Text>}
       </View>
-
-      {/* Right Side: Button Icon */}
-      <TouchableOpacity onPress={onPressRight} style={styles.rightContainer}>
-        <Image source={IMAGES.CLOSE_CIRCLE_BLACK} />
-      </TouchableOpacity>
     </View>
   );
 };
@@ -76,9 +67,6 @@ const styles = StyleSheet.create({
     color: '#888888',
     marginTop: 4,
     lineHeight: 16,
-  },
-  rightContainer: {
-    padding: 8,
   },
 });
 

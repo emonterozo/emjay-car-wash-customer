@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Dimensions,
@@ -30,6 +30,7 @@ import {
 import { color, font } from '@app/styles';
 import { loginRequest } from '@app/services';
 import { verticalScale } from '@app/metrics';
+import { getUsername, removeUsername, storeUsername } from '@app/helpers';
 
 const Login = () => {
   const { setUser } = useContext(GlobalContext);
@@ -41,8 +42,8 @@ const Login = () => {
     type: 'error',
   });
   const [input, setInput] = useState({
-    username: '09122011108',
-    password: 'test1234',
+    username: '',
+    password: '',
   });
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [isRemembered, setIsRemembered] = useState(false);
@@ -61,6 +62,11 @@ const Login = () => {
           break;
         default:
           const { user, accessToken, refreshToken } = response.data;
+          if (isRemembered) {
+            storeUsername(user.username);
+          } else {
+            removeUsername();
+          }
           setUser({
             ...user,
             accessToken,
@@ -118,6 +124,22 @@ const Login = () => {
         break;
     }
   };
+
+  useEffect(() => {
+    const fetchUsername = async () => {
+      const storedUsername = await getUsername();
+      if (storedUsername) {
+        setInput({
+          ...input,
+          username: storedUsername,
+        });
+        setIsRemembered(true);
+      }
+    };
+
+    fetchUsername();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

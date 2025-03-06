@@ -32,7 +32,7 @@ const QRCard = () => {
         <AppHeaderImage
           title="My Card"
           subtitle="What would you like to do?"
-          imageSource={IMAGES.AVATAR_BOY}
+          imageSource={user.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
         />
         <View style={styles.marginBottom35}>
           <HorizontalLine />

@@ -8,12 +8,13 @@ import {
   Text,
   TouchableOpacity,
   ScrollView,
+  Dimensions,
 } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 
+import { Promos, ScreenStatusProps } from '../../types/services/types';
 import { color, font } from '@app/styles';
 import { ERR_NETWORK, IMAGES } from '@app/constant';
-import { ScreenStatusProps } from '../../types/services/types';
 import { getWashPoints } from '@app/services';
 import GlobalContext from '@app/context';
 import { ErrorModal, LoadingAnimation } from '@app/components';
@@ -29,11 +30,11 @@ const Home = () => {
       },
       {
         size: 'md',
-        count: 20,
+        count: 0,
       },
       {
         size: 'lg',
-        count: 10,
+        count: 0,
       },
       {
         size: 'xl',
@@ -64,8 +65,8 @@ const Home = () => {
     ],
   });
   const [options, setOptions] = useState<{ key: keyof typeof count; count: number }[]>([
-    { key: 'car', count: 40 },
-    { key: 'motorcycle', count: 10 },
+    { key: 'car', count: 0 },
+    { key: 'motorcycle', count: 0 },
   ]);
   const [points, setPoints] = useState(0);
   const [selected, setSelected] = useState<keyof typeof count>('car');
@@ -74,6 +75,7 @@ const Home = () => {
     hasError: false,
     type: 'error',
   });
+  const [promos, setPromos] = useState<Promos[]>([]);
 
   const fetchTransaction = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
@@ -86,13 +88,14 @@ const Home = () => {
         car: car_wash_service_count,
         motorcycle: moto_wash_service_count,
       });
+      setPromos(response.data.promos);
       const carTotalCount = car_wash_service_count.reduce((sum, item) => sum + item.count, 0);
       const motorcycleTotalCount = moto_wash_service_count.reduce(
         (sum, item) => sum + item.count,
         0,
       );
 
-      setOptions([
+      const optionsHolder: { key: keyof typeof count; count: number }[] = [
         {
           key: 'car',
           count: carTotalCount,
@@ -101,7 +104,16 @@ const Home = () => {
           key: 'motorcycle',
           count: motorcycleTotalCount,
         },
-      ]);
+      ];
+      optionsHolder.sort((a, b) => b.count - a.count);
+      setOptions(optionsHolder);
+      setSelected(
+        carTotalCount === 0 && motorcycleTotalCount === 0
+          ? 'car'
+          : carTotalCount > motorcycleTotalCount
+          ? 'car'
+          : 'motorcycle',
+      );
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
       setScreenStatus({
@@ -146,75 +158,99 @@ const Home = () => {
           >{`Hello, ${user.first_name} ${user.last_name}! \u{1F44B}`}</Text>
           <Text style={styles.subHeader}>What service do you need today?</Text>
         </View>
-        <Image source={IMAGES.AVATAR_BOY} style={styles.avatar} resizeMode="contain" />
+        <Image
+          source={user.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+          style={styles.avatar}
+          resizeMode="contain"
+        />
       </View>
-      <View style={styles.pointsContainer}>
-        <View style={styles.content}>
-          <Text style={styles.points}>{`${points.toLocaleString()} Points`}</Text>
-          <Text style={styles.label}>
-            Earn more points by availing services to unlock free rewards!
-          </Text>
+      <ScrollView>
+        <View style={styles.pointsContainer}>
+          <View style={styles.content}>
+            <Text style={styles.points}>{`${points.toLocaleString()} Points`}</Text>
+            <Text style={styles.label}>
+              Earn more points by availing services to unlock free rewards!
+            </Text>
+          </View>
+          <Image source={IMAGES.POINTS} style={styles.image} resizeMode="cover" />
         </View>
-        <Image source={IMAGES.POINTS} style={styles.image} resizeMode="cover" />
-      </View>
-      <View style={styles.washContainer}>
-        <Text style={styles.title}>Wash Service Count</Text>
-        <View style={styles.optionContainer}>
-          {options.map((option) => (
-            <TouchableOpacity
-              key={option.key}
-              style={[styles.option, option.key !== selected && styles.optionInactive]}
-              disabled={option.key === selected}
-              onPress={() => setSelected(option.key)}
-            >
-              <Text
-                style={[styles.optionText, option.key !== selected && styles.optionTextInactive]}
+        <View style={styles.washContainer}>
+          <Text style={styles.title}>Wash Service Count</Text>
+          <View style={styles.optionContainer}>
+            {options.map((option) => (
+              <TouchableOpacity
+                key={option.key}
+                style={[styles.option, option.key !== selected && styles.optionInactive]}
+                disabled={option.key === selected}
+                onPress={() => setSelected(option.key)}
               >
-                {option.key.charAt(0).toUpperCase() + option.key.slice(1)}
-              </Text>
-              <View style={[styles.count, option.key !== selected && styles.countInactive]}>
-                <Text style={styles.countText}>{option.count}</Text>
-              </View>
-            </TouchableOpacity>
-          ))}
-        </View>
-        <View style={styles.countContainer}>
-          <Image
-            source={selected === 'car' ? IMAGES.CAR : IMAGES.MOTORCYCLE}
-            resizeMode="contain"
-            style={styles.imageType}
-          />
-          <View style={styles.countContent}>
-            <Text style={styles.countTitle}>{`${
-              selected.charAt(0).toUpperCase() + selected.slice(1)
-            } Wash Service`}</Text>
-            <View style={styles.countView}>
-              <Text style={styles.countLabel}>Total Wash Count:</Text>
-              <Text style={styles.countValue}>{getSelected()}</Text>
-            </View>
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.scrollViewContent}
-              style={styles.scrollView}
-            >
-              {count[selected].map((item) => (
-                <View
-                  key={item.size}
-                  style={[styles.size, item.count < 10 && styles.optionInactive]}
+                <Text
+                  style={[styles.optionText, option.key !== selected && styles.optionTextInactive]}
                 >
-                  <Text style={[styles.countText, item.count < 10 && styles.optionTextInactive]}>
-                    {item.size.toUpperCase()}
-                  </Text>
-                  <View style={[styles.sizeCount, item.count < 10 && styles.countInactive]}>
-                    <Text style={styles.countText}>{item.count}</Text>
-                  </View>
+                  {option.key.charAt(0).toUpperCase() + option.key.slice(1)}
+                </Text>
+                <View style={[styles.count, option.key !== selected && styles.countInactive]}>
+                  <Text style={styles.countText}>{option.count}</Text>
                 </View>
-              ))}
-            </ScrollView>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <View style={styles.countContainer}>
+            <Image
+              source={selected === 'car' ? IMAGES.CAR : IMAGES.MOTORCYCLE}
+              resizeMode="contain"
+              style={styles.imageType}
+            />
+            <View style={styles.countContent}>
+              <Text style={styles.countTitle}>{`${
+                selected.charAt(0).toUpperCase() + selected.slice(1)
+              } Wash Service`}</Text>
+              <View style={styles.countView}>
+                <Text style={styles.countLabel}>Total Wash Count:</Text>
+                <Text style={styles.countValue}>{getSelected()}</Text>
+              </View>
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.scrollViewContent}
+                style={styles.scrollView}
+              >
+                {count[selected].map((item) => (
+                  <View
+                    key={item.size}
+                    style={[styles.size, item.count < 10 && styles.optionInactive]}
+                  >
+                    <Text style={[styles.countText, item.count < 10 && styles.optionTextInactive]}>
+                      {item.size.toUpperCase()}
+                    </Text>
+                    <View style={[styles.sizeCount, item.count < 10 && styles.countInactive]}>
+                      <Text style={styles.countText}>{item.count}</Text>
+                    </View>
+                  </View>
+                ))}
+              </ScrollView>
+            </View>
           </View>
         </View>
-      </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {promos.map((item) => (
+            <View key={item.id} style={styles.publishContainer}>
+              <View style={styles.publish}>
+                <Text style={styles.publishTitle}>
+                  <Text style={styles.percent}>{`${item.percent}% `}</Text>
+                  {item.title}
+                </Text>
+                <Text style={styles.publishDescription}>{item.description}</Text>
+              </View>
+              <Image
+                source={item.is_free ? IMAGES.FREE : IMAGES.PERCENT}
+                style={styles.publishImage}
+                resizeMode="cover"
+              />
+            </View>
+          ))}
+        </ScrollView>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -237,6 +273,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 24,
+    marginTop: 24,
   },
   greetingContainer: {
     gap: 5,
@@ -397,6 +434,38 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+  },
+  percent: {
+    color: '#6FFF00',
+  },
+  publishContainer: {
+    marginVertical: 16,
+    marginHorizontal: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+    borderRadius: 24,
+    backgroundColor: color.primary,
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: Dimensions.get('window').width - 48,
+  },
+  publish: {
+    flex: 1,
+    gap: 8,
+  },
+  publishTitle: {
+    ...font.bold,
+    fontSize: 32,
+    color: color.background,
+  },
+  publishDescription: {
+    ...font.regular,
+    fontSize: 12,
+    color: '#C3C3C3',
+  },
+  publishImage: {
+    width: 100,
+    height: 100,
   },
 });
 

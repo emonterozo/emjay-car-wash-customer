@@ -7,12 +7,13 @@ import {
   Text,
   Image,
   TouchableOpacity,
+  ScrollView,
 } from 'react-native';
 
 import { color, font } from '@app/styles';
 import { AppHeaderImage, ConfirmationModal, HorizontalLine } from '@app/components';
 import { IMAGES } from '@app/constant';
-import { ScrollView } from 'react-native-gesture-handler';
+
 import GlobalContext from '@app/context';
 
 const defaultUser = {
@@ -27,7 +28,7 @@ const defaultUser = {
 
 const More = () => {
   const [isModalVisible, setModalVisible] = useState(false);
-  const { setUser } = useContext(GlobalContext);
+  const { user, setUser } = useContext(GlobalContext);
 
   const handleSignOut = () => {
     setModalVisible(true);
@@ -47,9 +48,9 @@ const More = () => {
       <ScrollView style={styles.content}>
         <StatusBar backgroundColor={color.background} barStyle="dark-content" />
         <AppHeaderImage
-          title="John Doe"
+          title={`${user.first_name} ${user.last_name}`}
           subtitle="What would you like to do?"
-          imageSource={IMAGES.AVATAR_BOY}
+          imageSource={user.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
         />
         <ConfirmationModal
           isVisible={isModalVisible}
@@ -75,7 +76,7 @@ const More = () => {
           />
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.itemRow} onPress={() => {}}>
+        {/* <TouchableOpacity style={styles.itemRow} onPress={() => {}}>
           <View style={styles.leftGroup}>
             <Image
               source={IMAGES.NOTIFICATION_SETTINGS}
@@ -88,7 +89,7 @@ const More = () => {
             source={IMAGES.CHEVRON_RIGHT_BUTTON}
             style={[styles.image, styles.imageContainer]}
           />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         <HorizontalLine />
 

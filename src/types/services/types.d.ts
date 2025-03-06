@@ -82,6 +82,14 @@ export type ServiceCount = {
   count: number;
 };
 
+export type Promos = {
+  id: string;
+  percent: number;
+  title: string;
+  description: string;
+  is_free: boolean;
+};
+
 export type WashPointsResponse = {
   customer: {
     id: string;
@@ -89,6 +97,7 @@ export type WashPointsResponse = {
     car_wash_service_count: ServiceCount[];
     moto_wash_service_count: ServiceCount[];
   };
+  promos: Promos[];
   errors: ErrorProps[];
 };
 
@@ -103,4 +112,10 @@ export type CustomerQueue = {
 export type CustomerQueueResponse = {
   transactions: CustomerQueue[];
   errors: ErrorProps[];
+};
+
+export type ForgotPasswordVerifyPayload = {
+  user: string;
+  password: string;
+  otp: string;
 };

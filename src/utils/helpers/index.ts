@@ -1,3 +1,5 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 export const formattedNumber = (amount: number, fractionDigits?: number) => {
   return `₱${new Intl.NumberFormat('en-US', {
     style: 'decimal',
@@ -52,4 +54,26 @@ export const areObjectsEqual = <T extends Record<string, any>>(
   }
 
   return firstKeys.every((key) => firstObj[key] === secondObj[key]);
+};
+
+export const storeUsername = async (username: string) => {
+  await AsyncStorage.setItem('username', username);
+};
+
+export const getUsername = async () => {
+  const value = await AsyncStorage.getItem('username');
+  return value;
+};
+
+export const removeUsername = async () => {
+  await AsyncStorage.removeItem('username');
+};
+
+export const storeStatusGetStarted = async () => {
+  await AsyncStorage.setItem('get-started', 'done');
+};
+
+export const getStatusGetStarted = async () => {
+  const value = await AsyncStorage.getItem('get-started');
+  return value;
 };

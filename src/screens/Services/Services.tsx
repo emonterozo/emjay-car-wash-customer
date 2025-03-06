@@ -8,7 +8,14 @@ import FilterOption from './FilterOption';
 import { SizeKey } from '../../types/constant/types';
 import { Price, ScreenStatusProps, Service } from '../../types/services/types';
 import { FilterIcon, FreeIcon, StarIcon } from '@app/icons';
-import { EmptyState, ErrorModal, FloatingActionButton, LoadingAnimation } from '@app/components';
+import {
+  AppHeaderImage,
+  EmptyState,
+  ErrorModal,
+  FloatingActionButton,
+  HorizontalLine,
+  LoadingAnimation,
+} from '@app/components';
 import { getServicesRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import { color, font } from '@app/styles';
@@ -146,6 +153,12 @@ const Services = () => {
         onCancel={onCancel}
         onRetry={fetchService}
       />
+      <AppHeaderImage
+        title={`${user.first_name} ${user.last_name}`}
+        subtitle="What would you like to do?"
+        imageSource={user.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+      />
+      <HorizontalLine />
       <View style={styles.heading}>
         <Text style={styles.label}>List of Services</Text>
         {filteredServices.length > 0 && (
@@ -247,7 +260,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: 16,
-    marginBottom: 35,
+    marginBottom: 15,
     paddingHorizontal: 25,
   },
   label: {
@@ -352,6 +365,7 @@ const styles = StyleSheet.create({
     ...font.regular,
     fontSize: 16,
     color: '#050303',
+    flex: 1,
   },
   content: {
     flexDirection: 'row',

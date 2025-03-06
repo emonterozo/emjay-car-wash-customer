@@ -38,6 +38,11 @@ export const IMAGES = {
   MENU: require('../../../assets/images/menu.png'),
   MESSAGE: require('../../../assets/images/message.png'),
   VIEW_CUSTOMER_PRESENCE: require('../../../assets/images/view-customer-presence.png'),
+  FREE: require('../../../assets/images/free.png'),
+  PERCENT: require('../../../assets/images/percent.png'),
+  FIRST: require('../../../assets/images/first.png'),
+  SECOND: require('../../../assets/images/second.png'),
+  THIRD: require('../../../assets/images/third.png'),
 };
 
 export const ERROR_TYPE = {

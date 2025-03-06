@@ -8,3 +8,5 @@ export { default as Register } from './Register/Register';
 export { default as ForgotPassword } from './ForgotPassword/ForgotPassword';
 export { default as RegistrationOtp } from './RegistrationOtp/RegistrationOtp';
 export { default as CustomerPresence } from './CustomerPresence/CustomerPresence';
+export { default as GettingStarted } from './GettingStarted/GettingStarted';
+export { default as ForgotPasswordOtp } from './ForgotPasswordOtp/ForgotPasswordOtp';
