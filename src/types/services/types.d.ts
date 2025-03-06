@@ -119,3 +119,15 @@ export type ForgotPasswordVerifyPayload = {
   password: string;
   otp: string;
 };
+
+export type TransactionItem = {
+  id: string;
+  service_name: string;
+  price: number;
+  date: string;
+};
+
+export type TransactionResponse = {
+  transactions: TransactionItem[];
+  errors: ErrorProps[];
+};

@@ -11,6 +11,7 @@ import {
   WashPointsResponse,
   CustomerQueueResponse,
   ForgotPasswordVerifyPayload,
+  TransactionResponse,
 } from '../types/services/types';
 
 export const requestHeader = (accessToken: string) => {
@@ -110,6 +111,26 @@ export const forgotPasswordVerifyRequest = (
     {
       method: 'put',
       data: payload,
+    },
+  );
+};
+
+export const getTransactionsRequest = (
+  accessToken: string,
+  user: string,
+  dateRange: {
+    start: string;
+    end: string;
+  },
+): ApiResponse<TransactionResponse> => {
+  return apiRequest<null, TransactionResponse>(
+    `${Config.API_BASE_URL}/customers/${user}/transactions`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        date_range: JSON.stringify(dateRange),
+      },
     },
   );
 };

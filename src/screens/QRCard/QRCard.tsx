@@ -30,7 +30,7 @@ const QRCard = () => {
       <ScrollView style={styles.content}>
         <StatusBar backgroundColor={color.background} barStyle="dark-content" />
         <AppHeaderImage
-          title="My Card"
+          title={`${user.first_name} ${user.last_name}`}
           subtitle="What would you like to do?"
           imageSource={user.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
         />

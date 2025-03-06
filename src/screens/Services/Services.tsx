@@ -112,7 +112,6 @@ const Services = () => {
 
   const onCancel = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
-    navigation.goBack();
   };
 
   const getServicePrice = (priceList: Price[]) => {
@@ -177,9 +176,7 @@ const Services = () => {
           />
         )}
       </View>
-
       <FlatList
-        bounces={false}
         showsVerticalScrollIndicator={true}
         contentContainerStyle={styles.list}
         data={filteredServices}
