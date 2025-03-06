@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -10,11 +10,38 @@ import {
 } from 'react-native';
 
 import { color, font } from '@app/styles';
-import { AppHeaderImage, HorizontalLine } from '@app/components';
+import { AppHeaderImage, ConfirmationModal, HorizontalLine } from '@app/components';
 import { IMAGES } from '@app/constant';
 import { ScrollView } from 'react-native-gesture-handler';
+import GlobalContext from '@app/context';
+
+const defaultUser = {
+  id: '',
+  first_name: '',
+  last_name: '',
+  gender: '',
+  username: '',
+  accessToken: '',
+  refreshToken: '',
+};
 
 const More = () => {
+  const [isModalVisible, setModalVisible] = useState(false);
+  const { setUser } = useContext(GlobalContext);
+
+  const handleSignOut = () => {
+    setModalVisible(true);
+  };
+
+  const onSignOutYes = () => {
+    setUser(defaultUser);
+    setModalVisible(false);
+  };
+
+  const onSignOutNo = () => {
+    setModalVisible(false);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.content}>
@@ -23,6 +50,14 @@ const More = () => {
           title="John Doe"
           subtitle="What would you like to do?"
           imageSource={IMAGES.AVATAR_BOY}
+        />
+        <ConfirmationModal
+          isVisible={isModalVisible}
+          type="SignOut"
+          onYes={onSignOutYes}
+          onNo={onSignOutNo}
+          textCancel="Cancel"
+          textProceed="Confirm"
         />
         <HorizontalLine />
         <View>
@@ -88,7 +123,7 @@ const More = () => {
 
         <HorizontalLine />
 
-        <TouchableOpacity style={[styles.itemRow, styles.topGap]} onPress={() => {}}>
+        <TouchableOpacity style={[styles.itemRow, styles.topGap]} onPress={handleSignOut}>
           <View style={styles.leftGroup}>
             <Image source={IMAGES.SIGN_OUT} style={[styles.image, styles.imageContainer]} />
             <Text style={[styles.itemText, styles.colorRed]}>Sign Out</Text>

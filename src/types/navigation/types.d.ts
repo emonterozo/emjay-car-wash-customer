@@ -86,6 +86,7 @@ export type AuthStackParamList = {
   ConsumablesForm: undefined;
   ExpensesForm: undefined;
   Statistics: undefined;
+  CustomerPresence: undefined;
 };
 
 export type UnAuthStackParamList = {

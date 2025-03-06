@@ -8,19 +8,20 @@ import FilterOption from './FilterOption';
 import { SizeKey } from '../../types/constant/types';
 import { Price, ScreenStatusProps, Service } from '../../types/services/types';
 import { FilterIcon, FreeIcon, StarIcon } from '@app/icons';
-import { EmptyState, ErrorModal, LoadingAnimation } from '@app/components';
+import { EmptyState, ErrorModal, FloatingActionButton, LoadingAnimation } from '@app/components';
 import { getServicesRequest } from '@app/services';
 import GlobalContext from '@app/context';
 import { color, font } from '@app/styles';
 import { useMeasure } from '@app/hooks';
-import { ERR_NETWORK, SIZE_DESCRIPTION, SIZES } from '@app/constant';
+import { ERR_NETWORK, IMAGES, SIZE_DESCRIPTION, SIZES } from '@app/constant';
 import { formattedNumber } from '@app/helpers';
+import { NavigationProp } from 'src/types/navigation/types';
 
 const renderSeparator = () => <View style={styles.separator} />;
 
 const Services = () => {
   const { user } = useContext(GlobalContext);
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp>();
   const touchableRef = useRef<View>(null);
   const { layout, measure } = useMeasure(touchableRef);
   const [isOptionVisible, setIsOptionVisible] = useState(false);
@@ -217,6 +218,20 @@ const Services = () => {
         keyExtractor={(item) => item.id}
         ItemSeparatorComponent={renderSeparator}
         ListEmptyComponent={<EmptyState />}
+      />
+      <FloatingActionButton
+        additionalButtons={[
+          {
+            icon: IMAGES.VIEW_CUSTOMER_PRESENCE,
+            label: 'View Customer Presence',
+            onPress: () => navigation.navigate('CustomerPresence'),
+          },
+          {
+            icon: IMAGES.MESSAGE,
+            label: 'Message',
+            onPress: () => <></>, //console.log('Message action triggered'),
+          },
+        ]}
       />
     </SafeAreaView>
   );

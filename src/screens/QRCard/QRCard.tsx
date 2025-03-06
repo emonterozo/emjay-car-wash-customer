@@ -38,7 +38,7 @@ const QRCard = () => {
           <HorizontalLine />
         </View>
         <View style={[styles.qrContainer, styles.marginBottom24]}>
-          <QRCode value={user.id} />
+          {user.id ? <QRCode value={user.id} /> : null}
         </View>
         <Text
           style={[

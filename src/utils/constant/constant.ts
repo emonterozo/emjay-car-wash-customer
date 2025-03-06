@@ -35,6 +35,9 @@ export const IMAGES = {
   POINTS: require('../../../assets/images/points.png'),
   MOTORCYCLE: require('../../../assets/images/motorcycle.png'),
   CAR: require('../../../assets/images/car.png'),
+  MENU: require('../../../assets/images/menu.png'),
+  MESSAGE: require('../../../assets/images/message.png'),
+  VIEW_CUSTOMER_PRESENCE: require('../../../assets/images/view-customer-presence.png'),
 };
 
 export const ERROR_TYPE = {
@@ -53,6 +56,10 @@ export const CONFIRM_TYPE = {
     title: 'Are you sure you want to cancel account creation?',
     description:
       'If you cancel now, any unsaved information will be lost, and the account will not be created.',
+  },
+  SignOut: {
+    title: 'Are you sure you want to Sign Out?',
+    description: "Once confirmed, you'll be redirected to the Sign In screen.",
   },
 };
 
