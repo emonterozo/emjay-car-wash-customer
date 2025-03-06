@@ -9,6 +9,7 @@ import {
   SignupPayload,
   ServicesResponse,
   WashPointsResponse,
+  CustomerQueueResponse,
 } from '../types/services/types';
 
 export const requestHeader = (accessToken: string) => {
@@ -73,6 +74,16 @@ export const getWashPoints = (
 ): ApiResponse<WashPointsResponse> => {
   return apiRequest<null, WashPointsResponse>(
     `${Config.API_BASE_URL}/customers/${user}/wash-points`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+    },
+  );
+};
+
+export const getCustomerQueue = (accessToken: string): ApiResponse<CustomerQueueResponse> => {
+  return apiRequest<null, CustomerQueueResponse>(
+    `${Config.API_BASE_URL}/customers/transactions/queue`,
     {
       method: 'get',
       headers: requestHeader(accessToken),

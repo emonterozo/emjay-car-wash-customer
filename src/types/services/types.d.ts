@@ -91,3 +91,16 @@ export type WashPointsResponse = {
   };
   errors: ErrorProps[];
 };
+
+export type CustomerQueue = {
+  id: string;
+  service_name: number;
+  status: string;
+  date: string;
+  description: string;
+};
+
+export type CustomerQueueResponse = {
+  transactions: CustomerQueue[];
+  errors: ErrorProps[];
+};
