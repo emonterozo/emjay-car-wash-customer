@@ -103,9 +103,9 @@ const ForgoPassword = () => {
         setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
 
         if (response.success && response.data) {
-          const { id, username } = response.data.user;
+          const { _id, username } = response.data.user;
           navigation.replace('ForgotPasswordOtp', {
-            user: id,
+            user: _id,
             username: username,
             password: formValues.password!,
           });

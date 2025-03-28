@@ -14,13 +14,13 @@ export type ErrorProps = {
 };
 
 export type LoginPayload = {
-  username: string;
+  contact_number: string;
   password: string;
 };
 
 export type LoginResponse = {
   user: {
-    id: string;
+    _id: string;
     username: string;
     first_name: string;
     last_name: string;
@@ -42,15 +42,15 @@ export type SignupPayload = {
 
 export type UserResponse = {
   user: {
-    id: string;
+    _id: string;
     username: string;
   };
   errors: ErrorProps[];
 };
 
 export type OtpVerifyPayload = {
-  user: string;
-  otp: string;
+  customer_id: string;
+  otp: number;
 };
 
 export type Price = {
@@ -61,7 +61,7 @@ export type Price = {
 };
 
 export type Service = {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   image: string;
@@ -83,11 +83,12 @@ export type ServiceCount = {
 };
 
 export type Promos = {
-  id: string;
+  _id: string;
   percent: number;
   title: string;
   description: string;
   is_free: boolean;
+  is_active: boolean;
 };
 
 export type WashPointsResponse = {
@@ -102,7 +103,7 @@ export type WashPointsResponse = {
 };
 
 export type CustomerQueue = {
-  id: string;
+  _id: string;
   service_name: number;
   status: string;
   date: string;
@@ -111,6 +112,7 @@ export type CustomerQueue = {
 
 export type CustomerQueueResponse = {
   transactions: CustomerQueue[];
+  queue: number;
   errors: ErrorProps[];
 };
 
@@ -121,7 +123,8 @@ export type ForgotPasswordVerifyPayload = {
 };
 
 export type TransactionItem = {
-  id: string;
+  transaction_id: string;
+  transaction_availed_service_id: string;
   service_name: string;
   price: number;
   date: string;

@@ -23,12 +23,14 @@ const CustomerPresence = () => {
     type: 'error',
   });
   const [customerQueue, setCustomerQueue] = useState<CustomerQueue[]>([]);
+  const [queue, setQueue] = useState(0);
 
   const fetchCustomerQueue = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getCustomerQueue(user.accessToken);
     if (response.success && response.data) {
       setCustomerQueue(response.data.transactions);
+      setQueue(response.data.queue);
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
       setScreenStatus({
@@ -120,9 +122,7 @@ const CustomerPresence = () => {
       <View style={styles.heading}>
         <Text style={[styles.text16, styles.textDarkerGrey]}>Customers in Queue</Text>
         <View style={styles.counterCard}>
-          <Text style={[styles.text16, styles.textWhite]}>
-            {customerQueue.length.toString().padStart(2, '0')}
-          </Text>
+          <Text style={[styles.text16, styles.textWhite]}>{queue}</Text>
         </View>
       </View>
       <FlatList
@@ -131,7 +131,7 @@ const CustomerPresence = () => {
         contentContainerStyle={styles.list}
         data={customerQueue}
         renderItem={cardItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         ItemSeparatorComponent={renderSeparator}
         ListEmptyComponent={<EmptyState />}
       />

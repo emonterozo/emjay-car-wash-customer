@@ -22,7 +22,7 @@ export const requestHeader = (accessToken: string) => {
 };
 
 export const signupRequest = (payload: SignupPayload): ApiResponse<UserResponse> => {
-  return apiRequest<SignupPayload, UserResponse>(`${Config.API_BASE_URL}/customers/register`, {
+  return apiRequest<SignupPayload, UserResponse>(`${Config.API_BASE_URL}/customers`, {
     method: 'post',
     data: payload,
   });
@@ -45,11 +45,17 @@ export const otpVerifyRequest = (payload: OtpVerifyPayload): ApiResponse<LoginRe
   );
 };
 
-export const otpRequest = (user: string): ApiResponse<UserResponse> => {
-  return apiRequest<{ user: string }, UserResponse>(`${Config.API_BASE_URL}/customers/otp`, {
-    method: 'post',
-    data: { user },
-  });
+export const otpRequest = (
+  user: string,
+  type: 'VERIFICATION' | 'FORGOT',
+): ApiResponse<UserResponse> => {
+  return apiRequest<{ customer_id: string; message_type: 'VERIFICATION' | 'FORGOT' }, UserResponse>(
+    `${Config.API_BASE_URL}/customers/otp/send`,
+    {
+      method: 'post',
+      data: { customer_id: user, message_type: type },
+    },
+  );
 };
 
 export const getServicesRequest = (
@@ -84,21 +90,18 @@ export const getWashPoints = (
 };
 
 export const getCustomerQueue = (accessToken: string): ApiResponse<CustomerQueueResponse> => {
-  return apiRequest<null, CustomerQueueResponse>(
-    `${Config.API_BASE_URL}/customers/transactions/queue`,
-    {
-      method: 'get',
-      headers: requestHeader(accessToken),
-    },
-  );
+  return apiRequest<null, CustomerQueueResponse>(`${Config.API_BASE_URL}/transactions/queue`, {
+    method: 'get',
+    headers: requestHeader(accessToken),
+  });
 };
 
 export const forgotPasswordRequest = (username: string): ApiResponse<UserResponse> => {
-  return apiRequest<{ username: string }, UserResponse>(
+  return apiRequest<{ contact_number: string }, UserResponse>(
     `${Config.API_BASE_URL}/customers/forgot/password`,
     {
       method: 'post',
-      data: { username },
+      data: { contact_number: username },
     },
   );
 };
@@ -109,7 +112,7 @@ export const forgotPasswordVerifyRequest = (
   return apiRequest<ForgotPasswordVerifyPayload, LoginResponse>(
     `${Config.API_BASE_URL}/customers/forgot/password/verify`,
     {
-      method: 'put',
+      method: 'post',
       data: payload,
     },
   );
@@ -117,20 +120,18 @@ export const forgotPasswordVerifyRequest = (
 
 export const getTransactionsRequest = (
   accessToken: string,
-  user: string,
   dateRange: {
     start: string;
     end: string;
   },
+  customerId: string,
 ): ApiResponse<TransactionResponse> => {
-  return apiRequest<null, TransactionResponse>(
-    `${Config.API_BASE_URL}/customers/${user}/transactions`,
-    {
-      method: 'get',
-      headers: requestHeader(accessToken),
-      params: {
-        date_range: JSON.stringify(dateRange),
-      },
+  return apiRequest<null, TransactionResponse>(`${Config.API_BASE_URL}/transactions/completed`, {
+    method: 'get',
+    headers: requestHeader(accessToken),
+    params: {
+      date_range: JSON.stringify(dateRange),
+      customer_id: customerId,
     },
-  );
+  });
 };

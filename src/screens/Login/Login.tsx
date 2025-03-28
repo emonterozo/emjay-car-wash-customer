@@ -42,23 +42,26 @@ const Login = () => {
     type: 'error',
   });
   const [input, setInput] = useState({
-    username: '',
-    password: '',
+    username: '09122011108',
+    password: 'Pass1234!',
   });
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [isRemembered, setIsRemembered] = useState(false);
 
   const login = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await loginRequest({ username: input.username, password: input.password });
+    const response = await loginRequest({
+      contact_number: input.username,
+      password: input.password,
+    });
 
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
 
     if (response.success && response.data) {
       switch (response.status) {
         case 201:
-          const { id, username } = response.data.user;
-          navigation.replace('RegistrationOtp', { user: id, username: username });
+          const { _id, username } = response.data.user;
+          navigation.replace('RegistrationOtp', { user: _id, username: username });
           break;
         default:
           const { user, accessToken, refreshToken } = response.data;
@@ -69,6 +72,7 @@ const Login = () => {
           }
           setUser({
             ...user,
+            id: user._id,
             accessToken,
             refreshToken,
           });

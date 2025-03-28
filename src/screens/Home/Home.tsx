@@ -234,7 +234,7 @@ const Home = () => {
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {promos.map((item) => (
-            <View key={item.id} style={styles.publishContainer}>
+            <View key={item._id} style={styles.publishContainer}>
               <View style={styles.publish}>
                 <Text style={styles.publishTitle}>
                   <Text style={styles.percent}>{`${item.percent}% `}</Text>

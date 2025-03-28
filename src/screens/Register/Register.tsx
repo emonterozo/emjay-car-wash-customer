@@ -145,8 +145,8 @@ const Register = () => {
         setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
 
         if (response.success && response.data) {
-          const { id, username } = response.data.user;
-          navigation.replace('RegistrationOtp', { user: id, username: username });
+          const { _id, username } = response.data.user;
+          navigation.replace('RegistrationOtp', { user: _id, username: username });
         } else {
           switch (response.status) {
             case 400:

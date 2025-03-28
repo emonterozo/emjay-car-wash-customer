@@ -34,10 +34,14 @@ const Transaction = () => {
 
   const fetchTransactions = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getTransactionsRequest(user.accessToken, user.id, {
-      start: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
-      end: format(new Date(), 'yyyy-MM-dd'),
-    });
+    const response = await getTransactionsRequest(
+      user.accessToken,
+      {
+        start: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
+        end: format(new Date(), 'yyyy-MM-dd'),
+      },
+      user.id,
+    );
 
     if (response.success && response.data) {
       setTransactions(response.data.transactions);

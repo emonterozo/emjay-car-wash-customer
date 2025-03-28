@@ -225,7 +225,7 @@ const Services = () => {
             </View>
           </View>
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         ItemSeparatorComponent={renderSeparator}
         ListEmptyComponent={<EmptyState />}
       />
@@ -233,13 +233,13 @@ const Services = () => {
         additionalButtons={[
           {
             icon: IMAGES.VIEW_CUSTOMER_PRESENCE,
-            label: 'View Customer Presence',
+            label: 'View Customers in Queue',
             onPress: () => navigation.navigate('CustomerPresence'),
           },
           {
             icon: IMAGES.MESSAGE,
             label: 'Message',
-            onPress: () => <></>, //console.log('Message action triggered'),
+            onPress: () => null, //console.log('Message action triggered'),
           },
         ]}
       />
