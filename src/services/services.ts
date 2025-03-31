@@ -12,6 +12,7 @@ import {
   CustomerQueueResponse,
   ForgotPasswordVerifyPayload,
   TransactionResponse,
+  VersionResponse,
 } from '../types/services/types';
 
 export const requestHeader = (accessToken: string) => {
@@ -21,18 +22,34 @@ export const requestHeader = (accessToken: string) => {
   };
 };
 
+export const versionRequest = (): ApiResponse<VersionResponse> => {
+  return apiRequest<null, VersionResponse>(
+    `${Config.API_BASE_URL}/versions`,
+    { method: 'get' },
+    '',
+  );
+};
+
 export const signupRequest = (payload: SignupPayload): ApiResponse<UserResponse> => {
-  return apiRequest<SignupPayload, UserResponse>(`${Config.API_BASE_URL}/customers`, {
-    method: 'post',
-    data: payload,
-  });
+  return apiRequest<SignupPayload, UserResponse>(
+    `${Config.API_BASE_URL}/customers`,
+    {
+      method: 'post',
+      data: payload,
+    },
+    '',
+  );
 };
 
 export const loginRequest = (payload: LoginPayload): ApiResponse<LoginResponse> => {
-  return apiRequest<LoginPayload, LoginResponse>(`${Config.API_BASE_URL}/customers/login`, {
-    method: 'post',
-    data: payload,
-  });
+  return apiRequest<LoginPayload, LoginResponse>(
+    `${Config.API_BASE_URL}/customers/login`,
+    {
+      method: 'post',
+      data: payload,
+    },
+    '',
+  );
 };
 
 export const otpVerifyRequest = (payload: OtpVerifyPayload): ApiResponse<LoginResponse> => {
@@ -42,6 +59,7 @@ export const otpVerifyRequest = (payload: OtpVerifyPayload): ApiResponse<LoginRe
       method: 'post',
       data: payload,
     },
+    '',
   );
 };
 
@@ -55,29 +73,36 @@ export const otpRequest = (
       method: 'post',
       data: { customer_id: user, message_type: type },
     },
+    '',
   );
 };
 
 export const getServicesRequest = (
   accessToken: string,
+  refreshToken: string,
   field?: string,
   direction?: 'asc' | 'desc',
   limit?: number,
   offset?: number,
 ): ApiResponse<ServicesResponse> => {
-  return apiRequest<null, ServicesResponse>(`${Config.API_BASE_URL}/services`, {
-    method: 'get',
-    headers: requestHeader(accessToken),
-    params: {
-      order_by: JSON.stringify({ field: field ?? 'ratings', direction: direction ?? 'desc' }),
-      limit,
-      offset,
+  return apiRequest<null, ServicesResponse>(
+    `${Config.API_BASE_URL}/services`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        order_by: JSON.stringify({ field: field ?? 'ratings', direction: direction ?? 'desc' }),
+        limit,
+        offset,
+      },
     },
-  });
+    refreshToken,
+  );
 };
 
 export const getWashPoints = (
   accessToken: string,
+  refreshToken: string,
   user: string,
 ): ApiResponse<WashPointsResponse> => {
   return apiRequest<null, WashPointsResponse>(
@@ -86,14 +111,22 @@ export const getWashPoints = (
       method: 'get',
       headers: requestHeader(accessToken),
     },
+    refreshToken,
   );
 };
 
-export const getCustomerQueue = (accessToken: string): ApiResponse<CustomerQueueResponse> => {
-  return apiRequest<null, CustomerQueueResponse>(`${Config.API_BASE_URL}/transactions/queue`, {
-    method: 'get',
-    headers: requestHeader(accessToken),
-  });
+export const getCustomerQueue = (
+  accessToken: string,
+  refreshToken: string,
+): ApiResponse<CustomerQueueResponse> => {
+  return apiRequest<null, CustomerQueueResponse>(
+    `${Config.API_BASE_URL}/transactions/queue`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+    },
+    refreshToken,
+  );
 };
 
 export const forgotPasswordRequest = (username: string): ApiResponse<UserResponse> => {
@@ -103,6 +136,7 @@ export const forgotPasswordRequest = (username: string): ApiResponse<UserRespons
       method: 'post',
       data: { contact_number: username },
     },
+    '',
   );
 };
 
@@ -115,23 +149,29 @@ export const forgotPasswordVerifyRequest = (
       method: 'post',
       data: payload,
     },
+    '',
   );
 };
 
 export const getTransactionsRequest = (
   accessToken: string,
+  refreshToken: string,
   dateRange: {
     start: string;
     end: string;
   },
   customerId: string,
 ): ApiResponse<TransactionResponse> => {
-  return apiRequest<null, TransactionResponse>(`${Config.API_BASE_URL}/transactions/completed`, {
-    method: 'get',
-    headers: requestHeader(accessToken),
-    params: {
-      date_range: JSON.stringify(dateRange),
-      customer_id: customerId,
+  return apiRequest<null, TransactionResponse>(
+    `${Config.API_BASE_URL}/transactions/completed`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        date_range: JSON.stringify(dateRange),
+        customer_id: customerId,
+      },
     },
-  });
+    refreshToken,
+  );
 };

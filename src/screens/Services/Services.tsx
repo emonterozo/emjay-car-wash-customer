@@ -51,7 +51,7 @@ const Services = () => {
 
   const fetchService = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getServicesRequest(user.accessToken, '_id', 'asc');
+    const response = await getServicesRequest(user.accessToken, user.refreshToken, '_id', 'asc');
     if (response.success && response.data) {
       setServices(response.data.services);
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
@@ -203,7 +203,7 @@ const Services = () => {
                     <FreeIcon />
                     <Text style={styles.points}>
                       {getServicePricePoints(item.price_list, 'points') > 0
-                        ? `${getServicePricePoints(item.price_list, 'points')} points`
+                        ? `${getServicePricePoints(item.price_list, 'points')} pts`
                         : '10 wash'}
                     </Text>
                   </View>
@@ -218,8 +218,8 @@ const Services = () => {
               <View style={styles.earningContainer}>
                 <Text style={styles.earningPoints}>
                   {getServicePricePoints(item.price_list, 'earning_points') > 0
-                    ? `Earn ${getServicePricePoints(item.price_list, 'earning_points')} Points!`
-                    : 'Earn 1 Wash Count!'}
+                    ? `Earn ${getServicePricePoints(item.price_list, 'earning_points')} Pts!`
+                    : 'Earn 1 Wash!'}
                 </Text>
               </View>
             </View>
@@ -236,11 +236,11 @@ const Services = () => {
             label: 'View Customers in Queue',
             onPress: () => navigation.navigate('CustomerPresence'),
           },
-          {
-            icon: IMAGES.MESSAGE,
-            label: 'Message',
-            onPress: () => null, //console.log('Message action triggered'),
-          },
+          // {
+          //   icon: IMAGES.MESSAGE,
+          //   label: 'Message',
+          //   onPress: () => null,
+          // },
         ]}
       />
     </SafeAreaView>
@@ -297,16 +297,19 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    gap: 3,
   },
   priceLabel: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#696969',
   },
   priceValue: {
     ...font.regular,
     fontSize: 16,
     color: '#050303',
+    lineHeight: 16,
     marginTop: 8,
   },
   earningContainer: {
@@ -329,11 +332,13 @@ const styles = StyleSheet.create({
   name: {
     ...font.regular,
     fontSize: 20,
+    lineHeight: 20,
     color: '#000000',
   },
   description: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#888888',
   },
   ratingsContainer: {
@@ -347,6 +352,7 @@ const styles = StyleSheet.create({
   ratings: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#050303',
   },
   pointsContainer: {
@@ -361,6 +367,7 @@ const styles = StyleSheet.create({
   points: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#050303',
     flex: 1,
   },

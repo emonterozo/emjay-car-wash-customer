@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FlatList, StatusBar, StyleSheet, Text, View } from 'react-native';
 import { format, subMonths } from 'date-fns';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
 import { ScreenStatusProps, TransactionItem } from '../../types/services/types';
 import { WaterDropIcon } from '@app/icons';
@@ -24,7 +24,7 @@ const renderSeparator = () => <View style={styles.separator} />;
 
 const Transaction = () => {
   const { user } = useContext(GlobalContext);
-  const isFocused = useNavigation();
+  const isFocused = useIsFocused();
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
@@ -36,6 +36,7 @@ const Transaction = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getTransactionsRequest(
       user.accessToken,
+      user.refreshToken,
       {
         start: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
         end: format(new Date(), 'yyyy-MM-dd'),

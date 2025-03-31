@@ -1,4 +1,4 @@
-package com.quindigitalsolutions.emjaycustomerapp
+package com.quindigitalsolutions.emjayrewards
 
 import android.app.Application
 import com.facebook.react.PackageList

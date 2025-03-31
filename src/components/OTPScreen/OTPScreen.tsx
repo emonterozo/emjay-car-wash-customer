@@ -23,7 +23,7 @@ const OTPScreen = ({ length = 6, number, onSubmit, onResend }: OTPScreenProps) =
   const [otp, setOtp] = useState(new Array(length).fill(''));
   const inputsRef = useRef<Array<TextInput | null>>([]);
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
-  const [timer, setTimer] = useState(5);
+  const [timer, setTimer] = useState(300);
   const [showResend, setShowResend] = useState(false);
 
   const handleChange = (value: string, index: number) => {

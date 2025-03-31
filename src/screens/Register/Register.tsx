@@ -8,6 +8,8 @@ import {
   ScrollView,
   Pressable,
   Image,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import * as Yup from 'yup';
 import { ValidationError } from 'yup';
@@ -261,92 +263,99 @@ const Register = () => {
       <View style={styles.heading}>
         <Text style={styles.label}>Create a new account</Text>
       </View>
-      <ScrollView bounces={false} contentContainerStyle={styles.scrollViewContent}>
-        <FormTextInput
-          label="First Name"
-          placeholder="Enter First Name"
-          error={errors.firstName}
-          value={formValues.firstName}
-          onChangeText={(value) => handleInputChange('firstName', value)}
-          onFocus={() => removeError('firstName')}
-          maxLength={64}
-        />
-        <FormTextInput
-          label="Last Name"
-          placeholder="Enter Last Name"
-          error={errors.lastName}
-          value={formValues.lastName}
-          onChangeText={(value) => handleInputChange('lastName', value)}
-          onFocus={() => removeError('lastName')}
-          maxLength={64}
-        />
-        <CalendarPickerTrigger
-          date={new Date()}
-          label="Date of Birth"
-          placeholder="Select Date of Birth"
-          value={getDateValue('birthDate', formValues.birthDate)}
-          error={errors.birthDate}
-          onSelectedDate={(selectedDate) => handleCalendarChange('birthDate', selectedDate)}
-          onPressOpen={() => removeError('birthDate')}
-        />
-        <Dropdown
-          label="Gender"
-          placeholder="Select Gender"
-          selected={formValues.gender}
-          options={GENDER_OPTIONS}
-          onSelected={(selectedOption) => handleDropdownChange('gender', selectedOption)}
-          optionMinWidth={196}
-          error={errors.gender}
-          onToggleOpen={() => removeError('gender')}
-        />
-        <FormTextInput
-          label="Phone Number"
-          placeholder="E.g 09123456789"
-          error={errors.contactNumber}
-          value={formValues.contactNumber}
-          onChangeText={(value) => handleInputChange('contactNumber', value)}
-          keyboardType="numeric"
-          onFocus={() => removeError('contactNumber')}
-          maxLength={11}
-        />
-        <FormTextInput
-          label="Password"
-          placeholder="Password"
-          error={errors.password}
-          value={formValues.password}
-          onChangeText={(value) => handleInputChange('password', value)}
-          onFocus={() => removeError('password')}
-          maxLength={64}
-          secureTextEntry={passwordSecure.password}
-          endIcon={
-            <Pressable onPress={() => toggleSecureEntry('password')}>
-              {passwordSecure.password ? <EyeCloseIcon /> : <EyeOpenIcon />}
-            </Pressable>
-          }
-        />
-        <FormTextInput
-          label="Confirm Password"
-          placeholder="Confirm Password"
-          error={errors.confirmPassword}
-          value={formValues.confirmPassword}
-          onChangeText={(value) => handleInputChange('confirmPassword', value)}
-          onFocus={() => removeError('confirmPassword')}
-          maxLength={64}
-          secureTextEntry={passwordSecure.confirmPassword}
-          endIcon={
-            <Pressable onPress={() => toggleSecureEntry('confirmPassword')}>
-              {passwordSecure.confirmPassword ? <EyeCloseIcon /> : <EyeOpenIcon />}
-            </Pressable>
-          }
-        />
-        <Button
-          title="Sign up"
-          variant="primary"
-          buttonStyle={styles.button}
-          textStyle={styles.textStyle}
-          onPress={handleSubmit}
-        />
-      </ScrollView>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView
+          bounces={false}
+          contentContainerStyle={styles.scrollViewContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          <FormTextInput
+            label="First Name"
+            placeholder="Enter First Name"
+            error={errors.firstName}
+            value={formValues.firstName}
+            onChangeText={(value) => handleInputChange('firstName', value)}
+            onFocus={() => removeError('firstName')}
+            maxLength={64}
+          />
+          <FormTextInput
+            label="Last Name"
+            placeholder="Enter Last Name"
+            error={errors.lastName}
+            value={formValues.lastName}
+            onChangeText={(value) => handleInputChange('lastName', value)}
+            onFocus={() => removeError('lastName')}
+            maxLength={64}
+          />
+          <CalendarPickerTrigger
+            date={formValues.birthDate ?? new Date()}
+            label="Date of Birth"
+            placeholder="Select Date of Birth"
+            value={getDateValue('birthDate', formValues.birthDate)}
+            error={errors.birthDate}
+            onSelectedDate={(selectedDate) => handleCalendarChange('birthDate', selectedDate)}
+            onPressOpen={() => removeError('birthDate')}
+            isDefaultCalendarSelection={false}
+          />
+          <Dropdown
+            label="Gender"
+            placeholder="Select Gender"
+            selected={formValues.gender}
+            options={GENDER_OPTIONS}
+            onSelected={(selectedOption) => handleDropdownChange('gender', selectedOption)}
+            optionMinWidth={196}
+            error={errors.gender}
+            onToggleOpen={() => removeError('gender')}
+          />
+          <FormTextInput
+            label="Phone Number"
+            placeholder="E.g 09123456789"
+            error={errors.contactNumber}
+            value={formValues.contactNumber}
+            onChangeText={(value) => handleInputChange('contactNumber', value)}
+            keyboardType="numeric"
+            onFocus={() => removeError('contactNumber')}
+            maxLength={11}
+          />
+          <FormTextInput
+            label="Password"
+            placeholder="Password"
+            error={errors.password}
+            value={formValues.password}
+            onChangeText={(value) => handleInputChange('password', value)}
+            onFocus={() => removeError('password')}
+            maxLength={64}
+            secureTextEntry={passwordSecure.password}
+            endIcon={
+              <Pressable onPress={() => toggleSecureEntry('password')}>
+                {passwordSecure.password ? <EyeCloseIcon /> : <EyeOpenIcon />}
+              </Pressable>
+            }
+          />
+          <FormTextInput
+            label="Confirm Password"
+            placeholder="Confirm Password"
+            error={errors.confirmPassword}
+            value={formValues.confirmPassword}
+            onChangeText={(value) => handleInputChange('confirmPassword', value)}
+            onFocus={() => removeError('confirmPassword')}
+            maxLength={64}
+            secureTextEntry={passwordSecure.confirmPassword}
+            endIcon={
+              <Pressable onPress={() => toggleSecureEntry('confirmPassword')}>
+                {passwordSecure.confirmPassword ? <EyeCloseIcon /> : <EyeOpenIcon />}
+              </Pressable>
+            }
+          />
+          <Button
+            title="Sign up"
+            variant="primary"
+            buttonStyle={styles.button}
+            textStyle={styles.textStyle}
+            onPress={handleSubmit}
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

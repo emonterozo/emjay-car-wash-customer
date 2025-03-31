@@ -134,3 +134,14 @@ export type TransactionResponse = {
   transactions: TransactionItem[];
   errors: ErrorProps[];
 };
+
+export type Version = {
+  _id: string;
+  key: string;
+  version: string;
+};
+
+export type VersionResponse = {
+  versions: Version[];
+  errors: ErrorProps[];
+};

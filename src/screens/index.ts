@@ -10,3 +10,6 @@ export { default as RegistrationOtp } from './RegistrationOtp/RegistrationOtp';
 export { default as CustomerPresence } from './CustomerPresence/CustomerPresence';
 export { default as GettingStarted } from './GettingStarted/GettingStarted';
 export { default as ForgotPasswordOtp } from './ForgotPasswordOtp/ForgotPasswordOtp';
+export { default as PrivacyPolicy } from './PrivacyPolicy/PrivacyPolicy';
+export { default as TermsConditions } from './TermsConditions/TermsConditions';
+export { default as Update } from './Update/Update';

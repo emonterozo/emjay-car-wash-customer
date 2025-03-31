@@ -1,16 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, SafeAreaView, StatusBar, Text, Image } from 'react-native';
+import { View, StyleSheet, SafeAreaView, StatusBar, Text, Image, FlatList } from 'react-native';
+import { format } from 'date-fns';
+import { useNavigation } from '@react-navigation/native';
 
 import { color, font } from '@app/styles';
 import { AppHeader, EmptyState, ErrorModal, LoadingAnimation } from '@app/components';
 import { CustomerQueue, ScreenStatusProps } from 'src/types/services/types';
 import GlobalContext from '@app/context';
-import { useNavigation } from '@react-navigation/native';
 import { NavigationProp } from 'src/types/navigation/types';
 import { ERR_NETWORK, IMAGES } from '@app/constant';
-import { FlatList } from 'react-native-gesture-handler';
 import { getCustomerQueue } from '@app/services';
-import { format } from 'date-fns';
 
 const renderSeparator = () => <View style={styles.separator} />;
 
@@ -27,7 +26,7 @@ const CustomerPresence = () => {
 
   const fetchCustomerQueue = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getCustomerQueue(user.accessToken);
+    const response = await getCustomerQueue(user.accessToken, user.refreshToken);
     if (response.success && response.data) {
       setCustomerQueue(response.data.transactions);
       setQueue(response.data.queue);

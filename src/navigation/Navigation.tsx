@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
+import Config from 'react-native-config';
 
 import {
   Login,
@@ -10,13 +11,17 @@ import {
   CustomerPresence,
   GettingStarted,
   ForgotPasswordOtp,
+  PrivacyPolicy,
+  TermsConditions,
+  Update,
 } from '@app/screens';
 
 import GlobalContext from '@app/context';
 import { AuthStackParamList, UnAuthStackParamList } from '../types/navigation/types';
 import { TUser } from '../types/context/types';
 import BottomTab from './BottomTab';
-import { getStatusGetStarted } from '@app/helpers';
+import { getStatusGetStarted, isUpdateAvailable } from '@app/helpers';
+import { versionRequest } from '@app/services';
 
 const UnAuthStack = createStackNavigator<UnAuthStackParamList>();
 const AuthStack = createStackNavigator<AuthStackParamList>();
@@ -32,6 +37,7 @@ const Navigation = () => {
     accessToken: '',
     refreshToken: '',
   });
+  const [hasUpdate, setHasUpdate] = useState(false);
 
   const initialContext = useMemo(
     () => ({
@@ -41,13 +47,19 @@ const Navigation = () => {
     [user, setUser],
   );
 
-  useEffect(() => {
-    const fetchGetStarted = async () => {
+  const fetchDetails = async () => {
+    const response = await versionRequest();
+    if (response) {
+      const version = response.data?.versions.find((item) => item.key === 'EMJAY_REWARDS')?.version;
+      setHasUpdate(isUpdateAvailable(Config.APP_VERSION!, version!));
+
       const status = await getStatusGetStarted();
       setIsDone(status !== null);
-    };
+    }
+  };
 
-    fetchGetStarted();
+  useEffect(() => {
+    fetchDetails();
   }, []);
 
   if (isDone === null) {
@@ -64,7 +76,11 @@ const Navigation = () => {
           >
             <AuthStack.Screen name="BottomTab" component={BottomTab} />
             <AuthStack.Screen name="CustomerPresence" component={CustomerPresence} />
+            <AuthStack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
+            <AuthStack.Screen name="TermsConditions" component={TermsConditions} />
           </AuthStack.Navigator>
+        ) : hasUpdate ? (
+          <Update />
         ) : (
           <UnAuthStack.Navigator
             initialRouteName={isDone ? 'Login' : 'GettingStarted'}

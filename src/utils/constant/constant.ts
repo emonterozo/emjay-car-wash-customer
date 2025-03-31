@@ -43,6 +43,9 @@ export const IMAGES = {
   FIRST: require('../../../assets/images/first.png'),
   SECOND: require('../../../assets/images/second.png'),
   THIRD: require('../../../assets/images/third.png'),
+  UPDATE: require('../../../assets/images/update.png'),
+  UPDATE_ICON: require('../../../assets/images/update_icon.png'),
+  ROTATE: require('../../../assets/images/rotate.png'),
 };
 
 export const ERROR_TYPE = {

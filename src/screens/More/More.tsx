@@ -9,12 +9,15 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import Config from 'react-native-config';
 
 import { color, font } from '@app/styles';
 import { AppHeaderImage, ConfirmationModal, HorizontalLine } from '@app/components';
 import { IMAGES } from '@app/constant';
 
 import GlobalContext from '@app/context';
+import { useNavigation } from '@react-navigation/native';
+import { NavigationProp } from 'src/types/navigation/types';
 
 const defaultUser = {
   id: '',
@@ -27,20 +30,21 @@ const defaultUser = {
 };
 
 const More = () => {
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const { user, setUser } = useContext(GlobalContext);
+  const navigation = useNavigation<NavigationProp>();
 
   const handleSignOut = () => {
-    setModalVisible(true);
+    setIsModalVisible(true);
   };
 
   const onSignOutYes = () => {
     setUser(defaultUser);
-    setModalVisible(false);
+    setIsModalVisible(false);
   };
 
   const onSignOutNo = () => {
-    setModalVisible(false);
+    setIsModalVisible(false);
   };
 
   return (
@@ -67,7 +71,7 @@ const More = () => {
         <TouchableOpacity style={styles.itemRow} onPress={() => {}}>
           <View style={styles.leftGroup}>
             <Image source={IMAGES.EDIT_PROFILE} style={[styles.image, styles.imageContainer]} />
-            <Text style={[styles.itemText, styles.colorGrey]}>Edit Profile</Text>
+            <Text style={[styles.itemText, styles.colorGrey]}>View Profile</Text>
           </View>
 
           <Image
@@ -75,6 +79,17 @@ const More = () => {
             style={[styles.image, styles.imageContainer]}
           />
         </TouchableOpacity>
+        {/* <TouchableOpacity style={styles.itemRow} onPress={() => {}}>
+          <View style={styles.leftGroup}>
+            <Image source={IMAGES.EDIT_PROFILE} style={[styles.image, styles.imageContainer]} />
+            <Text style={[styles.itemText, styles.colorGrey]}>Change Password</Text>
+          </View>
+
+          <Image
+            source={IMAGES.CHEVRON_RIGHT_BUTTON}
+            style={[styles.image, styles.imageContainer]}
+          />
+        </TouchableOpacity> */}
 
         {/* <TouchableOpacity style={styles.itemRow} onPress={() => {}}>
           <View style={styles.leftGroup}>
@@ -97,7 +112,10 @@ const More = () => {
           <Text style={styles.textGeneral}>OTHER</Text>
         </View>
 
-        <TouchableOpacity style={styles.itemRow} onPress={() => {}}>
+        <TouchableOpacity
+          style={styles.itemRow}
+          onPress={() => navigation.navigate('PrivacyPolicy')}
+        >
           <View style={styles.leftGroup}>
             <Image source={IMAGES.PRIVACY_POLICY} style={[styles.image, styles.imageContainer]} />
             <Text style={[styles.itemText, styles.colorGrey]}>Privacy Policy</Text>
@@ -108,7 +126,10 @@ const More = () => {
           />
         </TouchableOpacity>
 
-        <TouchableOpacity style={[styles.itemRow, styles.verticalGap]} onPress={() => {}}>
+        <TouchableOpacity
+          style={[styles.itemRow, styles.verticalGap]}
+          onPress={() => navigation.navigate('TermsConditions')}
+        >
           <View style={styles.leftGroup}>
             <Image
               source={IMAGES.TERMS_AND_CONDITION}
@@ -129,7 +150,7 @@ const More = () => {
             <Image source={IMAGES.SIGN_OUT} style={[styles.image, styles.imageContainer]} />
             <Text style={[styles.itemText, styles.colorRed]}>Sign Out</Text>
           </View>
-          <Text style={styles.version}>V1.0.0</Text>
+          <Text style={styles.version}>{`v${Config.APP_VERSION}`}</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>

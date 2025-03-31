@@ -79,7 +79,7 @@ const Home = () => {
 
   const fetchTransaction = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getWashPoints(user.accessToken, user.id);
+    const response = await getWashPoints(user.accessToken, user.refreshToken, user.id);
 
     if (response.success && response.data) {
       const { moto_wash_service_count, car_wash_service_count } = response.data.customer;
@@ -282,12 +282,13 @@ const styles = StyleSheet.create({
   greeting: {
     ...font.regular,
     fontSize: 24,
+    lineHeight: 24,
     color: '#050303',
   },
   subHeader: {
     ...font.regular,
     fontSize: 16,
-    lineHeight: 20,
+    lineHeight: 16,
     color: '#888888',
   },
   pointsContainer: {
@@ -309,6 +310,7 @@ const styles = StyleSheet.create({
   label: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#888888',
   },
   title: {
@@ -351,6 +353,7 @@ const styles = StyleSheet.create({
   optionText: {
     ...font.bold,
     fontSize: 16,
+    lineHeight: 16,
     color: color.background,
   },
   optionTextInactive: {
@@ -369,6 +372,7 @@ const styles = StyleSheet.create({
   countText: {
     ...font.regular,
     fontSize: 12,
+    lineHeight: 12,
     color: color.background,
   },
   size: {
@@ -415,11 +419,13 @@ const styles = StyleSheet.create({
   countLabel: {
     ...font.regular,
     fontSize: 12,
+    lineHeight: 12,
     color: '#888888',
   },
   countValue: {
     ...font.regular,
     fontSize: 20,
+    lineHeight: 20,
     color: color.primary,
   },
   countView: {
@@ -456,11 +462,13 @@ const styles = StyleSheet.create({
   publishTitle: {
     ...font.bold,
     fontSize: 32,
+    lineHeight: 32,
     color: color.background,
   },
   publishDescription: {
     ...font.regular,
     fontSize: 12,
+    lineHeight: 12,
     color: '#C3C3C3',
   },
   publishImage: {

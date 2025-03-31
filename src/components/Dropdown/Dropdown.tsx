@@ -116,7 +116,7 @@ const Dropdown = ({
       </TouchableWithoutFeedback>
       {error && (
         <View style={styles.errorContainer}>
-          <Image source={IMAGES.TERMINATED_STATUS} resizeMode="contain" style={styles.image} />
+          <Image source={IMAGES.HIGH_IMPORTANCE} resizeMode="contain" style={styles.image} />
           <Text style={styles.error}>{error}</Text>
         </View>
       )}

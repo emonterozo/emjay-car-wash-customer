@@ -27,6 +27,7 @@ export type CalendarPickerTriggerProps = {
   maxDate?: Date;
   minDate?: Date;
   onPressOpen?: () => void;
+  isDefaultCalendarSelection?: boolean;
 };
 
 const CalendarPickerTrigger = ({
@@ -45,6 +46,7 @@ const CalendarPickerTrigger = ({
   maxDate = getCurrentDateAtMidnightUTC(),
   minDate = getMinimumDateAtMidnightUTC(),
   onPressOpen,
+  isDefaultCalendarSelection,
 }: CalendarPickerTriggerProps) => {
   const getColor = () => {
     return isDisabled ? disabledColor : enableColor;
@@ -112,7 +114,7 @@ const CalendarPickerTrigger = ({
       </TouchableWithoutFeedback>
       {error && (
         <View style={styles.errorContainer}>
-          <Image source={IMAGES.TERMINATED_STATUS} resizeMode="contain" style={styles.image} />
+          <Image source={IMAGES.HIGH_IMPORTANCE} resizeMode="contain" style={styles.image} />
           <Text style={styles.error}>{error}</Text>
         </View>
       )}
@@ -124,6 +126,7 @@ const CalendarPickerTrigger = ({
           onClose={onClose}
           maxDate={maxDate}
           minDate={minDate}
+          isDefaultCalendarSelection={isDefaultCalendarSelection}
         />
       )}
     </View>
