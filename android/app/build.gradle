@@ -98,31 +98,40 @@ android {
         applicationId "com.quindigitalsolutions.emjayrewards"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
+        versionCode 2
         versionName "0.0.1"
         resValue 'string', 'build_config_package','com.quindigitalsolutions.emjayrewards'
     }
-    flavorDimensions 'env'
-    productFlavors {
-        development {
-            dimension 'env'
-            applicationIdSuffix ".development"
-        }
-        staging {
-            dimension 'env'
-            applicationIdSuffix ".staging"
-        }
-        production {
-            dimension 'env'
-            applicationIdSuffix ""
-        }
-    }
+    flavorDimensions "env"
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
             keyAlias 'androiddebugkey'
             keyPassword 'android'
+        }
+        release {
+            storeFile file(System.getProperty("user.home") + "/keystore/emjay.jks")
+            storePassword project.findProperty("EMJAY_RELEASE_KEYSTORE_PASSWORD") ?: ""
+            keyAlias project.findProperty("EMJAY_RELEASE_KEY_ALIAS") ?: ""
+            keyPassword project.findProperty("EMJAY_RELEASE_KEY_PASSWORD") ?: ""
+        }
+    }
+    productFlavors {
+        development {
+            dimension 'env'
+            applicationIdSuffix ".development"
+            signingConfig signingConfigs.debug
+        }
+        staging {
+            dimension 'env'
+            applicationIdSuffix ".staging"
+            signingConfig signingConfigs.release
+        }
+        production {
+            dimension 'env'
+            applicationIdSuffix ""
+            signingConfig signingConfigs.release
         }
     }
     buildTypes {
@@ -132,7 +141,7 @@ android {
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
