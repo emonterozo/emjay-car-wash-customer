@@ -14,6 +14,9 @@ import {
   PrivacyPolicy,
   TermsConditions,
   Update,
+  Profile,
+  EditProfile,
+  ChangePassword,
 } from '@app/screens';
 
 import GlobalContext from '@app/context';
@@ -33,6 +36,7 @@ const Navigation = () => {
     first_name: '',
     last_name: '',
     gender: '',
+    birth_date: '',
     username: '',
     accessToken: '',
     refreshToken: '',
@@ -78,6 +82,9 @@ const Navigation = () => {
             <AuthStack.Screen name="CustomerPresence" component={CustomerPresence} />
             <AuthStack.Screen name="PrivacyPolicy" component={PrivacyPolicy} />
             <AuthStack.Screen name="TermsConditions" component={TermsConditions} />
+            <AuthStack.Screen name="Profile" component={Profile} />
+            <AuthStack.Screen name="EditProfile" component={EditProfile} />
+            <AuthStack.Screen name="ChangePassword" component={ChangePassword} />
           </AuthStack.Navigator>
         ) : hasUpdate ? (
           <Update />

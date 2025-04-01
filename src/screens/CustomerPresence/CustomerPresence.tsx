@@ -152,6 +152,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 25,
   },
   text16: {
+    ...font.regular,
     fontSize: 16,
     lineHeight: 16,
   },

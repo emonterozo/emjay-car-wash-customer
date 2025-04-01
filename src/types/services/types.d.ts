@@ -25,6 +25,7 @@ export type LoginResponse = {
     first_name: string;
     last_name: string;
     gender: GenderType;
+    birth_date: string;
   };
   accessToken: string;
   refreshToken: string;
@@ -144,4 +145,20 @@ export type Version = {
 export type VersionResponse = {
   versions: Version[];
   errors: ErrorProps[];
+};
+
+export type UpdateProfileResponse = {
+  user: {
+    _id: string;
+    first_name: string;
+    last_name: string;
+  };
+  errors: ErrorProps[];
+};
+
+export type UpdateProfilePayload = {
+  first_name?: string;
+  last_name?: string;
+  password?: string;
+  current_password?: string;
 };

@@ -6,6 +6,9 @@ export type AuthStackParamList = {
   CustomerPresence: undefined;
   PrivacyPolicy: undefined;
   TermsConditions: undefined;
+  Profile: undefined;
+  EditProfile: undefined;
+  ChangePassword: undefined;
 };
 
 export type UnAuthStackParamList = {

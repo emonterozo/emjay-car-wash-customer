@@ -13,6 +13,8 @@ import {
   ForgotPasswordVerifyPayload,
   TransactionResponse,
   VersionResponse,
+  UpdateProfilePayload,
+  UpdateProfileResponse,
 } from '../types/services/types';
 
 export const requestHeader = (accessToken: string) => {
@@ -171,6 +173,23 @@ export const getTransactionsRequest = (
         date_range: JSON.stringify(dateRange),
         customer_id: customerId,
       },
+    },
+    refreshToken,
+  );
+};
+
+export const updateProfile = (
+  accessToken: string,
+  refreshToken: string,
+  id: string,
+  payload: UpdateProfilePayload,
+): ApiResponse<UpdateProfileResponse> => {
+  return apiRequest<UpdateProfilePayload, UpdateProfileResponse>(
+    `${Config.API_BASE_URL}/customers/${id}`,
+    {
+      method: 'patch',
+      headers: requestHeader(accessToken),
+      data: payload,
     },
     refreshToken,
   );

@@ -24,6 +24,7 @@ const defaultUser = {
   first_name: '',
   last_name: '',
   gender: '',
+  birth_date: '',
   username: '',
   accessToken: '',
   refreshToken: '',
@@ -68,7 +69,7 @@ const More = () => {
         <View>
           <Text style={styles.textGeneral}>GENERAL</Text>
         </View>
-        <TouchableOpacity style={styles.itemRow} onPress={() => {}}>
+        <TouchableOpacity style={styles.itemRow} onPress={() => navigation.navigate('Profile')}>
           <View style={styles.leftGroup}>
             <Image source={IMAGES.EDIT_PROFILE} style={[styles.image, styles.imageContainer]} />
             <Text style={[styles.itemText, styles.colorGrey]}>View Profile</Text>
@@ -150,7 +151,12 @@ const More = () => {
             <Image source={IMAGES.SIGN_OUT} style={[styles.image, styles.imageContainer]} />
             <Text style={[styles.itemText, styles.colorRed]}>Sign Out</Text>
           </View>
-          <Text style={styles.version}>{`v${Config.APP_VERSION}`}</Text>
+          <View style={styles.versionContainer}>
+            <Text style={styles.version}>{`v${Config.APP_VERSION}`}</Text>
+            {Config.APP_ENV !== 'Production' && (
+              <Text style={styles.version}>{`(${Config.APP_ENV})`}</Text>
+            )}
+          </View>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -169,9 +175,9 @@ const styles = StyleSheet.create({
     ...font.bold,
     fontSize: 16,
     color: '#888888',
-    lineHeight: 24,
+    lineHeight: 16,
     paddingHorizontal: 16,
-    marginTop: 24,
+    marginVertical: 24,
   },
   imageContainer: {
     width: 24,
@@ -217,6 +223,11 @@ const styles = StyleSheet.create({
   },
   topGap: {
     marginTop: 24,
+  },
+  versionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
   },
 });
 
