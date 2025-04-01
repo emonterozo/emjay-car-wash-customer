@@ -98,7 +98,7 @@ android {
         applicationId "com.quindigitalsolutions.emjayrewards"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 2
+        versionCode 1
         versionName "0.0.1"
         resValue 'string', 'build_config_package','com.quindigitalsolutions.emjayrewards'
     }
@@ -120,12 +120,12 @@ android {
     productFlavors {
         development {
             dimension 'env'
-            applicationIdSuffix ".development"
+            applicationIdSuffix ""
             signingConfig signingConfigs.debug
         }
         staging {
             dimension 'env'
-            applicationIdSuffix ".staging"
+            applicationIdSuffix ""
             signingConfig signingConfigs.release
         }
         production {
