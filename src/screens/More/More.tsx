@@ -66,87 +66,63 @@ const More = () => {
           textProceed="Confirm"
         />
         <HorizontalLine />
-        <View>
-          <Text style={styles.textGeneral}>GENERAL</Text>
-        </View>
-        <TouchableOpacity style={styles.itemRow} onPress={() => navigation.navigate('Profile')}>
-          <View style={styles.leftGroup}>
-            <Image source={IMAGES.EDIT_PROFILE} style={[styles.image, styles.imageContainer]} />
-            <Text style={[styles.itemText, styles.colorGrey]}>View Profile</Text>
-          </View>
-
-          <Image
-            source={IMAGES.CHEVRON_RIGHT_BUTTON}
-            style={[styles.image, styles.imageContainer]}
-          />
-        </TouchableOpacity>
-        {/* <TouchableOpacity style={styles.itemRow} onPress={() => {}}>
-          <View style={styles.leftGroup}>
-            <Image source={IMAGES.EDIT_PROFILE} style={[styles.image, styles.imageContainer]} />
-            <Text style={[styles.itemText, styles.colorGrey]}>Change Password</Text>
-          </View>
-
-          <Image
-            source={IMAGES.CHEVRON_RIGHT_BUTTON}
-            style={[styles.image, styles.imageContainer]}
-          />
-        </TouchableOpacity> */}
-
-        {/* <TouchableOpacity style={styles.itemRow} onPress={() => {}}>
-          <View style={styles.leftGroup}>
+        <View style={styles.option}>
+          <Text style={styles.textHeader}>GENERAL</Text>
+          <TouchableOpacity style={styles.itemRow} onPress={() => navigation.navigate('Profile')}>
+            <View style={styles.leftGroup}>
+              <Image source={IMAGES.EDIT_PROFILE} style={[styles.image, styles.imageContainer]} />
+              <Text style={[styles.itemText, styles.colorGrey]}>View Profile</Text>
+            </View>
             <Image
-              source={IMAGES.NOTIFICATION_SETTINGS}
+              source={IMAGES.CHEVRON_RIGHT_BUTTON}
               style={[styles.image, styles.imageContainer]}
             />
-            <Text style={[styles.itemText, styles.colorGrey]}>Notification Settings</Text>
-          </View>
+          </TouchableOpacity>
+        </View>
+        <HorizontalLine />
 
-          <Image
-            source={IMAGES.CHEVRON_RIGHT_BUTTON}
-            style={[styles.image, styles.imageContainer]}
-          />
-        </TouchableOpacity> */}
+        <View style={styles.option}>
+          <Text style={styles.textHeader}>OTHER</Text>
+          <View style={styles.row}>
+            <TouchableOpacity
+              style={styles.itemRow}
+              onPress={() => navigation.navigate('PrivacyPolicy')}
+            >
+              <View style={styles.leftGroup}>
+                <Image
+                  source={IMAGES.PRIVACY_POLICY}
+                  style={[styles.image, styles.imageContainer]}
+                />
+                <Text style={[styles.itemText, styles.colorGrey]}>Privacy Policy</Text>
+              </View>
+              <Image
+                source={IMAGES.CHEVRON_RIGHT_BUTTON}
+                style={[styles.image, styles.imageContainer]}
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.itemRow}
+              onPress={() => navigation.navigate('TermsConditions')}
+            >
+              <View style={styles.leftGroup}>
+                <Image
+                  source={IMAGES.TERMS_AND_CONDITION}
+                  style={[styles.image, styles.imageContainer]}
+                />
+                <Text style={[styles.itemText, styles.colorGrey]}>Terms & Condition</Text>
+              </View>
+              <Image
+                source={IMAGES.CHEVRON_RIGHT_BUTTON}
+                style={[styles.image, styles.imageContainer]}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
 
         <HorizontalLine />
 
-        <View>
-          <Text style={styles.textGeneral}>OTHER</Text>
-        </View>
-
-        <TouchableOpacity
-          style={styles.itemRow}
-          onPress={() => navigation.navigate('PrivacyPolicy')}
-        >
-          <View style={styles.leftGroup}>
-            <Image source={IMAGES.PRIVACY_POLICY} style={[styles.image, styles.imageContainer]} />
-            <Text style={[styles.itemText, styles.colorGrey]}>Privacy Policy</Text>
-          </View>
-          <Image
-            source={IMAGES.CHEVRON_RIGHT_BUTTON}
-            style={[styles.image, styles.imageContainer]}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.itemRow, styles.verticalGap]}
-          onPress={() => navigation.navigate('TermsConditions')}
-        >
-          <View style={styles.leftGroup}>
-            <Image
-              source={IMAGES.TERMS_AND_CONDITION}
-              style={[styles.image, styles.imageContainer]}
-            />
-            <Text style={[styles.itemText, styles.colorGrey]}>Terms & Condition</Text>
-          </View>
-          <Image
-            source={IMAGES.CHEVRON_RIGHT_BUTTON}
-            style={[styles.image, styles.imageContainer]}
-          />
-        </TouchableOpacity>
-
-        <HorizontalLine />
-
-        <TouchableOpacity style={[styles.itemRow, styles.topGap]} onPress={handleSignOut}>
+        <TouchableOpacity style={styles.bottom} onPress={handleSignOut}>
           <View style={styles.leftGroup}>
             <Image source={IMAGES.SIGN_OUT} style={[styles.image, styles.imageContainer]} />
             <Text style={[styles.itemText, styles.colorRed]}>Sign Out</Text>
@@ -171,13 +147,16 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  textGeneral: {
+  option: {
+    marginHorizontal: 24,
+    marginVertical: 24,
+  },
+  textHeader: {
     ...font.bold,
     fontSize: 16,
     color: '#888888',
     lineHeight: 16,
-    paddingHorizontal: 16,
-    marginVertical: 24,
+    marginBottom: 24,
   },
   imageContainer: {
     width: 24,
@@ -192,9 +171,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    marginStart: 12,
+    padding: 12,
   },
   leftGroup: {
     flexDirection: 'row',
@@ -218,16 +195,21 @@ const styles = StyleSheet.create({
   colorRed: {
     color: '#FF7070',
   },
-  verticalGap: {
-    marginBottom: 24,
-  },
-  topGap: {
-    marginTop: 24,
-  },
   versionContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 5,
+  },
+  bottom: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: 24,
+    padding: 12,
+    marginTop: 24,
+  },
+  row: {
+    gap: 24,
   },
 });
 

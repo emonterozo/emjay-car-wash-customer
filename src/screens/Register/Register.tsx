@@ -384,7 +384,6 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     gap: 24,
-    paddingBottom: 62,
     paddingHorizontal: 25,
   },
   button: {
@@ -392,6 +391,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 16,
     borderRadius: 28,
+    marginBottom: 150,
   },
   textStyle: {
     ...font.regular,

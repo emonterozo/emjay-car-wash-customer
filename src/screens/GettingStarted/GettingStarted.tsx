@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.background,
-    paddingHorizontal: 10,
+    paddingHorizontal: 28,
   },
   content: {
     gap: 15,
@@ -102,8 +102,8 @@ const styles = StyleSheet.create({
   buttonContainer: {
     position: 'absolute',
     bottom: '5%',
-    left: 10,
-    right: 10,
+    left: 28,
+    right: 28,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

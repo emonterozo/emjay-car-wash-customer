@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#888888',
     lineHeight: 16,
-    paddingHorizontal: 16,
+    paddingHorizontal: 24,
     marginVertical: 24,
   },
   content: {
@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    padding: 12,
   },
   label: {
     ...font.regular,
