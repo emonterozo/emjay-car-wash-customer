@@ -153,9 +153,7 @@ const Home = () => {
       />
       <View style={styles.heading}>
         <View style={styles.greetingContainer}>
-          <Text
-            style={styles.greeting}
-          >{`Hello, ${user.first_name} ${user.last_name}! \u{1F44B}`}</Text>
+          <Text style={styles.greeting}>{`Good Day, ${user.first_name}! \u{1F44B}`}</Text>
           <Text style={styles.subHeader}>What service do you need today?</Text>
         </View>
         <Image

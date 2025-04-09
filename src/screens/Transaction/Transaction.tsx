@@ -129,7 +129,6 @@ const styles = StyleSheet.create({
   list: {
     flexGrow: 1,
     paddingHorizontal: 25,
-    backgroundColor: color.background,
     paddingTop: 10,
     paddingBottom: 20,
   },
