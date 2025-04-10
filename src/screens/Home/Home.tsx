@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -9,15 +9,19 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
+  Linking,
+  RefreshControl,
 } from 'react-native';
 import { useIsFocused } from '@react-navigation/native';
 
-import { Promos, ScreenStatusProps } from '../../types/services/types';
+import { Promos, ScreenStatusProps, WashPointsResponse } from '../../types/services/types';
 import { color, font } from '@app/styles';
 import { ERR_NETWORK, IMAGES } from '@app/constant';
 import { getWashPoints } from '@app/services';
 import GlobalContext from '@app/context';
 import { ErrorModal, LoadingAnimation } from '@app/components';
+
+const contact = '0915 481 4562';
 
 const Home = () => {
   const { user } = useContext(GlobalContext);
@@ -40,10 +44,6 @@ const Home = () => {
         size: 'xl',
         count: 0,
       },
-      {
-        size: 'xxl',
-        count: 0,
-      },
     ],
     motorcycle: [
       {
@@ -56,10 +56,6 @@ const Home = () => {
       },
       {
         size: 'lg',
-        count: 0,
-      },
-      {
-        size: 'xl',
         count: 0,
       },
     ],
@@ -76,44 +72,46 @@ const Home = () => {
     type: 'error',
   });
   const [promos, setPromos] = useState<Promos[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const processData = (data: WashPointsResponse) => {
+    const { moto_wash_service_count, car_wash_service_count } = data.customer;
+    setPoints(data.customer.points);
+    setCount({
+      car: car_wash_service_count,
+      motorcycle: moto_wash_service_count,
+    });
+    setPromos(data.promos);
+    const carTotalCount = car_wash_service_count.reduce((sum, item) => sum + item.count, 0);
+    const motorcycleTotalCount = moto_wash_service_count.reduce((sum, item) => sum + item.count, 0);
+
+    const optionsHolder: { key: keyof typeof count; count: number }[] = [
+      {
+        key: 'car',
+        count: carTotalCount,
+      },
+      {
+        key: 'motorcycle',
+        count: motorcycleTotalCount,
+      },
+    ];
+    optionsHolder.sort((a, b) => b.count - a.count);
+    setOptions(optionsHolder);
+    setSelected(
+      carTotalCount === 0 && motorcycleTotalCount === 0
+        ? 'car'
+        : carTotalCount > motorcycleTotalCount
+        ? 'car'
+        : 'motorcycle',
+    );
+  };
 
   const fetchTransaction = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
     const response = await getWashPoints(user.accessToken, user.refreshToken, user.id);
 
     if (response.success && response.data) {
-      const { moto_wash_service_count, car_wash_service_count } = response.data.customer;
-      setPoints(response.data.customer.points);
-      setCount({
-        car: car_wash_service_count,
-        motorcycle: moto_wash_service_count,
-      });
-      setPromos(response.data.promos);
-      const carTotalCount = car_wash_service_count.reduce((sum, item) => sum + item.count, 0);
-      const motorcycleTotalCount = moto_wash_service_count.reduce(
-        (sum, item) => sum + item.count,
-        0,
-      );
-
-      const optionsHolder: { key: keyof typeof count; count: number }[] = [
-        {
-          key: 'car',
-          count: carTotalCount,
-        },
-        {
-          key: 'motorcycle',
-          count: motorcycleTotalCount,
-        },
-      ];
-      optionsHolder.sort((a, b) => b.count - a.count);
-      setOptions(optionsHolder);
-      setSelected(
-        carTotalCount === 0 && motorcycleTotalCount === 0
-          ? 'car'
-          : carTotalCount > motorcycleTotalCount
-          ? 'car'
-          : 'motorcycle',
-      );
+      processData(response.data);
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
       setScreenStatus({
@@ -141,6 +139,25 @@ const Home = () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
   };
 
+  const onContactPress = () => {
+    Linking.openURL(`tel:${contact}`);
+  };
+
+  const onWebsitePress = () => {
+    Linking.openURL('https://www.emjaygarage.com/');
+  };
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    const response = await getWashPoints(user.accessToken, user.refreshToken, user.id);
+
+    if (response.success && response.data) {
+      processData(response.data);
+    }
+    setRefreshing(false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
@@ -162,7 +179,7 @@ const Home = () => {
           resizeMode="contain"
         />
       </View>
-      <ScrollView>
+      <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={styles.pointsContainer}>
           <View style={styles.content}>
             <Text style={styles.points}>{`${points.toLocaleString()} Points`}</Text>
@@ -231,6 +248,21 @@ const Home = () => {
           </View>
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={styles.publishContainer}>
+            <View style={styles.countContent}>
+              <Text style={styles.emjay}>Emjay Garage</Text>
+              <Text style={styles.publishTitle}>We are buying and selling of quality cars</Text>
+              <View style={styles.contact}>
+                <TouchableOpacity onPress={onContactPress}>
+                  <Text style={styles.description}>{`CALL US! ${contact}`}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={onWebsitePress}>
+                  <Text style={styles.description}>View Our Available Units</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+            <Image source={IMAGES.PEOPLE_ADS} style={styles.publishImage} resizeMode="cover" />
+          </View>
           {promos.map((item) => (
             <View key={item._id} style={styles.publishContainer}>
               <View style={styles.publish}>
@@ -472,6 +504,22 @@ const styles = StyleSheet.create({
   publishImage: {
     width: 100,
     height: 100,
+  },
+  description: {
+    ...font.regular,
+    fontSize: 12,
+    lineHeight: 12,
+    color: '#FFFFFF',
+  },
+  emjay: {
+    ...font.bold,
+    fontSize: 16,
+    lineHeight: 16,
+    color: '#6EFF00',
+  },
+  contact: {
+    flex: 1,
+    gap: 24,
   },
 });
 

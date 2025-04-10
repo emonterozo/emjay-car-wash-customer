@@ -15,6 +15,7 @@ import {
   VersionResponse,
   UpdateProfilePayload,
   UpdateProfileResponse,
+  TransactionDetailsResponse,
 } from '../types/services/types';
 
 export const requestHeader = (accessToken: string) => {
@@ -190,6 +191,26 @@ export const updateProfile = (
       method: 'patch',
       headers: requestHeader(accessToken),
       data: payload,
+    },
+    refreshToken,
+  );
+};
+
+export const getTransactionDetailsRequest = (
+  accessToken: string,
+  refreshToken: string,
+  transactionId: string,
+  transactionServiceId: string,
+): ApiResponse<TransactionDetailsResponse> => {
+  return apiRequest<null, TransactionDetailsResponse>(
+    `${Config.API_BASE_URL}/transactions/details`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        transaction_id: transactionId,
+        availed_service_id: transactionServiceId,
+      },
     },
     refreshToken,
   );

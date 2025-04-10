@@ -17,6 +17,7 @@ import {
   Profile,
   EditProfile,
   ChangePassword,
+  TransactionDetails,
 } from '@app/screens';
 
 import GlobalContext from '@app/context';
@@ -85,6 +86,7 @@ const Navigation = () => {
             <AuthStack.Screen name="Profile" component={Profile} />
             <AuthStack.Screen name="EditProfile" component={EditProfile} />
             <AuthStack.Screen name="ChangePassword" component={ChangePassword} />
+            <AuthStack.Screen name="TransactionDetails" component={TransactionDetails} />
           </AuthStack.Navigator>
         ) : hasUpdate ? (
           <Update />

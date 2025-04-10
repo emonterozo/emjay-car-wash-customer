@@ -9,6 +9,7 @@ export type AuthStackParamList = {
   Profile: undefined;
   EditProfile: undefined;
   ChangePassword: undefined;
+  TransactionDetails: { transactionId: string; transactionServiceId: string };
 };
 
 export type UnAuthStackParamList = {
@@ -25,3 +26,5 @@ export type UnAuthNavigationProp = StackScreenProps<UnAuthStackParamList>['navig
 
 export type RegistrationOtpRouteProp = RouteProp<UnAuthStackParamList, 'RegistrationOtp'>;
 export type ForgotPasswordOtpRouteProp = RouteProp<UnAuthStackParamList, 'ForgotPasswordOtp'>;
+
+export type TransactionDetailsRouteProp = RouteProp<AuthStackParamList, 'TransactionDetails'>;

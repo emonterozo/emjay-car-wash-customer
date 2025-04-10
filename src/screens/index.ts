@@ -16,3 +16,4 @@ export { default as Update } from './Update/Update';
 export { default as Profile } from './Profile/Profile';
 export { default as EditProfile } from './EditProfile/EditProfile';
 export { default as ChangePassword } from './ChangePassword/ChangePassword';
+export { default as TransactionDetails } from './TransactionDetails/TransactionDetails';

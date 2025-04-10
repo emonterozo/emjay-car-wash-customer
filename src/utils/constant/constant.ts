@@ -46,6 +46,7 @@ export const IMAGES = {
   UPDATE: require('../../../assets/images/update.png'),
   UPDATE_ICON: require('../../../assets/images/update_icon.png'),
   ROTATE: require('../../../assets/images/rotate.png'),
+  PEOPLE_ADS: require('../../../assets/images/people-ads.png'),
 };
 
 export const ERROR_TYPE = {
@@ -74,15 +75,14 @@ export const CONFIRM_TYPE = {
 export const LIMIT = 7;
 
 export const VEHICLE_TYPES = ['Car', 'Motorcycle'];
-export const CAR_SIZES = ['Small', 'Medium', 'Large', 'Extra Large', 'Extra Extra Large'];
-export const MOTORCYCLE_SIZES = ['Small', 'Medium', 'Large', 'Extra Large'];
-export const SIZES = ['sm', 'md', 'lg', 'xl', 'xxl'];
+export const CAR_SIZES = ['Small', 'Medium', 'Large', 'Extra Large'];
+export const MOTORCYCLE_SIZES = ['Small', 'Medium', 'Large'];
+export const SIZES = ['sm', 'md', 'lg', 'xl'];
 export const SIZE_DESCRIPTION: Record<SizeKey, string> = {
   sm: 'Small',
   md: 'Medium',
   lg: 'Large',
   xl: 'Extra Large',
-  xxl: 'Extra Extra Large',
 };
 
 export const ERR_NETWORK = 'Network Error';

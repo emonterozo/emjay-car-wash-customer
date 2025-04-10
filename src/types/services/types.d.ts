@@ -162,3 +162,25 @@ export type UpdateProfilePayload = {
   password?: string;
   current_password?: string;
 };
+
+export type TransactionDetailsResponse = {
+  transaction: Omit<
+    TransactionServiceDetailsResponse['transaction'],
+    'image' | 'status' | 'is_free' | 'is_paid'
+  > & {
+    first_name: string;
+    last_name: string;
+    vehicle_type: VehicleType;
+    model: string;
+    vehicle_size: string;
+    plate_number: string;
+  };
+  errors: ErrorProps[];
+};
+
+export type TransactionServiceEmployee = {
+  _id: string;
+  first_name: string;
+  last_name: string;
+  gender: string;
+};

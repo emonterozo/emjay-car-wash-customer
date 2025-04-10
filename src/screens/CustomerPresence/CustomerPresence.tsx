@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: 16,
-    marginBottom: 35,
+    marginBottom: 16,
     paddingHorizontal: 25,
   },
   text16: {
@@ -221,7 +221,6 @@ const styles = StyleSheet.create({
   list: {
     flexGrow: 1,
     paddingHorizontal: 25,
-    backgroundColor: color.background,
     paddingTop: 10,
     paddingBottom: 20,
   },
