@@ -248,10 +248,12 @@ const Home = () => {
           </View>
         </View>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-          <View style={styles.publishContainer}>
+          <View style={[styles.publishContainer, styles.emjayBackground]}>
             <View style={styles.countContent}>
               <Text style={styles.emjay}>Emjay Garage</Text>
-              <Text style={styles.publishTitle}>We are buying and selling of quality cars</Text>
+              <Text style={[styles.publishTitle, styles.emjayTitle]}>
+                We are Buying and selling of quality cars
+              </Text>
               <View style={styles.contact}>
                 <TouchableOpacity onPress={onContactPress}>
                   <Text style={styles.description}>{`CALL US! ${contact}`}</Text>
@@ -261,7 +263,7 @@ const Home = () => {
                 </TouchableOpacity>
               </View>
             </View>
-            <Image source={IMAGES.PEOPLE_ADS} style={styles.publishImage} resizeMode="cover" />
+            <Image source={IMAGES.GARAGE} style={styles.publishImage} resizeMode="cover" />
           </View>
           {promos.map((item) => (
             <View key={item._id} style={styles.publishContainer}>
@@ -509,17 +511,23 @@ const styles = StyleSheet.create({
     ...font.regular,
     fontSize: 12,
     lineHeight: 12,
-    color: '#FFFFFF',
+    color: '#F5F5F5',
   },
   emjay: {
     ...font.bold,
     fontSize: 16,
     lineHeight: 16,
-    color: '#6EFF00',
+    color: '#FFC107',
   },
   contact: {
     flex: 1,
     gap: 24,
+  },
+  emjayTitle: {
+    color: '#F5F5F5',
+  },
+  emjayBackground: {
+    backgroundColor: '#333333',
   },
 });
 

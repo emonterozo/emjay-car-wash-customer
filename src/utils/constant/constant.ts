@@ -47,6 +47,7 @@ export const IMAGES = {
   UPDATE_ICON: require('../../../assets/images/update_icon.png'),
   ROTATE: require('../../../assets/images/rotate.png'),
   PEOPLE_ADS: require('../../../assets/images/people-ads.png'),
+  GARAGE: require('../../../assets/images/garage.png'),
 };
 
 export const ERROR_TYPE = {
