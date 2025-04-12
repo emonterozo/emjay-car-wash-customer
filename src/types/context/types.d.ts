@@ -7,4 +7,12 @@ export type TUser = {
   username: string;
   accessToken: string;
   refreshToken: string;
+  fcmToken: string;
+};
+
+export type NotificationType = 'promo' | 'transaction';
+
+export type TNotification = {
+  type: NotificationType;
+  id: string;
 };

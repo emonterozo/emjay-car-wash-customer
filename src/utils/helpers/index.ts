@@ -1,5 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import * as Keychain from 'react-native-keychain';
+import notifee from '@notifee/react-native';
+import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 
 export const formattedNumber = (amount: number, fractionDigits?: number) => {
   return `₱${new Intl.NumberFormat('en-US', {
@@ -104,4 +106,22 @@ export const isUpdateAvailable = (currentVersion: string, latestVersion: string)
   }
 
   return false; // Versions are the same
+};
+
+export const showLocalNotification = async (
+  remoteMessage: FirebaseMessagingTypes.RemoteMessage,
+) => {
+  await notifee.displayNotification({
+    title: remoteMessage.notification?.title,
+    body: remoteMessage.notification?.body,
+    android: {
+      channelId: 'default',
+      smallIcon: 'ic_notification',
+      largeIcon: 'ic_notification',
+      pressAction: {
+        id: 'default',
+      },
+    },
+    data: remoteMessage.data,
+  });
 };

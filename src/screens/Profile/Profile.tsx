@@ -28,43 +28,36 @@ const Profile = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader title="Profile" />
-      <Text style={styles.title}>PERSONAL DETAILS</Text>
+      <View style={styles.headerContent}>
+        <Text style={styles.title}>PERSONAL DETAILS</Text>
+        <TouchableOpacity style={styles.button} onPress={() => handlePress('edit')}>
+          <Text style={styles.edit}>Edit Profile</Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.content}>
         <View style={styles.itemRow}>
           <View style={styles.itemContainer}>
             <Text style={styles.label}>Full name</Text>
             <Text style={styles.value}>{`${user.first_name} ${user.last_name}`}</Text>
           </View>
-          <TouchableOpacity style={styles.button} onPress={() => handlePress('edit')}>
-            <Text style={styles.edit}>Edit</Text>
-          </TouchableOpacity>
         </View>
         <View style={styles.itemRow}>
           <View style={styles.itemContainer}>
             <Text style={styles.label}>Date of birth</Text>
             <Text style={styles.value}>{format(new Date(user.birth_date), 'MMMM dd, yyyy')}</Text>
           </View>
-          <TouchableOpacity style={styles.button} onPress={() => handlePress('edit')}>
-            <Text style={styles.edit}>Edit</Text>
-          </TouchableOpacity>
         </View>
         <View style={styles.itemRow}>
           <View style={styles.itemContainer}>
             <Text style={styles.label}>Gender</Text>
             <Text style={styles.value}>{user.gender[0] + user.gender.slice(1).toLowerCase()}</Text>
           </View>
-          <TouchableOpacity style={styles.button} onPress={() => handlePress('edit')}>
-            <Text style={styles.edit}>Edit</Text>
-          </TouchableOpacity>
         </View>
         <View style={styles.itemRow}>
           <View style={styles.itemContainer}>
             <Text style={styles.label}>Phone number</Text>
             <Text style={styles.value}>{user.username}</Text>
           </View>
-          <TouchableOpacity style={styles.button} onPress={() => handlePress('edit')}>
-            <Text style={styles.edit}>Edit</Text>
-          </TouchableOpacity>
         </View>
       </View>
       <Pressable
@@ -90,8 +83,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#888888',
     lineHeight: 16,
+  },
+  headerContent: {
     paddingHorizontal: 24,
     marginVertical: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   content: {
     paddingHorizontal: 24,

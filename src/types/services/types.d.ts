@@ -16,6 +16,7 @@ export type ErrorProps = {
 export type LoginPayload = {
   contact_number: string;
   password: string;
+  fcm_token: string;
 };
 
 export type LoginResponse = {
@@ -39,6 +40,7 @@ export type SignupPayload = {
   gender: GenderType;
   birth_date: string;
   password: string;
+  fcm_token: string;
 };
 
 export type UserResponse = {

@@ -33,7 +33,7 @@ import { verticalScale } from '@app/metrics';
 import { getCredentials, removeCredentials, storeCredentials } from '@app/helpers';
 
 const Login = () => {
-  const { setUser } = useContext(GlobalContext);
+  const { user, setUser } = useContext(GlobalContext);
   const navigation = useNavigation<UnAuthNavigationProp>();
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
@@ -53,6 +53,7 @@ const Login = () => {
     const response = await loginRequest({
       contact_number: input.username,
       password: input.password,
+      fcm_token: user.fcmToken,
     });
 
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
@@ -64,17 +65,18 @@ const Login = () => {
           navigation.replace('RegistrationOtp', { user: _id, username: username });
           break;
         default:
-          const { user, accessToken, refreshToken } = response.data;
+          const { user: userData, accessToken, refreshToken } = response.data;
           if (isRemembered) {
-            storeCredentials(user.username, input.password);
+            storeCredentials(input.username, input.password);
           } else {
             removeCredentials();
           }
           setUser({
-            ...user,
-            id: user._id,
+            ...userData,
+            id: userData._id,
             accessToken,
             refreshToken,
+            fcmToken: user.fcmToken,
           });
           break;
       }
@@ -132,6 +134,7 @@ const Login = () => {
   useEffect(() => {
     const fetchCredential = async () => {
       const credential = await getCredentials();
+
       if (credential) {
         setInput({
           username: credential.username,

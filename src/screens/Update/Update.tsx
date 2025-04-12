@@ -31,7 +31,7 @@ const Update = () => {
         <Text style={styles.header}>New Update Available</Text>
         <Text style={styles.title}>Update your application to the latest version</Text>
         <Text style={styles.description}>
-          A brand new version of EmJay Rewards app is available in the App Store. Please update your
+          A brand new version of Emjay Rewards app is available in the App Store. Please update your
           app to use all of our amazing features.
         </Text>
         <Pressable

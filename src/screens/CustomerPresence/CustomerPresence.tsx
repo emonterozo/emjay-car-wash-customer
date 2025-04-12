@@ -70,7 +70,7 @@ const CustomerPresence = () => {
               {item.service_name}
             </Text>
             <Text style={[styles.textBold, styles.text16, styles.textDarkerGrey]}>
-              EmJay Customer
+              Emjay Customer
             </Text>
             <Text style={[styles.textRegular, styles.text16, styles.textGrey]}>
               {item.description}

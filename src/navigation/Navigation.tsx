@@ -2,6 +2,9 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Config from 'react-native-config';
+import messaging from '@react-native-firebase/messaging';
+import notifee, { EventType } from '@notifee/react-native';
+import { PermissionsAndroid, Platform } from 'react-native';
 
 import {
   Login,
@@ -22,7 +25,7 @@ import {
 
 import GlobalContext from '@app/context';
 import { AuthStackParamList, UnAuthStackParamList } from '../types/navigation/types';
-import { TUser } from '../types/context/types';
+import { TNotification, TUser } from '../types/context/types';
 import BottomTab from './BottomTab';
 import { getStatusGetStarted, isUpdateAvailable } from '@app/helpers';
 import { versionRequest } from '@app/services';
@@ -41,16 +44,37 @@ const Navigation = () => {
     username: '',
     accessToken: '',
     refreshToken: '',
+    fcmToken: '',
   });
+  const [selectedNotification, setSelectedNotification] = useState<TNotification | undefined>(
+    undefined,
+  );
   const [hasUpdate, setHasUpdate] = useState(false);
 
   const initialContext = useMemo(
     () => ({
       user,
       setUser,
+      selectedNotification,
+      setSelectedNotification,
     }),
-    [user, setUser],
+    [user, setUser, selectedNotification, setSelectedNotification],
   );
+
+  const requestUserPermission = async () => {
+    // Request permissions (required for iOS)
+    //await notifee.requestPermission();
+
+    if (Platform.OS === 'android' && Platform.Version >= 33) {
+      await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+    }
+
+    const token = await messaging().getToken();
+    setUser({
+      ...user,
+      fcmToken: token,
+    });
+  };
 
   const fetchDetails = async () => {
     const response = await versionRequest();
@@ -64,7 +88,35 @@ const Navigation = () => {
   };
 
   useEffect(() => {
+    requestUserPermission();
     fetchDetails();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const unsubscribeForeground = notifee.onForegroundEvent(({ type, detail }) => {
+      if (type === EventType.PRESS) {
+        const { notification } = detail;
+        if (notification?.data) {
+          const data = notification.data as TNotification;
+          setSelectedNotification({ type: data.type, id: data.id });
+        }
+      }
+    });
+
+    notifee.onBackgroundEvent(async ({ type, detail }) => {
+      if (type === EventType.PRESS) {
+        const { notification } = detail;
+        if (notification?.data) {
+          const data = notification.data as TNotification;
+          setSelectedNotification({ type: data.type, id: data.id });
+        }
+      }
+    });
+
+    return () => {
+      unsubscribeForeground();
+    };
   }, []);
 
   if (isDone === null) {

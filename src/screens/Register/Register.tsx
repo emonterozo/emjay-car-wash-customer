@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -36,6 +36,7 @@ import { areObjectsEqual } from '@app/helpers';
 import { useNativeBackHandler } from '@app/hooks';
 import { UnAuthNavigationProp } from '../../types/navigation/types';
 import { signupRequest } from '@app/services';
+import GlobalContext from '@app/context';
 
 const GENDER_OPTIONS = [
   {
@@ -93,6 +94,7 @@ const validationSchema = Yup.object({
 });
 
 const Register = () => {
+  const { user } = useContext(GlobalContext);
   const navigation = useNavigation<UnAuthNavigationProp>();
   const [passwordSecure, setPasswordSecure] = useState({
     password: true,
@@ -140,6 +142,7 @@ const Register = () => {
           gender: formValues.gender?.label as GenderType,
           birth_date: format(formValues.birthDate!, 'yyyy-MM-dd'),
           password: formValues.password!,
+          fcm_token: user.fcmToken,
         };
 
         const response = await signupRequest(payload);

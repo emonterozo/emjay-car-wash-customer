@@ -63,7 +63,7 @@ const QRCard = () => {
             styles.marginBottom24,
           ]}
         >
-          Exclusive EmJay Auto Spa Promos!
+          Exclusive Emjay Auto Spa Promos!
         </Text>
 
         <ScrollView

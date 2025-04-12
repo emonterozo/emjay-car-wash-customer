@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -24,7 +24,7 @@ import { ErrorModal, LoadingAnimation } from '@app/components';
 const contact = '0915 481 4562';
 
 const Home = () => {
-  const { user } = useContext(GlobalContext);
+  const { user, selectedNotification, setSelectedNotification } = useContext(GlobalContext);
   const isFocused = useIsFocused();
   const [count, setCount] = useState({
     car: [
@@ -73,6 +73,8 @@ const Home = () => {
   });
   const [promos, setPromos] = useState<Promos[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const scrollRef = useRef<ScrollView | null>(null);
+  const promoRefs = useRef<Record<string, View | null>>({});
 
   const processData = (data: WashPointsResponse) => {
     const { moto_wash_service_count, car_wash_service_count } = data.customer;
@@ -128,6 +130,24 @@ const Home = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFocused]);
+
+  useEffect(() => {
+    if (selectedNotification && promos.length > 0) {
+      fetchTransaction();
+      setTimeout(() => {
+        if (selectedNotification.type === 'promo') {
+          const promoView = promoRefs.current[selectedNotification.id];
+          if (promoView && scrollRef.current) {
+            promoView.measureLayout(scrollRef.current, (x: number) => {
+              scrollRef.current?.scrollTo({ x, animated: true });
+            });
+          }
+        }
+      }, 500);
+      setSelectedNotification(undefined);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedNotification, promos]);
 
   const getSelected = () => {
     const value = options.find((option) => option.key === selected);
@@ -247,12 +267,12 @@ const Home = () => {
             </View>
           </View>
         </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} ref={scrollRef}>
           <View style={[styles.publishContainer, styles.emjayBackground]}>
             <View style={styles.countContent}>
               <Text style={styles.emjay}>Emjay Garage</Text>
               <Text style={[styles.publishTitle, styles.emjayTitle]}>
-                We are Buying and selling of quality cars
+                We are buying and selling of quality cars
               </Text>
               <View style={styles.contact}>
                 <TouchableOpacity onPress={onContactPress}>
@@ -266,7 +286,11 @@ const Home = () => {
             <Image source={IMAGES.GARAGE} style={styles.publishImage} resizeMode="cover" />
           </View>
           {promos.map((item) => (
-            <View key={item._id} style={styles.publishContainer}>
+            <View
+              key={item._id}
+              ref={(ref) => (promoRefs.current[item._id] = ref)}
+              style={styles.publishContainer}
+            >
               <View style={styles.publish}>
                 <Text style={styles.publishTitle}>
                   <Text style={styles.percent}>{`${item.percent}% `}</Text>
