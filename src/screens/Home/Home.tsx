@@ -132,8 +132,8 @@ const Home = () => {
   }, [isFocused]);
 
   useEffect(() => {
-    if (selectedNotification && promos.length > 0) {
-      fetchTransaction();
+    if (selectedNotification && isFocused) {
+      onRefresh();
       setTimeout(() => {
         if (selectedNotification.type === 'promo') {
           const promoView = promoRefs.current[selectedNotification.id];
@@ -143,11 +143,11 @@ const Home = () => {
             });
           }
         }
-      }, 500);
+      }, 1000);
       setSelectedNotification(undefined);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedNotification, promos]);
+  }, [selectedNotification, isFocused]);
 
   const getSelected = () => {
     const value = options.find((option) => option.key === selected);
@@ -267,24 +267,24 @@ const Home = () => {
             </View>
           </View>
         </View>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} ref={scrollRef}>
-          <View style={[styles.publishContainer, styles.emjayBackground]}>
-            <View style={styles.countContent}>
-              <Text style={styles.emjay}>Emjay Garage</Text>
-              <Text style={[styles.publishTitle, styles.emjayTitle]}>
-                We are buying and selling of quality cars
-              </Text>
-              <View style={styles.contact}>
-                <TouchableOpacity onPress={onContactPress}>
-                  <Text style={styles.description}>{`CALL US! ${contact}`}</Text>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={onWebsitePress}>
-                  <Text style={styles.description}>View Our Available Units</Text>
-                </TouchableOpacity>
-              </View>
+        <View style={styles.emjayGarage}>
+          <View style={styles.countContent}>
+            <Text style={styles.emjay}>Emjay Garage</Text>
+            <Text style={[styles.publishTitle, styles.emjayTitle]}>
+              We are buying and selling of quality cars
+            </Text>
+            <View style={styles.contact}>
+              <TouchableOpacity onPress={onContactPress}>
+                <Text style={styles.description}>{`CALL US! ${contact}`}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={onWebsitePress}>
+                <Text style={styles.description}>View Our Available Units</Text>
+              </TouchableOpacity>
             </View>
-            <Image source={IMAGES.GARAGE} style={styles.publishImage} resizeMode="cover" />
           </View>
+          <Image source={IMAGES.GARAGE} style={styles.publishImage} resizeMode="cover" />
+        </View>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} ref={scrollRef}>
           {promos.map((item) => (
             <View
               key={item._id}
@@ -550,8 +550,16 @@ const styles = StyleSheet.create({
   emjayTitle: {
     color: '#F5F5F5',
   },
-  emjayBackground: {
+  emjayGarage: {
     backgroundColor: '#333333',
+    marginTop: 16,
+    marginHorizontal: 24,
+    paddingHorizontal: 16,
+    paddingVertical: 24,
+    borderRadius: 24,
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: Dimensions.get('window').width - 48,
   },
 });
 

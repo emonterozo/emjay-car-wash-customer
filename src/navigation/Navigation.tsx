@@ -5,6 +5,7 @@ import Config from 'react-native-config';
 import messaging from '@react-native-firebase/messaging';
 import notifee, { EventType } from '@notifee/react-native';
 import { PermissionsAndroid, Platform } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
   Login,
@@ -87,24 +88,25 @@ const Navigation = () => {
     }
   };
 
+  const checkNotification = async () => {
+    const value = await AsyncStorage.getItem('lastNotification');
+    if (value) {
+      const data = JSON.parse(value);
+      setSelectedNotification({ type: data.type, id: data.id });
+
+      await AsyncStorage.removeItem('lastNotification');
+    }
+  };
+
   useEffect(() => {
     requestUserPermission();
     fetchDetails();
+    checkNotification();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     const unsubscribeForeground = notifee.onForegroundEvent(({ type, detail }) => {
-      if (type === EventType.PRESS) {
-        const { notification } = detail;
-        if (notification?.data) {
-          const data = notification.data as TNotification;
-          setSelectedNotification({ type: data.type, id: data.id });
-        }
-      }
-    });
-
-    notifee.onBackgroundEvent(async ({ type, detail }) => {
       if (type === EventType.PRESS) {
         const { notification } = detail;
         if (notification?.data) {

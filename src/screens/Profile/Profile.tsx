@@ -15,6 +15,7 @@ import { AppHeader } from '@app/components';
 import { color, font } from '@app/styles';
 import GlobalContext from '@app/context';
 import { NavigationProp } from '../../types/navigation/types';
+import { EditIcon } from '@app/icons';
 
 const Profile = () => {
   const navigation = useNavigation<NavigationProp>();
@@ -30,8 +31,8 @@ const Profile = () => {
       <AppHeader title="Profile" />
       <View style={styles.headerContent}>
         <Text style={styles.title}>PERSONAL DETAILS</Text>
-        <TouchableOpacity style={styles.button} onPress={() => handlePress('edit')}>
-          <Text style={styles.edit}>Edit Profile</Text>
+        <TouchableOpacity onPress={() => handlePress('edit')}>
+          <EditIcon />
         </TouchableOpacity>
       </View>
       <View style={styles.content}>
@@ -115,16 +116,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     lineHeight: 16,
     color: '#696969',
-  },
-  edit: {
-    ...font.regular,
-    fontSize: 16,
-    lineHeight: 16,
-    color: '#050303',
-  },
-  button: {
-    borderBottomWidth: 1,
-    borderColor: '#050303',
   },
   buttonChange: {
     marginTop: 40,
