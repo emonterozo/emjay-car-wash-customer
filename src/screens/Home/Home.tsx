@@ -99,13 +99,11 @@ const Home = () => {
     ];
     optionsHolder.sort((a, b) => b.count - a.count);
     setOptions(optionsHolder);
-    setSelected(
-      carTotalCount === 0 && motorcycleTotalCount === 0
-        ? 'car'
-        : carTotalCount > motorcycleTotalCount
-        ? 'car'
-        : 'motorcycle',
-    );
+    let selectedOption: keyof typeof count = 'car';
+    if (carTotalCount !== 0 || motorcycleTotalCount !== 0) {
+      selectedOption = carTotalCount > motorcycleTotalCount ? 'car' : 'motorcycle';
+    }
+    setSelected(selectedOption);
   };
 
   const fetchTransaction = async () => {
@@ -134,16 +132,16 @@ const Home = () => {
   useEffect(() => {
     if (selectedNotification && isFocused) {
       onRefresh();
-      setTimeout(() => {
-        if (selectedNotification.type === 'promo') {
-          const promoView = promoRefs.current[selectedNotification.id];
-          if (promoView && scrollRef.current) {
-            promoView.measureLayout(scrollRef.current, (x: number) => {
-              scrollRef.current?.scrollTo({ x, animated: true });
-            });
-          }
-        }
-      }, 1000);
+      // setTimeout(() => {
+      //   if (selectedNotification.type === 'promo') {
+      //     const promoView = promoRefs.current[selectedNotification.id];
+      //     if (promoView && scrollRef.current) {
+      //       promoView.measureLayout(scrollRef.current, (x: number) => {
+      //         scrollRef.current?.scrollTo({ x, animated: true });
+      //       });
+      //     }
+      //   }
+      // }, 1000);
       setSelectedNotification(undefined);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
