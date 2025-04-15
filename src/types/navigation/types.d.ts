@@ -10,6 +10,7 @@ export type AuthStackParamList = {
   EditProfile: undefined;
   ChangePassword: undefined;
   TransactionDetails: { transactionId: string; transactionServiceId: string };
+  Message: undefined;
 };
 
 export type UnAuthStackParamList = {

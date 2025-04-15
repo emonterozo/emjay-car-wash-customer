@@ -10,7 +10,7 @@ export type TUser = {
   fcmToken: string;
 };
 
-export type NotificationType = 'promo' | 'transaction';
+export type NotificationType = 'promo' | 'transaction' | 'message';
 
 export type TNotification = {
   type: NotificationType;

@@ -1,4 +1,5 @@
 import { ERROR_TYPE } from '@app/constant';
+import { ChatReference } from '../constant/types';
 
 export type GenderType = 'MALE' | 'FEMALE';
 
@@ -185,4 +186,28 @@ export type TransactionServiceEmployee = {
   first_name: string;
   last_name: string;
   gender: string;
+};
+
+export type Message = {
+  _id: string;
+  customer_id: string;
+  message: string;
+  timestamp: string;
+  from: ChatReference;
+  is_read: number;
+};
+
+export type MessagesResponse = {
+  messages: Message[];
+  totalCount: number;
+  errors: ErrorProps[];
+};
+
+export type UpdateMessageStatePayload = {
+  view_by: ChatReference;
+};
+
+export type UpdateMessageStateResponse = {
+  _id: string;
+  errors: ErrorProps[];
 };

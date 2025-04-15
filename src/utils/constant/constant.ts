@@ -1,4 +1,4 @@
-import { SizeKey } from '../../types/constant/types';
+import { ChatReference, SizeKey } from '../../types/constant/types';
 
 export const IMAGES = {
   EM_JAY: require('../../../assets/images/emjay.png'),
@@ -48,6 +48,7 @@ export const IMAGES = {
   ROTATE: require('../../../assets/images/rotate.png'),
   PEOPLE_ADS: require('../../../assets/images/people-ads.png'),
   GARAGE: require('../../../assets/images/garage.png'),
+  SEND: require('../../../assets/images/send.png'),
 };
 
 export const ERROR_TYPE = {
@@ -73,7 +74,7 @@ export const CONFIRM_TYPE = {
   },
 };
 
-export const LIMIT = 7;
+export const LIMIT = 50;
 
 export const VEHICLE_TYPES = ['Car', 'Motorcycle'];
 export const CAR_SIZES = ['Small', 'Medium', 'Large', 'Extra Large'];
@@ -89,3 +90,8 @@ export const SIZE_DESCRIPTION: Record<SizeKey, string> = {
 export const ERR_NETWORK = 'Network Error';
 
 export const NO_DATA = 'No available data';
+
+export const CHAT_REFERENCE: Record<ChatReference, string> = {
+  emjay: 'emjay',
+  customer: 'customer',
+};

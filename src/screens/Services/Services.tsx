@@ -236,11 +236,11 @@ const Services = () => {
             label: 'View Customers in Queue',
             onPress: () => navigation.navigate('CustomerPresence'),
           },
-          // {
-          //   icon: IMAGES.MESSAGE,
-          //   label: 'Message',
-          //   onPress: () => null,
-          // },
+          {
+            icon: IMAGES.MESSAGE,
+            label: 'Message',
+            onPress: () => navigation.navigate('Message'),
+          },
         ]}
       />
     </SafeAreaView>

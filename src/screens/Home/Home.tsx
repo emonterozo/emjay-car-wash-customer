@@ -12,7 +12,7 @@ import {
   Linking,
   RefreshControl,
 } from 'react-native';
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 import { Promos, ScreenStatusProps, WashPointsResponse } from '../../types/services/types';
 import { color, font } from '@app/styles';
@@ -20,12 +20,14 @@ import { ERR_NETWORK, IMAGES } from '@app/constant';
 import { getWashPoints } from '@app/services';
 import GlobalContext from '@app/context';
 import { ErrorModal, LoadingAnimation } from '@app/components';
+import { NavigationProp } from '../../types/navigation/types';
 
 const contact = '0915 481 4562';
 
 const Home = () => {
   const { user, selectedNotification, setSelectedNotification } = useContext(GlobalContext);
   const isFocused = useIsFocused();
+  const navigation = useNavigation<NavigationProp>();
   const [count, setCount] = useState({
     car: [
       {
@@ -130,22 +132,17 @@ const Home = () => {
   }, [isFocused]);
 
   useEffect(() => {
-    if (selectedNotification && isFocused) {
+    if (selectedNotification) {
       onRefresh();
-      // setTimeout(() => {
-      //   if (selectedNotification.type === 'promo') {
-      //     const promoView = promoRefs.current[selectedNotification.id];
-      //     if (promoView && scrollRef.current) {
-      //       promoView.measureLayout(scrollRef.current, (x: number) => {
-      //         scrollRef.current?.scrollTo({ x, animated: true });
-      //       });
-      //     }
-      //   }
-      // }, 1000);
+      if (selectedNotification.type === 'message') {
+        setTimeout(() => {
+          navigation.navigate('Message');
+        }, 1000);
+      }
       setSelectedNotification(undefined);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedNotification, isFocused]);
+  }, [selectedNotification]);
 
   const getSelected = () => {
     const value = options.find((option) => option.key === selected);

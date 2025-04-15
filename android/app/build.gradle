@@ -99,7 +99,7 @@ android {
         applicationId "com.quindigitalsolutions.emjayrewards"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 7
+        versionCode 8
         versionName "0.0.1"
         resValue 'string', 'build_config_package','com.quindigitalsolutions.emjayrewards'
     }

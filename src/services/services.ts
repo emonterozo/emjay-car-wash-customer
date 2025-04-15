@@ -16,7 +16,11 @@ import {
   UpdateProfilePayload,
   UpdateProfileResponse,
   TransactionDetailsResponse,
+  MessagesResponse,
+  UpdateMessageStateResponse,
+  UpdateMessageStatePayload,
 } from '../types/services/types';
+import { ChatReference } from '../types/constant/types';
 
 export const requestHeader = (accessToken: string) => {
   return {
@@ -210,6 +214,46 @@ export const getTransactionDetailsRequest = (
       params: {
         transaction_id: transactionId,
         availed_service_id: transactionServiceId,
+      },
+    },
+    refreshToken,
+  );
+};
+
+export const getMessagesRequest = (
+  accessToken: string,
+  refreshToken: string,
+  customerId: string,
+  limit?: number,
+  offset?: number,
+): ApiResponse<MessagesResponse> => {
+  return apiRequest<null, MessagesResponse>(
+    `${Config.API_BASE_URL}/messages/${customerId}`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+      params: {
+        limit,
+        offset,
+      },
+    },
+    refreshToken,
+  );
+};
+
+export const updateMessageStateRequest = (
+  accessToken: string,
+  refreshToken: string,
+  customerId: string,
+  view_by: ChatReference,
+): ApiResponse<UpdateMessageStateResponse> => {
+  return apiRequest<UpdateMessageStatePayload, UpdateMessageStateResponse>(
+    `${Config.API_BASE_URL}/messages/${customerId}`,
+    {
+      method: 'patch',
+      headers: requestHeader(accessToken),
+      data: {
+        view_by,
       },
     },
     refreshToken,

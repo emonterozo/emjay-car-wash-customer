@@ -22,6 +22,7 @@ import {
   EditProfile,
   ChangePassword,
   TransactionDetails,
+  Message,
 } from '@app/screens';
 
 import GlobalContext from '@app/context';
@@ -121,6 +122,29 @@ const Navigation = () => {
     };
   }, []);
 
+  useEffect(() => {
+    //Killed state: Notification tapped
+    messaging()
+      .getInitialNotification()
+      .then(async (remoteMessage) => {
+        if (!remoteMessage) {
+          return;
+        }
+
+        const data = remoteMessage.data as TNotification;
+        setSelectedNotification({ type: data.type, id: data.id });
+      });
+
+    messaging().onNotificationOpenedApp(async (remoteMessage) => {
+      if (!remoteMessage) {
+        return;
+      }
+
+      const data = remoteMessage.data as TNotification;
+      setSelectedNotification({ type: data.type, id: data.id });
+    });
+  }, []);
+
   if (isDone === null) {
     return null;
   }
@@ -141,6 +165,7 @@ const Navigation = () => {
             <AuthStack.Screen name="EditProfile" component={EditProfile} />
             <AuthStack.Screen name="ChangePassword" component={ChangePassword} />
             <AuthStack.Screen name="TransactionDetails" component={TransactionDetails} />
+            <AuthStack.Screen name="Message" component={Message} />
           </AuthStack.Navigator>
         ) : hasUpdate ? (
           <Update />
