@@ -8,13 +8,12 @@ import {
   AccessibilityProps,
   NativeSyntheticEvent,
   TextInputFocusEventData,
-  Image,
 } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { font, color } from '@app/styles';
 import { isStringEmpty } from '@app/helpers';
-import { IMAGES } from '@app/constant';
+import { HighImportanceIcon } from '@app/icons';
 
 type FormTextInputProps = {
   label: string;
@@ -104,7 +103,7 @@ const FormTextInput = ({
       </View>
       {error && isErrorMessageVisible && (
         <View style={styles.errorContainer}>
-          <Image source={IMAGES.HIGH_IMPORTANCE} resizeMode="contain" style={styles.image} />
+          <HighImportanceIcon width={16} height={16} fill="#FF7070" />
           <Text style={styles.error}>{error}</Text>
         </View>
       )}
@@ -148,10 +147,6 @@ const styles = StyleSheet.create({
     lineHeight: 12,
     color: '#FF7070',
     flex: 1,
-  },
-  image: {
-    width: 16,
-    height: 16,
   },
 });
 

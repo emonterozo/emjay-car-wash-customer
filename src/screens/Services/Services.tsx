@@ -7,7 +7,7 @@ import FastImage from '@d11/react-native-fast-image';
 import FilterOption from './FilterOption';
 import { SizeKey } from '../../types/constant/types';
 import { Price, ScreenStatusProps, Service } from '../../types/services/types';
-import { FilterIcon, FreeIcon, StarIcon } from '@app/icons';
+import { CustomerPresenceIcon, FilterIcon, FreeIcon, MessageIcon, StarIcon } from '@app/icons';
 import {
   AppHeaderImage,
   EmptyState,
@@ -237,12 +237,12 @@ const Services = () => {
       <FloatingActionButton
         additionalButtons={[
           {
-            icon: IMAGES.VIEW_CUSTOMER_PRESENCE,
+            icon: <CustomerPresenceIcon width={25} height={25} fill="#ffffff" />,
             label: 'View Customers in Queue',
             onPress: () => navigation.navigate('CustomerPresence'),
           },
           {
-            icon: IMAGES.MESSAGE,
+            icon: <MessageIcon width={25} height={25} fill="#ffffff" />,
             label: 'Message',
             onPress: () => navigation.navigate('Message'),
           },

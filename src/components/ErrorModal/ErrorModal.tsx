@@ -1,9 +1,10 @@
 import React from 'react';
-import { StyleSheet, View, Modal, Text, Dimensions, Image } from 'react-native';
+import { StyleSheet, View, Modal, Text, Dimensions } from 'react-native';
 
 import { font } from '@app/styles';
 import { ERROR_TYPE, IMAGES } from '@app/constant';
 import { Button } from '..';
+import FastImage from '@d11/react-native-fast-image';
 
 export type ErrorModalProps = {
   isVisible: boolean;
@@ -18,7 +19,7 @@ const ErrorModal: React.FC<ErrorModalProps> = ({ isVisible, type, onCancel, onRe
       <Modal visible={isVisible} animationType="slide" onRequestClose={onCancel} transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalViewContainer}>
-            <Image
+            <FastImage
               source={type === 'error' ? IMAGES.ERROR : IMAGES.NO_CONNECTION}
               style={styles.image}
               resizeMode="contain"

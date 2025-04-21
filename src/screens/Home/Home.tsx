@@ -21,6 +21,7 @@ import { getWashPoints } from '@app/services';
 import GlobalContext from '@app/context';
 import { ErrorModal, LoadingAnimation } from '@app/components';
 import { NavigationProp } from '../../types/navigation/types';
+import { DiscountIcon } from '@app/icons';
 
 const contact = '0915 481 4562';
 
@@ -293,11 +294,11 @@ const Home = () => {
                 </Text>
                 <Text style={styles.publishDescription}>{item.description}</Text>
               </View>
-              <Image
-                source={item.is_free ? IMAGES.FREE : IMAGES.PERCENT}
-                style={styles.publishImage}
-                resizeMode="cover"
-              />
+              {item.is_free ? (
+                <Image source={IMAGES.FREE} style={styles.publishImage} resizeMode="cover" />
+              ) : (
+                <DiscountIcon />
+              )}
             </View>
           ))}
         </ScrollView>

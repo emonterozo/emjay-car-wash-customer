@@ -7,7 +7,6 @@ import {
   Text,
   ScrollView,
   Pressable,
-  Image,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
@@ -30,8 +29,8 @@ import {
   LoadingAnimation,
   Toast,
 } from '@app/components';
-import { EyeCloseIcon, EyeOpenIcon } from '@app/icons';
-import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { EyeCloseIcon, EyeOpenIcon, FemaleIcon, MaleIcon } from '@app/icons';
+import { ERR_NETWORK } from '@app/constant';
 import { areObjectsEqual } from '@app/helpers';
 import { useNativeBackHandler } from '@app/hooks';
 import { UnAuthNavigationProp } from '../../types/navigation/types';
@@ -41,12 +40,12 @@ import GlobalContext from '@app/context';
 const GENDER_OPTIONS = [
   {
     id: '1',
-    icon: <Image source={IMAGES.MALE} resizeMode="contain" />,
+    icon: <MaleIcon width={25} height={25} fill="#2196f3" />,
     label: 'MALE',
   },
   {
     id: '2',
-    icon: <Image source={IMAGES.FEMALE} resizeMode="contain" />,
+    icon: <FemaleIcon width={25} height={25} fill="#f78f8f" />,
     label: 'FEMALE',
   },
 ];

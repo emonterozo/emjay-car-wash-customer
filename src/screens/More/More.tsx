@@ -5,19 +5,24 @@ import {
   SafeAreaView,
   StatusBar,
   Text,
-  Image,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
 import Config from 'react-native-config';
 
 import { color, font } from '@app/styles';
-import { AppHeaderImage, ConfirmationModal, HorizontalLine } from '@app/components';
+import {
+  AppHeaderImage,
+  ConfirmationModal,
+  HorizontalLine,
+  MaterialCommunityIcon,
+} from '@app/components';
 import { IMAGES } from '@app/constant';
 
 import GlobalContext from '@app/context';
 import { useNavigation } from '@react-navigation/native';
 import { NavigationProp } from 'src/types/navigation/types';
+import { ExitIcon, PrivacyPolicyIcon, ProfileIcon, TermsAndConditionsIcon } from '@app/icons';
 
 const defaultUser = {
   id: '',
@@ -28,6 +33,7 @@ const defaultUser = {
   username: '',
   accessToken: '',
   refreshToken: '',
+  fcmToken: '',
 };
 
 const More = () => {
@@ -64,19 +70,17 @@ const More = () => {
           onNo={onSignOutNo}
           textCancel="Cancel"
           textProceed="Confirm"
+          haImage={false}
         />
         <HorizontalLine />
         <View style={styles.option}>
           <Text style={styles.textHeader}>GENERAL</Text>
           <TouchableOpacity style={styles.itemRow} onPress={() => navigation.navigate('Profile')}>
             <View style={styles.leftGroup}>
-              <Image source={IMAGES.EDIT_PROFILE} style={[styles.image, styles.imageContainer]} />
+              <ProfileIcon width={24} height={24} />
               <Text style={[styles.itemText, styles.colorGrey]}>View Profile</Text>
             </View>
-            <Image
-              source={IMAGES.CHEVRON_RIGHT_BUTTON}
-              style={[styles.image, styles.imageContainer]}
-            />
+            <MaterialCommunityIcon name="chevron-right" size={24} color="#696969" />
           </TouchableOpacity>
         </View>
         <HorizontalLine />
@@ -89,16 +93,10 @@ const More = () => {
               onPress={() => navigation.navigate('PrivacyPolicy')}
             >
               <View style={styles.leftGroup}>
-                <Image
-                  source={IMAGES.PRIVACY_POLICY}
-                  style={[styles.image, styles.imageContainer]}
-                />
+                <PrivacyPolicyIcon width={24} height={24} />
                 <Text style={[styles.itemText, styles.colorGrey]}>Privacy Policy</Text>
               </View>
-              <Image
-                source={IMAGES.CHEVRON_RIGHT_BUTTON}
-                style={[styles.image, styles.imageContainer]}
-              />
+              <MaterialCommunityIcon name="chevron-right" size={24} color="#696969" />
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -106,16 +104,10 @@ const More = () => {
               onPress={() => navigation.navigate('TermsConditions')}
             >
               <View style={styles.leftGroup}>
-                <Image
-                  source={IMAGES.TERMS_AND_CONDITION}
-                  style={[styles.image, styles.imageContainer]}
-                />
+                <TermsAndConditionsIcon width={24} height={24} />
                 <Text style={[styles.itemText, styles.colorGrey]}>Terms & Condition</Text>
               </View>
-              <Image
-                source={IMAGES.CHEVRON_RIGHT_BUTTON}
-                style={[styles.image, styles.imageContainer]}
-              />
+              <MaterialCommunityIcon name="chevron-right" size={24} color="#696969" />
             </TouchableOpacity>
           </View>
         </View>
@@ -124,7 +116,7 @@ const More = () => {
 
         <TouchableOpacity style={styles.bottom} onPress={handleSignOut}>
           <View style={styles.leftGroup}>
-            <Image source={IMAGES.SIGN_OUT} style={[styles.image, styles.imageContainer]} />
+            <ExitIcon width={24} height={24} fill="#FF7070" />
             <Text style={[styles.itemText, styles.colorRed]}>Sign Out</Text>
           </View>
           <View style={styles.versionContainer}>
@@ -157,15 +149,6 @@ const styles = StyleSheet.create({
     color: '#888888',
     lineHeight: 16,
     marginBottom: 24,
-  },
-  imageContainer: {
-    width: 24,
-    height: 24,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'stretch',
   },
   itemRow: {
     flexDirection: 'row',

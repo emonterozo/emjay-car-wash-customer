@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, Text, View, Image, ScrollView } from 'react-native';
+import { StyleSheet, SafeAreaView, StatusBar, Text, View, ScrollView } from 'react-native';
 import * as Yup from 'yup';
 import { ValidationError } from 'yup';
 import { format } from 'date-fns';
@@ -15,20 +15,20 @@ import {
   Toast,
 } from '@app/components';
 import { color, font } from '@app/styles';
-import { IMAGES } from '@app/constant';
 import { Option } from '../../components/Dropdown/Dropdown';
 import GlobalContext from '@app/context';
 import { updateProfile } from '@app/services';
+import { FemaleIcon, MaleIcon } from '@app/icons';
 
 const GENDER_OPTIONS = [
   {
     id: '1',
-    icon: <Image source={IMAGES.MALE} resizeMode="contain" />,
+    icon: <MaleIcon width={25} height={25} fill="#2196f3" />,
     label: 'MALE',
   },
   {
     id: '2',
-    icon: <Image source={IMAGES.FEMALE} resizeMode="contain" />,
+    icon: <FemaleIcon width={25} height={25} fill="#f78f8f" />,
     label: 'FEMALE',
   },
 ];
@@ -197,7 +197,7 @@ const EditProfile = () => {
           value={formValues.contactNumber}
           keyboardType="numeric"
           maxLength={11}
-          style={styles.disabledColor}
+          textColor="#696969"
         />
         <Button
           title="Submit"
@@ -233,9 +233,6 @@ const styles = StyleSheet.create({
     gap: 24,
     paddingHorizontal: 25,
     marginBottom: 10,
-  },
-  disabledColor: {
-    color: '#696969',
   },
   button: {
     marginVertical: 16,

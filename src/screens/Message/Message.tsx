@@ -11,6 +11,7 @@ import {
   Dimensions,
   TouchableOpacity,
   ActivityIndicator,
+  Pressable,
 } from 'react-native';
 import { io } from 'socket.io-client';
 import Config from 'react-native-config';
@@ -19,7 +20,7 @@ import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { color, font } from '@app/styles';
 import { EmptyState } from '@app/components';
 import GlobalContext from '@app/context';
-import { ChevronLeftIcon } from '@app/icons';
+import { ChevronLeftIcon, SendIcon } from '@app/icons';
 import { CHAT_REFERENCE, ERR_NETWORK, IMAGES, LIMIT } from '@app/constant';
 import { Message as TMessage, ScreenStatusProps } from '../../types/services/types';
 import { getMessagesRequest, updateMessageStateRequest } from '@app/services';
@@ -217,9 +218,12 @@ const Message = () => {
             maxLength={1000}
           />
         </View>
-        <TouchableOpacity onPress={sendMessage}>
-          <Image source={IMAGES.SEND} style={styles.send} resizeMode="contain" />
-        </TouchableOpacity>
+        <Pressable
+          onPress={sendMessage}
+          style={({ pressed }) => [styles.send, pressed && { backgroundColor: '#46A6FF' }]}
+        >
+          <SendIcon width={40} height={40} fill="#FFFFFF" />
+        </Pressable>
       </View>
     </SafeAreaView>
   );
@@ -297,8 +301,10 @@ const styles = StyleSheet.create({
   send: {
     height: 70,
     width: 70,
-    backgroundColor: '#46A6FF',
+    backgroundColor: '#1F93E1',
     borderRadius: 70,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   input: {
     ...font.light,

@@ -112,7 +112,12 @@ const Transaction = () => {
           </TouchableOpacity>
         )}
         ItemSeparatorComponent={renderSeparator}
-        ListEmptyComponent={<EmptyState />}
+        ListEmptyComponent={
+          <EmptyState
+            title="No services availed yet"
+            description="You haven't availed any car wash services yet. Start availing our services to see your activity here."
+          />
+        }
       />
     </SafeAreaView>
   );

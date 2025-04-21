@@ -12,6 +12,7 @@ import {
 import React from 'react';
 import { IMAGES } from '@app/constant';
 import { color, font } from '@app/styles';
+import { RotateIcon, UpdateIcon } from '@app/icons';
 
 const Update = () => {
   const handlePress = () => {
@@ -30,13 +31,18 @@ const Update = () => {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Image source={IMAGES.UPDATE} style={styles.image} />
-      <Image source={IMAGES.UPDATE_ICON} style={styles.icon} />
+      <View style={styles.icon}>
+        <UpdateIcon width={120} height={120} fill={color.primary} />
+      </View>
+
       <View style={styles.content}>
         <Text style={styles.header}>NEW UPDATE AVAILABLE</Text>
         <Text style={styles.title}>Update your application to the latest version</Text>
         <Text style={styles.description}>
-          A brand new version of Emjay Rewards app is available in the Play Store. Please update
-          your app to use all of our amazing features.
+          {`A brand new version of Emjay Rewards app is available in the ${
+            Platform.OS === 'ios' ? 'App Store' : 'Play Store'
+          }. Please update
+          your app to use all of our amazing features.`}
         </Text>
         <Pressable
           style={({ pressed }) => [
@@ -46,7 +52,7 @@ const Update = () => {
           onPress={handlePress}
         >
           <Text style={styles.buttonText}>Update Now!</Text>
-          <Image source={IMAGES.ROTATE} />
+          <RotateIcon width={24} height={24} fill="#FFFFFF" />
         </Pressable>
       </View>
     </ScrollView>
@@ -69,6 +75,8 @@ const styles = StyleSheet.create({
     left: '50%',
     bottom: '36%',
     transform: [{ translateX: -60 }],
+    backgroundColor: 'rgba(255, 255, 255, 0.4)',
+    borderRadius: 24,
   },
   content: {
     marginTop: 34,

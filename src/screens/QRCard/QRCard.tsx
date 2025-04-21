@@ -8,11 +8,11 @@ import { IMAGES } from '@app/constant';
 import GlobalContext from '@app/context';
 
 const MESSAGE =
-  'Show this to the Emjay Carwash & Detailing office staff every time you use our services to earn and redeem your rewards.';
+  'Show this to the Emjay Carwash & Detailing attendant every time you avail our services to earn and redeem your rewards.';
 const WASH_EARN_PROMO_MESSAGE =
-  'Keep your ride spotless and earn rewards! Every time you avail a wash service, you’ll earn 1 point based on your vehicle type and size. Once you collect 10 points, you can redeem a FREE wash service on your next visit. Stay fresh, stay rewarded!';
+  'Keep your ride spotless and earn rewards! Every time you avail a wash service, you’ll earn 1 wash count based on your vehicle type and size. Once you collect 10 wash count, you can redeem a FREE wash service on your next visit. Stay fresh, stay rewarded!';
 const EARN_POINTS_PROMO_MESSAGE =
-  "Beyond the wash promo, you’ll also earn points for every service you avail! Use your accumulated points to redeem services or enjoy discounts on our exclusive promotions. Stay tuned for exciting deals and make the most of your visits! Don't miss out start earning today!";
+  'Get more from every visit! Earn points from all services availed. Collect points and redeem them for free services or discounts on future promos. Unlock exclusive rewards and surprises every time you visit. Stay loyal, stay rewarded—earn every time!';
 const QRCard = () => {
   const { user } = useContext(GlobalContext);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -77,38 +77,14 @@ const QRCard = () => {
           {/* First Card */}
           <View style={[styles.card, styles.cardBlue]}>
             <Image source={IMAGES.WASH_EARN_PROMO} style={styles.imagePromo} />
-            <Text style={[styles.textPromo, styles.text20, styles.textBold, styles.textWhite]}>
-              Wash & Earn Promo
-            </Text>
-            <Text
-              style={[
-                styles.textPromo,
-                styles.text12,
-                styles.textRegular,
-                styles.textWhite,
-                styles.textPromoMessage,
-              ]}
-            >
-              {WASH_EARN_PROMO_MESSAGE}
-            </Text>
+            <Text style={styles.title}>Wash & Earn Promo</Text>
+            <Text style={styles.description}>{WASH_EARN_PROMO_MESSAGE}</Text>
           </View>
           {/* Second Card */}
           <View style={[styles.card, styles.cardGreen]}>
             <Image source={IMAGES.EARNING_POINTS_PROMO} style={styles.imagePromo} />
-            <Text style={[styles.textPromo, styles.text20, styles.textBold, styles.textWhite]}>
-              Earning Points Promo
-            </Text>
-            <Text
-              style={[
-                styles.textPromo,
-                styles.text12,
-                styles.textRegular,
-                styles.textWhite,
-                styles.textPromoMessage,
-              ]}
-            >
-              {EARN_POINTS_PROMO_MESSAGE}
-            </Text>
+            <Text style={styles.title}>Earning Points Promo</Text>
+            <Text style={styles.description}>{EARN_POINTS_PROMO_MESSAGE}</Text>
           </View>
         </ScrollView>
 
@@ -168,24 +144,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     lineHeight: 20,
   },
-  text12: {
-    fontSize: 12,
-    lineHeight: 18,
-  },
   textGray: {
     color: '#696969',
-  },
-  textWhite: {
-    color: '#FFFFFF',
   },
   textBlack: {
     color: color.black,
   },
   textPromo: {
     paddingHorizontal: 16,
-  },
-  textPromoMessage: {
-    textAlign: 'center',
   },
   card: {
     alignItems: 'center',
@@ -206,7 +172,7 @@ const styles = StyleSheet.create({
   imagePromo: {
     width: 172,
     height: 120,
-    resizeMode: 'contain',
+    resizeMode: 'cover',
   },
   scrollViewContainer: {
     paddingHorizontal: 12,
@@ -226,6 +192,19 @@ const styles = StyleSheet.create({
   },
   activeIndicator: {
     backgroundColor: color.primary,
+  },
+  title: {
+    ...font.bold,
+    fontSize: 20,
+    lineHeight: 20,
+    color: color.background,
+  },
+  description: {
+    ...font.regular,
+    fontSize: 12,
+    lineHeight: 19,
+    color: color.background,
+    textAlign: 'center',
   },
 });
 

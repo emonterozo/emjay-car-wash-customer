@@ -1,22 +1,21 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity, Text, Image, ImageSourcePropType } from 'react-native';
+import React, { ReactElement, useState } from 'react';
+import { StyleSheet, View, TouchableOpacity, Text } from 'react-native';
 import MaterialCommunityIcon from '../MaterialCommunityIcon/MaterialCommunityIcon';
 import { color, font } from '@app/styles';
-import { IMAGES } from '@app/constant';
+import { MenuIcon } from '@app/icons';
 
 interface AdditionalButton {
   onPress: () => void;
-  icon: ImageSourcePropType | string;
+  icon: ReactElement;
   label: string;
 }
 
 interface Props {
   onPress?: () => void;
   additionalButtons?: AdditionalButton[];
-  fabIcon?: ImageSourcePropType | string;
 }
 
-const FloatingActionButton = ({ onPress, additionalButtons, fabIcon = 'plus' }: Props) => {
+const FloatingActionButton = ({ onPress, additionalButtons }: Props) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleMainButtonPress = () => {
@@ -41,27 +40,17 @@ const FloatingActionButton = ({ onPress, additionalButtons, fabIcon = 'plus' }: 
             activeOpacity={0.8}
           >
             <View style={styles.additionalButtonContent}>
-              {typeof button.icon === 'string' ? (
-                <MaterialCommunityIcon name={button.icon} size={30} color="#ffffff" />
-              ) : (
-                <Image source={button.icon} style={styles.image} resizeMode="contain" />
-              )}
+              {button.icon}
               <Text style={styles.buttonText}>{button.label}</Text>
             </View>
           </TouchableOpacity>
         ))}
       <TouchableOpacity onPress={handleMainButtonPress} activeOpacity={0.8}>
         <View style={styles.circle}>
-          {additionalButtons ? (
-            isExpanded ? (
-              <MaterialCommunityIcon name="close" size={25} color="#ffffff" />
-            ) : (
-              <Image source={IMAGES.MENU} style={styles.image} resizeMode="contain" />
-            )
-          ) : typeof fabIcon === 'string' ? (
-            <MaterialCommunityIcon name={fabIcon} size={25} color="#ffffff" />
+          {isExpanded ? (
+            <MaterialCommunityIcon name="close" size={25} color="#ffffff" />
           ) : (
-            <Image source={fabIcon} style={styles.image} resizeMode="contain" />
+            <MenuIcon width={48} height={40} fill="#ffffff" />
           )}
         </View>
       </TouchableOpacity>
@@ -79,10 +68,6 @@ const styles = StyleSheet.create({
   },
   additionalButton: {
     marginBottom: 12,
-  },
-  image: {
-    height: 24,
-    width: 24,
   },
   additionalButtonContent: {
     backgroundColor: color.primary,

@@ -12,6 +12,7 @@ export type ConfirmationModalProps = {
   onNo: () => void;
   textCancel?: string;
   textProceed?: string;
+  haImage?: boolean;
 };
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
@@ -21,13 +22,14 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   onYes,
   textCancel = 'No',
   textProceed = 'Yes',
+  haImage = true,
 }) => {
   return (
     <View>
       <Modal visible={isVisible} animationType="slide" onRequestClose={onNo} transparent={true}>
         <View style={styles.modalContainer}>
           <View style={styles.modalViewContainer}>
-            <Image source={IMAGES.CANCEL} style={styles.image} resizeMode="contain" />
+            {haImage && <Image source={IMAGES.CANCEL} style={styles.image} resizeMode="contain" />}
             <View style={styles.textContainer}>
               <Text style={styles.titleText}>{CONFIRM_TYPE[type].title}</Text>
               <Text style={styles.descriptionText}>{CONFIRM_TYPE[type].description}</Text>
