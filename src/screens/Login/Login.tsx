@@ -62,7 +62,7 @@ const Login = () => {
       switch (response.status) {
         case 201:
           const { _id, username } = response.data.user;
-          navigation.replace('RegistrationOtp', { user: _id, username: username });
+          navigation.navigate('RegistrationOtp', { user: _id, username: username });
           break;
         default:
           const { user: userData, accessToken, refreshToken } = response.data;

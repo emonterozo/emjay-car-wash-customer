@@ -7,6 +7,7 @@ import {
   Dimensions,
   ScrollView,
   Platform,
+  Linking,
 } from 'react-native';
 import React from 'react';
 import { IMAGES } from '@app/constant';
@@ -19,6 +20,9 @@ const Update = () => {
         break;
 
       default:
+        Linking.openURL(
+          'https://play.google.com/store/apps/details?id=com.quindigitalsolutions.emjayrewards',
+        );
         break;
     }
   };
@@ -28,11 +32,11 @@ const Update = () => {
       <Image source={IMAGES.UPDATE} style={styles.image} />
       <Image source={IMAGES.UPDATE_ICON} style={styles.icon} />
       <View style={styles.content}>
-        <Text style={styles.header}>New Update Available</Text>
+        <Text style={styles.header}>NEW UPDATE AVAILABLE</Text>
         <Text style={styles.title}>Update your application to the latest version</Text>
         <Text style={styles.description}>
-          A brand new version of Emjay Rewards app is available in the App Store. Please update your
-          app to use all of our amazing features.
+          A brand new version of Emjay Rewards app is available in the Play Store. Please update
+          your app to use all of our amazing features.
         </Text>
         <Pressable
           style={({ pressed }) => [
@@ -51,8 +55,8 @@ const Update = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
-    marginBottom: 20,
+    flex: 1,
+    backgroundColor: color.background,
   },
   image: {
     width: '100%',

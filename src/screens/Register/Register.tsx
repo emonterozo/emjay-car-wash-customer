@@ -119,6 +119,7 @@ const Register = () => {
   const [toast, setToast] = useState({
     isVisible: false,
     message: '',
+    type: 'error',
   });
   const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
 
@@ -151,13 +152,22 @@ const Register = () => {
 
         if (response.success && response.data) {
           const { _id, username } = response.data.user;
-          navigation.replace('RegistrationOtp', { user: _id, username: username });
+          setToast({
+            isVisible: true,
+            message:
+              "Account created successfully! We've sent a one-time password (OTP) to your contact details. Please enter the OTP to verify your account.",
+            type: 'success',
+          });
+          setTimeout(() => {
+            navigation.replace('RegistrationOtp', { user: _id, username: username });
+          }, 3100);
         } else {
           switch (response.status) {
             case 400:
               setToast({
                 isVisible: true,
-                message: 'The contact number is already in use. Please use a different number.',
+                message: 'The phone number is already in use. Please use a different number.',
+                type: 'error',
               });
               break;
             default:
@@ -179,6 +189,7 @@ const Register = () => {
         setToast({
           isVisible: true,
           message: 'Please complete the required fields before proceeding.',
+          type: 'error',
         });
       });
   };
@@ -207,7 +218,7 @@ const Register = () => {
     setFormValues({ ...formValues, [key]: value });
   };
 
-  const onToastClose = () => setToast({ isVisible: false, message: '' });
+  const onToastClose = () => setToast({ isVisible: false, message: '', type: 'error' });
 
   const handlePressBack = () => {
     if (areObjectsEqual(initialFormValues, formValues)) {
@@ -260,7 +271,7 @@ const Register = () => {
         isVisible={toast.isVisible}
         message={toast.message}
         duration={3000}
-        type="error"
+        type={toast.type as 'success' | 'error' | 'info'}
         onClose={onToastClose}
       />
       <View style={styles.heading}>
