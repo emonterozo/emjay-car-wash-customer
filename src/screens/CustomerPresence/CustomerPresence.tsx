@@ -132,7 +132,13 @@ const CustomerPresence = () => {
         renderItem={cardItem}
         keyExtractor={(item) => item._id}
         ItemSeparatorComponent={renderSeparator}
-        ListEmptyComponent={<EmptyState />}
+        ListEmptyComponent={
+          <EmptyState
+            source={IMAGES.VEHICLE}
+            title="Fresh lanes ahead!"
+            description="No one's in line just yet—your car's next in queue for that fresh, clean shine."
+          />
+        }
       />
     </SafeAreaView>
   );

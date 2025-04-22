@@ -203,7 +203,15 @@ const Message = () => {
         inverted={messages.length > 0}
         onEndReached={loadMoreMessages}
         ListFooterComponent={isLoadingMore ? <ActivityIndicator /> : null}
-        ListEmptyComponent={screenStatus.isLoading ? undefined : <EmptyState />}
+        ListEmptyComponent={
+          screenStatus.isLoading ? undefined : (
+            <EmptyState
+              source={IMAGES.MESSAGING}
+              title="Nothing here yet"
+              description="Got car care on your mind? Send us a message and let's get your ride shining!"
+            />
+          )
+        }
         contentContainerStyle={messages.length > 0 ? undefined : styles.empty}
       />
       <View style={styles.separator} />

@@ -19,6 +19,8 @@ export const IMAGES = {
   THIRD: require('../../../assets/images/third.png'),
   UPDATE: require('../../../assets/images/update.png'),
   GARAGE: require('../../../assets/images/garage.png'),
+  VEHICLE: require('../../../assets/images/vehicle.png'),
+  MESSAGING: require('../../../assets/images/messaging.png'),
 };
 
 export const ERROR_TYPE = {

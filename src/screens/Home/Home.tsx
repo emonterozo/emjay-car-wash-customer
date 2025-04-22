@@ -261,7 +261,7 @@ const Home = () => {
             <Image
               source={selected === 'car' ? IMAGES.CAR : IMAGES.MOTORCYCLE}
               resizeMode="contain"
-              style={[styles.imageType, selected === 'car' ? styles.car : styles.motorcycle]}
+              style={styles.imageType}
             />
           </View>
         </View>
@@ -468,6 +468,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 16,
     bottom: 16,
+    right: -25,
   },
   countContent: {
     flex: 1,
@@ -565,12 +566,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: Dimensions.get('window').width - 48,
-  },
-  car: {
-    right: -24,
-  },
-  motorcycle: {
-    right: -13,
   },
   scrollView: {
     maxWidth: '68%',
