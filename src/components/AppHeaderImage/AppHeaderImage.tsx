@@ -9,13 +9,11 @@ type NewAppHeaderProps = {
 };
 
 const NewAppHeader = ({ imageSource, title, subtitle }: NewAppHeaderProps) => {
-  // const navigation = useNavigation<NavigationProp>();
-
   return (
     <View style={styles.container}>
       {/* Left Side: Circular image */}
-      <View style={styles.circle}>
-        <Image source={imageSource} style={styles.image} />
+      <View style={styles.avatarContainer}>
+        <Image source={imageSource} style={styles.avatar} />
       </View>
 
       {/* Center: Two texts in a column */}
@@ -35,19 +33,19 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
   },
-  circle: {
+  avatarContainer: {
+    backgroundColor: '#1F93E1',
+    borderRadius: 60,
     width: 60,
     height: 60,
-    borderRadius: 30,
     overflow: 'hidden',
-    backgroundColor: '#1F93E1',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
-  image: {
+  avatar: {
+    position: 'absolute',
+    top: 4,
+    left: 0,
     width: '100%',
     height: '100%',
-    resizeMode: 'cover',
   },
   centerContainer: {
     flex: 1,

@@ -189,11 +189,13 @@ const Home = () => {
           <Text style={styles.greeting}>{`Good Day, ${user.first_name}! \u{1F44B}`}</Text>
           <Text style={styles.subHeader}>What service do you need today?</Text>
         </View>
-        <Image
-          source={user.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
-          style={styles.avatar}
-          resizeMode="contain"
-        />
+        <View style={styles.avatarContainer}>
+          <Image
+            source={user.gender === 'MALE' ? IMAGES.AVATAR_BOY : IMAGES.AVATAR_GIRL}
+            style={styles.avatar}
+            resizeMode="cover"
+          />
+        </View>
       </View>
       <ScrollView refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         <View style={styles.pointsContainer}>
@@ -227,11 +229,6 @@ const Home = () => {
             ))}
           </View>
           <View style={styles.countContainer}>
-            <Image
-              source={selected === 'car' ? IMAGES.CAR : IMAGES.MOTORCYCLE}
-              resizeMode="contain"
-              style={styles.imageType}
-            />
             <View style={styles.countContent}>
               <Text style={styles.countTitle}>{`${
                 selected.charAt(0).toUpperCase() + selected.slice(1)
@@ -261,6 +258,11 @@ const Home = () => {
                 ))}
               </ScrollView>
             </View>
+            <Image
+              source={selected === 'car' ? IMAGES.CAR : IMAGES.MOTORCYCLE}
+              resizeMode="contain"
+              style={[styles.imageType, selected === 'car' ? styles.car : styles.motorcycle]}
+            />
           </View>
         </View>
         <View style={styles.emjayGarage}>
@@ -314,11 +316,19 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 10,
   },
-  avatar: {
-    height: 60,
+  avatarContainer: {
+    backgroundColor: '#1F93E1',
+    borderRadius: 60,
     width: 60,
-    backgroundColor: '#46A6FF',
-    borderRadius: 90,
+    height: 60,
+    overflow: 'hidden',
+  },
+  avatar: {
+    position: 'absolute',
+    top: 4,
+    left: 0,
+    width: '100%',
+    height: '100%',
   },
   heading: {
     flexDirection: 'row',
@@ -453,10 +463,11 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   imageType: {
-    position: 'absolute',
-    right: -8,
+    width: 130,
     height: '100%',
-    alignSelf: 'center',
+    position: 'absolute',
+    top: 16,
+    bottom: 16,
   },
   countContent: {
     flex: 1,
@@ -485,9 +496,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 12,
   },
-  scrollView: {
-    width: '68%',
-  },
+
   scrollViewContent: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -556,6 +565,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: Dimensions.get('window').width - 48,
+  },
+  car: {
+    right: -24,
+  },
+  motorcycle: {
+    right: -13,
+  },
+  scrollView: {
+    maxWidth: '68%',
   },
 });
 

@@ -182,7 +182,9 @@ const Message = () => {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <ChevronLeftIcon />
         </TouchableOpacity>
-        <Image source={IMAGES.AVATAR_BOY} style={styles.avatar} resizeMode="contain" />
+        <View style={styles.avatarContainer}>
+          <Image source={IMAGES.AVATAR_BOY} style={styles.avatar} resizeMode="contain" />
+        </View>
         <View style={styles.content}>
           <Text style={styles.name} numberOfLines={1}>
             Emjay Admin
@@ -240,13 +242,6 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     paddingHorizontal: 24,
     backgroundColor: '#F4F9FD',
-  },
-  avatar: {
-    height: 60,
-    width: 60,
-    backgroundColor: '#46A6FF',
-    borderRadius: 68,
-    marginLeft: 15,
   },
   content: {
     marginLeft: 12,
@@ -350,6 +345,21 @@ const styles = StyleSheet.create({
   empty: {
     flexGrow: 1,
     paddingHorizontal: 25,
+  },
+  avatarContainer: {
+    backgroundColor: '#1F93E1',
+    borderRadius: 60,
+    width: 60,
+    height: 60,
+    overflow: 'hidden',
+    marginLeft: 15,
+  },
+  avatar: {
+    position: 'absolute',
+    top: 4,
+    left: 0,
+    width: '100%',
+    height: '100%',
   },
 });
 
