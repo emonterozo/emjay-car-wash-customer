@@ -28,6 +28,7 @@ export type LoginResponse = {
     last_name: string;
     gender: GenderType;
     birth_date: string;
+    fcm_token: string;
   };
   accessToken: string;
   refreshToken: string;
@@ -121,9 +122,9 @@ export type CustomerQueueResponse = {
 };
 
 export type ForgotPasswordVerifyPayload = {
-  user: string;
+  customer_id: string;
   password: string;
-  otp: string;
+  otp: number;
 };
 
 export type TransactionItem = {

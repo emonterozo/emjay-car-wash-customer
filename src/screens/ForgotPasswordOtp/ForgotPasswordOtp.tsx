@@ -60,8 +60,8 @@ const ForgoPasswordOtp = () => {
   const submitOtp = async (otp: string) => {
     setScreenStatus({ ...screenStatus, isLoading: true });
     const response = await forgotPasswordVerifyRequest({
-      user: user,
-      otp: otp,
+      customer_id: user,
+      otp: +otp,
       password,
     });
 
@@ -71,6 +71,7 @@ const ForgoPasswordOtp = () => {
       setUser({
         ...userData,
         id: userData._id,
+        fcmToken: userData.fcm_token,
         accessToken,
         refreshToken,
       });
