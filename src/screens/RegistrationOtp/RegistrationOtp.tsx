@@ -68,6 +68,7 @@ const RegistrationOtp = () => {
       setUser({
         ...userData,
         id: userData._id,
+        fcmToken: userData.fcm_token,
         accessToken,
         refreshToken,
       });
