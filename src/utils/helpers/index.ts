@@ -1,4 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Keychain from 'react-native-keychain';
+import notifee from '@notifee/react-native';
+import { FirebaseMessagingTypes } from '@react-native-firebase/messaging';
 
 export const formattedNumber = (amount: number, fractionDigits?: number) => {
   return `₱${new Intl.NumberFormat('en-US', {
@@ -56,19 +59,6 @@ export const areObjectsEqual = <T extends Record<string, any>>(
   return firstKeys.every((key) => firstObj[key] === secondObj[key]);
 };
 
-export const storeUsername = async (username: string) => {
-  await AsyncStorage.setItem('username', username);
-};
-
-export const getUsername = async () => {
-  const value = await AsyncStorage.getItem('username');
-  return value;
-};
-
-export const removeUsername = async () => {
-  await AsyncStorage.removeItem('username');
-};
-
 export const storeStatusGetStarted = async () => {
   await AsyncStorage.setItem('get-started', 'done');
 };
@@ -76,4 +66,62 @@ export const storeStatusGetStarted = async () => {
 export const getStatusGetStarted = async () => {
   const value = await AsyncStorage.getItem('get-started');
   return value;
+};
+
+export const storeCredentials = async (username: string, password: string) => {
+  try {
+    await Keychain.setGenericPassword(username, password);
+  } catch (error) {}
+};
+
+export const getCredentials = async () => {
+  try {
+    const credentials = await Keychain.getGenericPassword();
+    if (credentials) {
+      return credentials;
+    } else {
+      return null;
+    }
+  } catch (error) {
+    return null;
+  }
+};
+
+export const removeCredentials = async () => {
+  try {
+    await Keychain.resetGenericPassword();
+  } catch (error) {}
+};
+
+export const isUpdateAvailable = (currentVersion: string, latestVersion: string): boolean => {
+  const currentParts = currentVersion.split('.').map(Number);
+  const latestParts = latestVersion.split('.').map(Number);
+
+  for (let i = 0; i < latestParts.length; i++) {
+    if ((currentParts[i] || 0) < (latestParts[i] || 0)) {
+      return true; // Newer version available
+    } else if ((currentParts[i] || 0) > (latestParts[i] || 0)) {
+      return false; // Current version is newer or the same
+    }
+  }
+
+  return false; // Versions are the same
+};
+
+export const showLocalNotification = async (
+  remoteMessage: FirebaseMessagingTypes.RemoteMessage,
+) => {
+  await notifee.displayNotification({
+    title: remoteMessage.notification?.title,
+    body: remoteMessage.notification?.body,
+    android: {
+      channelId: 'default',
+      smallIcon: 'ic_notification',
+      largeIcon: 'ic_notification',
+      pressAction: {
+        id: 'default',
+      },
+    },
+    data: remoteMessage.data,
+  });
 };

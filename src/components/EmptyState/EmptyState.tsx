@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import FastImage from '@d11/react-native-fast-image';
+import FastImage, { Source } from '@d11/react-native-fast-image';
 
 import { color, font } from '@app/styles';
 import { IMAGES } from '@app/constant';
@@ -8,19 +8,17 @@ import { IMAGES } from '@app/constant';
 type EmptyStateProps = {
   title?: string;
   description?: string;
+  source?: Source;
 };
 
 const EmptyState = ({
   title = 'No data found',
   description = "It looks like there's nothing available right now. Please try again later.",
+  source = IMAGES.EMPTY_STATE,
 }: EmptyStateProps) => {
   return (
     <View style={styles.container}>
-      <FastImage
-        style={styles.image}
-        source={IMAGES.EMPTY_STATE}
-        resizeMode={FastImage.resizeMode.contain}
-      />
+      <FastImage style={styles.image} source={source} resizeMode={FastImage.resizeMode.contain} />
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.description}>{description}</Text>
     </View>

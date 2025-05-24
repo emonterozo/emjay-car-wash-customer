@@ -38,7 +38,7 @@ const RegistrationOtp = () => {
 
   const sendOtp = async () => {
     setScreenStatus({ ...screenStatus, isLoading: true });
-    const response = await otpRequest(user);
+    const response = await otpRequest(user, 'VERIFICATION');
 
     setScreenStatus({ ...screenStatus, isLoading: false });
     if (response.success && response.data) {
@@ -59,13 +59,16 @@ const RegistrationOtp = () => {
 
   const submitOtp = async (otp: string) => {
     setScreenStatus({ ...screenStatus, isLoading: true });
-    const response = await otpVerifyRequest({ user, otp });
+    const response = await otpVerifyRequest({ customer_id: user, otp: Number(otp) });
 
     setScreenStatus({ ...screenStatus, isLoading: false });
+
     if (response.success && response.data) {
       const { user: userData, accessToken, refreshToken } = response.data;
       setUser({
         ...userData,
+        id: userData._id,
+        fcmToken: userData.fcm_token,
         accessToken,
         refreshToken,
       });

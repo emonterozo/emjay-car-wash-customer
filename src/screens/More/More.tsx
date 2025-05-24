@@ -5,42 +5,53 @@ import {
   SafeAreaView,
   StatusBar,
   Text,
-  Image,
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
+import Config from 'react-native-config';
 
 import { color, font } from '@app/styles';
-import { AppHeaderImage, ConfirmationModal, HorizontalLine } from '@app/components';
+import {
+  AppHeaderImage,
+  ConfirmationModal,
+  HorizontalLine,
+  MaterialCommunityIcon,
+} from '@app/components';
 import { IMAGES } from '@app/constant';
 
 import GlobalContext from '@app/context';
+import { useNavigation } from '@react-navigation/native';
+import { NavigationProp } from 'src/types/navigation/types';
+import { ExitIcon, PrivacyPolicyIcon, ProfileIcon, TermsAndConditionsIcon } from '@app/icons';
 
 const defaultUser = {
   id: '',
   first_name: '',
   last_name: '',
   gender: '',
+  birth_date: '',
   username: '',
   accessToken: '',
   refreshToken: '',
+  fcmToken: '',
 };
 
 const More = () => {
-  const [isModalVisible, setModalVisible] = useState(false);
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const { user, setUser } = useContext(GlobalContext);
+  const navigation = useNavigation<NavigationProp>();
 
   const handleSignOut = () => {
-    setModalVisible(true);
+    setIsModalVisible(true);
   };
 
   const onSignOutYes = () => {
     setUser(defaultUser);
-    setModalVisible(false);
+    setIsModalVisible(false);
   };
 
   const onSignOutNo = () => {
-    setModalVisible(false);
+    setIsModalVisible(false);
   };
 
   return (
@@ -59,77 +70,61 @@ const More = () => {
           onNo={onSignOutNo}
           textCancel="Cancel"
           textProceed="Confirm"
+          haImage={false}
         />
         <HorizontalLine />
-        <View>
-          <Text style={styles.textGeneral}>GENERAL</Text>
+        <View style={styles.option}>
+          <Text style={styles.textHeader}>GENERAL</Text>
+          <TouchableOpacity style={styles.itemRow} onPress={() => navigation.navigate('Profile')}>
+            <View style={styles.leftGroup}>
+              <ProfileIcon width={24} height={24} />
+              <Text style={[styles.itemText, styles.colorGrey]}>View Profile</Text>
+            </View>
+            <MaterialCommunityIcon name="chevron-right" size={24} color="#696969" />
+          </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.itemRow} onPress={() => {}}>
-          <View style={styles.leftGroup}>
-            <Image source={IMAGES.EDIT_PROFILE} style={[styles.image, styles.imageContainer]} />
-            <Text style={[styles.itemText, styles.colorGrey]}>Edit Profile</Text>
+        <HorizontalLine />
+
+        <View style={styles.option}>
+          <Text style={styles.textHeader}>OTHER</Text>
+          <View style={styles.row}>
+            <TouchableOpacity
+              style={styles.itemRow}
+              onPress={() => navigation.navigate('PrivacyPolicy')}
+            >
+              <View style={styles.leftGroup}>
+                <PrivacyPolicyIcon width={24} height={24} />
+                <Text style={[styles.itemText, styles.colorGrey]}>Privacy Policy</Text>
+              </View>
+              <MaterialCommunityIcon name="chevron-right" size={24} color="#696969" />
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.itemRow}
+              onPress={() => navigation.navigate('TermsConditions')}
+            >
+              <View style={styles.leftGroup}>
+                <TermsAndConditionsIcon width={24} height={24} />
+                <Text style={[styles.itemText, styles.colorGrey]}>Terms & Condition</Text>
+              </View>
+              <MaterialCommunityIcon name="chevron-right" size={24} color="#696969" />
+            </TouchableOpacity>
           </View>
-
-          <Image
-            source={IMAGES.CHEVRON_RIGHT_BUTTON}
-            style={[styles.image, styles.imageContainer]}
-          />
-        </TouchableOpacity>
-
-        {/* <TouchableOpacity style={styles.itemRow} onPress={() => {}}>
-          <View style={styles.leftGroup}>
-            <Image
-              source={IMAGES.NOTIFICATION_SETTINGS}
-              style={[styles.image, styles.imageContainer]}
-            />
-            <Text style={[styles.itemText, styles.colorGrey]}>Notification Settings</Text>
-          </View>
-
-          <Image
-            source={IMAGES.CHEVRON_RIGHT_BUTTON}
-            style={[styles.image, styles.imageContainer]}
-          />
-        </TouchableOpacity> */}
+        </View>
 
         <HorizontalLine />
 
-        <View>
-          <Text style={styles.textGeneral}>OTHER</Text>
-        </View>
-
-        <TouchableOpacity style={styles.itemRow} onPress={() => {}}>
+        <TouchableOpacity style={styles.bottom} onPress={handleSignOut}>
           <View style={styles.leftGroup}>
-            <Image source={IMAGES.PRIVACY_POLICY} style={[styles.image, styles.imageContainer]} />
-            <Text style={[styles.itemText, styles.colorGrey]}>Privacy Policy</Text>
-          </View>
-          <Image
-            source={IMAGES.CHEVRON_RIGHT_BUTTON}
-            style={[styles.image, styles.imageContainer]}
-          />
-        </TouchableOpacity>
-
-        <TouchableOpacity style={[styles.itemRow, styles.verticalGap]} onPress={() => {}}>
-          <View style={styles.leftGroup}>
-            <Image
-              source={IMAGES.TERMS_AND_CONDITION}
-              style={[styles.image, styles.imageContainer]}
-            />
-            <Text style={[styles.itemText, styles.colorGrey]}>Terms & Condition</Text>
-          </View>
-          <Image
-            source={IMAGES.CHEVRON_RIGHT_BUTTON}
-            style={[styles.image, styles.imageContainer]}
-          />
-        </TouchableOpacity>
-
-        <HorizontalLine />
-
-        <TouchableOpacity style={[styles.itemRow, styles.topGap]} onPress={handleSignOut}>
-          <View style={styles.leftGroup}>
-            <Image source={IMAGES.SIGN_OUT} style={[styles.image, styles.imageContainer]} />
+            <ExitIcon width={24} height={24} fill="#FF7070" />
             <Text style={[styles.itemText, styles.colorRed]}>Sign Out</Text>
           </View>
-          <Text style={styles.version}>V1.0.0</Text>
+          <View style={styles.versionContainer}>
+            <Text style={styles.version}>{`v${Config.APP_VERSION}`}</Text>
+            {Config.APP_ENV !== 'Production' && (
+              <Text style={styles.version}>{`(${Config.APP_ENV})`}</Text>
+            )}
+          </View>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -144,30 +139,22 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
   },
-  textGeneral: {
+  option: {
+    marginHorizontal: 24,
+    marginVertical: 24,
+  },
+  textHeader: {
     ...font.bold,
     fontSize: 16,
     color: '#888888',
-    lineHeight: 24,
-    paddingHorizontal: 16,
-    marginTop: 24,
-  },
-  imageContainer: {
-    width: 24,
-    height: 24,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'stretch',
+    lineHeight: 16,
+    marginBottom: 24,
   },
   itemRow: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    marginStart: 12,
+    padding: 12,
   },
   leftGroup: {
     flexDirection: 'row',
@@ -191,11 +178,21 @@ const styles = StyleSheet.create({
   colorRed: {
     color: '#FF7070',
   },
-  verticalGap: {
-    marginBottom: 24,
+  versionContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
   },
-  topGap: {
+  bottom: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginHorizontal: 24,
+    padding: 12,
     marginTop: 24,
+  },
+  row: {
+    gap: 24,
   },
 });
 

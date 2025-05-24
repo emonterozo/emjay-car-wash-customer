@@ -46,9 +46,9 @@ const GettingStarted = () => {
         <Image source={options[position].image} style={styles.image} />
         <Text style={styles.description}>{options[position].description}</Text>
         <View style={styles.indicatorContainer}>
-          {options.map((_item, index) => (
+          {options.map((item, index) => (
             <View
-              key={index}
+              key={item.description}
               style={[styles.indicator, position === index && styles.activeIndicator]}
             />
           ))}
@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: color.background,
-    paddingHorizontal: 10,
+    paddingHorizontal: 28,
   },
   content: {
     gap: 15,
@@ -79,10 +79,13 @@ const styles = StyleSheet.create({
   description: {
     ...font.regular,
     fontSize: 29,
+    lineHeight: 29,
     color: '#050303',
   },
   image: {
     width: '100%',
+    height: 349,
+    resizeMode: 'cover',
   },
   indicatorContainer: {
     flexDirection: 'row',
@@ -101,8 +104,8 @@ const styles = StyleSheet.create({
   buttonContainer: {
     position: 'absolute',
     bottom: '5%',
-    left: 10,
-    right: 10,
+    left: 28,
+    right: 28,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -110,6 +113,7 @@ const styles = StyleSheet.create({
   skip: {
     ...font.regular,
     fontSize: 20,
+    lineHeight: 20,
     color: '#050303',
   },
 });

@@ -1,24 +1,8 @@
 import * as React from 'react';
-import Svg, { Rect, Defs, Pattern, Use, Image } from 'react-native-svg';
-const ServicesIcon = ({ width = 40, height = 40 }: IconProps) => (
-  <Svg
-    width={width}
-    height={height}
-    viewBox={`0 0 ${width} ${height}`}
-    fill="none"
-  >
-    <Rect width={40} height={40} fill="url(#pattern0_177_6)" />
-    <Defs>
-      <Pattern id="pattern0_177_6" patternContentUnits="objectBoundingBox" width={1} height={1}>
-        <Use xlinkHref="#image0_177_6" transform="scale(0.0208333)" />
-      </Pattern>
-      <Image
-        id="image0_177_6"
-        width={48}
-        height={48}
-        xlinkHref="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAAACXBIWXMAAAsTAAALEwEAmpwYAAAEjklEQVR4nO1ZbYxcYxQ+x0cU9VEfiVTQ0Eo0lKD0l18imiJtoiJI/SDb7K57zp1dVR9hZVukCT/4J4KQNBGfDZs759wp84eKpb6KrJRQVd8lxbbRqOW8M2bunbkzuzvXzt2VOcnJzNx733uf895znvc57wB0rGMdmzJDkvuR5S8kPYAk62BGWU9xNpL8jqxjzkl/hX49Eqal9RXORNYHgfXiyjHWOyrgyw6kt1XOe+ESN4bCBZCpUbgAWb+NzPRbyPpBLfiI27nhyPXfQE7mZ4YfWTY0ATtBl/syCwByclHaAID0gozZxqVNawGQbskUfCkA+TAhLXYA6QpjI1iz6ShgWY6kIwlBvJ8dcgNGcnsi+O6hOXXXdw/NQdadiezUU5zdVuzI+kCM5+OAVjQcyOHKBoX8G5KubxP8MXSra6OibDabawvHNKmJP6dHAJZajYyLx06DAMD4fxBZ9yQGwLK84UDSaxuA3wMkA9BW63r5CPDk1gRqHIGcHFd3fW/heCT5OqFmcpDbcjhkZQ2kw04rWMt5575ejaTb64OV9zIDHglgOIWMeDNb9CVVmVJKBIszw/9/EHPzTRJHAL1hed0E7LuWNpHfu8ALzsgugH+DYBkEP7ywcox1TT29al/lPAWL3ZjMwTdrKU0eRHneaHcmGZKsKzX0eiD1IpXbfDKSPIaku5H0D2T9DEhvaj6IgkVI8jCSfoSso26HgfXncs4bdT4PLHeBJ5eDF5wIU/cmB5HlJ1fsveFcS7vyW/0heRDrJa4YTRaz3AO3yLnu9Q8MHORkst3EGngvf41jIZJXkeQXJPkUWR8Fkuus0U+1uq589mAg7bIiR9KnoE9OqXaAsq1CADHrDefarCLpF6ZZHOAJ2xhCrnAOeOIhyXP2ipFk7zj0ud+aIfDDm9346gQuLb/118DPn++OecHRyPpIVEQCy9oakSXfuVy9sTgLptJIrnCfXe8cCr5cX1rMpN/SEFlDJPkEfL2yGpB1cxENRbobWFa5c1F+bldzbdoJvOCwyLaMYfjSpSdLNwwUDykBz89D1k01QvEF6Bk6KXqzsXaAjgcgm0tKNlyCpFsrAcR29XQ9suyLiL7vreYSbpYygL7iCZZ2yPpx7IGT1kPS7+qAZZUr3Pj5je45ybORIgDLTaPV1jXQfpdOVsQcnlW/PSO7gMOrmmJoOQCn7+VJa2jAzy9ztNozdNqkV1u/cDpQeKdt/tYE+IS1n+OOt8UJsjDSsx3d1vbWpNvB08smfJ+2B+AFC5H1aWvgMd6Z7QXWeydN4S4AkwGsS4H0biR9qSQTZEd5IRpFkrfd+pBmK9yAkz7TYDfjFZdKrVgLxTfsGIOCReP+YWG87ueXIcuLycBlW2VRa9XSd1MtOOlXpnPA9E5aay9w+dHpl/9SqmB1VkxnF2zP0yjSVB9Q4VSnKM3tu5+/1LoqJH28LKdto3Z0HOAmv4vAunrGNTQd61jH2mmcnwekNxjNIclD1ts6Vqr6CJJ8XvXEhWlf/Jo6f73mniVn3eie51w2OKo198RzW/Ws5yX+ZfUP7r8Bx0FgL4y9b9kAAAAASUVORK5CYII="
-      />
-    </Defs>
+import Svg, { Path } from 'react-native-svg';
+const ServicesIcon = ({ width = 48, height = 48, fill = '#696969' }: IconProps) => (
+  <Svg viewBox="0 0 48 48" width={width} height={height} fill={fill}>
+    <Path d="M 7.5 5 C 6.1364058 5 5 6.1364058 5 7.5 L 5 13.5 C 5 14.863594 6.1364058 16 7.5 16 L 13.5 16 C 14.863594 16 16 14.863594 16 13.5 L 16 7.5 C 16 6.1364058 14.863594 5 13.5 5 L 7.5 5 z M 8 8 L 13 8 L 13 13 L 8 13 L 8 8 z M 20.5 9 A 1.50015 1.50015 0 1 0 20.5 12 L 41.5 12 A 1.50015 1.50015 0 1 0 41.5 9 L 20.5 9 z M 7.5 18.5 C 6.1364058 18.5 5 19.636406 5 21 L 5 27 C 5 28.363594 6.1364058 29.5 7.5 29.5 L 13.5 29.5 C 14.863594 29.5 16 28.363594 16 27 L 16 21 C 16 19.636406 14.863594 18.5 13.5 18.5 L 7.5 18.5 z M 8 21.5 L 13 21.5 L 13 26.5 L 8 26.5 L 8 21.5 z M 20.5 22.5 A 1.50015 1.50015 0 1 0 20.5 25.5 L 41.5 25.5 A 1.50015 1.50015 0 1 0 41.5 22.5 L 20.5 22.5 z M 7.5 32 C 6.1364058 32 5 33.136406 5 34.5 L 5 40.5 C 5 41.863594 6.1364058 43 7.5 43 L 13.5 43 C 14.863594 43 16 41.863594 16 40.5 L 16 34.5 C 16 33.136406 14.863594 32 13.5 32 L 7.5 32 z M 8 35 L 13 35 L 13 40 L 8 40 L 8 35 z M 20.5 36 A 1.50015 1.50015 0 1 0 20.5 39 L 41.5 39 A 1.50015 1.50015 0 1 0 41.5 36 L 20.5 36 z" />
   </Svg>
 );
 export default ServicesIcon;

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { FlatList, StatusBar, StyleSheet, Text, View } from 'react-native';
+import { FlatList, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { format, subMonths } from 'date-fns';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 
 import { ScreenStatusProps, TransactionItem } from '../../types/services/types';
 import { WaterDropIcon } from '@app/icons';
@@ -19,12 +19,14 @@ import { color, font } from '@app/styles';
 import { ERR_NETWORK, IMAGES } from '@app/constant';
 import { formattedNumber } from '@app/helpers';
 import { getTransactionsRequest } from '@app/services';
+import { NavigationProp } from '../../types/navigation/types';
 
 const renderSeparator = () => <View style={styles.separator} />;
 
 const Transaction = () => {
   const { user } = useContext(GlobalContext);
-  const isFocused = useNavigation();
+  const isFocused = useIsFocused();
+  const navigation = useNavigation<NavigationProp>();
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
     isLoading: false,
     hasError: false,
@@ -34,10 +36,15 @@ const Transaction = () => {
 
   const fetchTransactions = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getTransactionsRequest(user.accessToken, user.id, {
-      start: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
-      end: format(new Date(), 'yyyy-MM-dd'),
-    });
+    const response = await getTransactionsRequest(
+      user.accessToken,
+      user.refreshToken,
+      {
+        start: format(subMonths(new Date(), 2), 'yyyy-MM-dd'),
+        end: format(new Date(), 'yyyy-MM-dd'),
+      },
+      user.id,
+    );
 
     if (response.success && response.data) {
       setTransactions(response.data.transactions);
@@ -88,15 +95,29 @@ const Transaction = () => {
         contentContainerStyle={styles.list}
         data={transactions}
         renderItem={({ item }) => (
-          <ServiceTransactionItem
-            icon={<WaterDropIcon />}
-            serviceName={item.service_name}
-            price={formattedNumber(item.price)}
-            date={format(new Date(item.date), 'dd MMM, hh:mm a')}
-          />
+          <TouchableOpacity
+            onPress={() => {
+              navigation.navigate('TransactionDetails', {
+                transactionId: item.transaction_id,
+                transactionServiceId: item.transaction_availed_service_id,
+              });
+            }}
+          >
+            <ServiceTransactionItem
+              icon={<WaterDropIcon />}
+              serviceName={item.service_name}
+              price={formattedNumber(item.price)}
+              date={format(new Date(item.date), 'dd MMM, hh:mm a')}
+            />
+          </TouchableOpacity>
         )}
         ItemSeparatorComponent={renderSeparator}
-        ListEmptyComponent={<EmptyState />}
+        ListEmptyComponent={
+          <EmptyState
+            title="No services availed yet"
+            description="You haven't availed any car wash services yet. Start availing our services to see your activity here."
+          />
+        }
       />
     </SafeAreaView>
   );
@@ -124,7 +145,6 @@ const styles = StyleSheet.create({
   list: {
     flexGrow: 1,
     paddingHorizontal: 25,
-    backgroundColor: color.background,
     paddingTop: 10,
     paddingBottom: 20,
   },

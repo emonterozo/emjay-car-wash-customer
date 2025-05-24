@@ -1,32 +1,33 @@
 import React from 'react';
 import { BottomTabBarProps, createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Image, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
 
 import { Home, Services, QRCard, Transaction, More } from '@app/screens';
-import { IMAGES } from '@app/constant';
+import { HomeIcon, MoreIcon, QRCodeIcon, ServicesIcon, TransactionsIcon } from '@app/icons';
+import { color } from '@app/styles';
 
 const Tab = createBottomTabNavigator();
 
 const TAB_ITEMS = [
   {
-    icon_active: <Image source={IMAGES.HOME_ACTIVE} resizeMode="contain" />,
-    icon_inactive: <Image source={IMAGES.HOME_INACTIVE} resizeMode="contain" />,
+    icon_active: <HomeIcon width={30} height={30} fill={color.primary} />,
+    icon_inactive: <HomeIcon width={30} height={30} />,
   },
   {
-    icon_active: <Image source={IMAGES.SERVICE_ACTIVE} resizeMode="contain" />,
-    icon_inactive: <Image source={IMAGES.SERVICE_INACTIVE} resizeMode="contain" />,
+    icon_active: <ServicesIcon width={30} height={30} fill={color.primary} />,
+    icon_inactive: <ServicesIcon width={30} height={30} />,
   },
   {
-    icon_active: <Image source={IMAGES.QR_ACTIVE} resizeMode="contain" />,
-    icon_inactive: <Image source={IMAGES.QR_INACTIVE} resizeMode="contain" />,
+    icon_active: <QRCodeIcon width={30} height={30} fill={color.primary} />,
+    icon_inactive: <QRCodeIcon width={30} height={30} />,
   },
   {
-    icon_active: <Image source={IMAGES.HISTORY_ACTIVE} resizeMode="contain" />,
-    icon_inactive: <Image source={IMAGES.HISTORY_INACTIVE} resizeMode="contain" />,
+    icon_active: <TransactionsIcon width={30} height={30} fill={color.primary} />,
+    icon_inactive: <TransactionsIcon width={30} height={30} />,
   },
   {
-    icon_active: <Image source={IMAGES.MORE_ACTIVE} resizeMode="contain" />,
-    icon_inactive: <Image source={IMAGES.MORE_INACTIVE} resizeMode="contain" />,
+    icon_active: <MoreIcon width={30} height={30} fill={color.primary} />,
+    icon_inactive: <MoreIcon width={30} height={30} />,
   },
 ];
 

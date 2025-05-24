@@ -3,9 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android --mode=developmentDebug --appIdSuffix=development",
+    "android": "react-native run-android --mode=developmentDebug",
     "ios": "ENVFILE=.env.development react-native run-ios",
-    "android:staging": "react-native run-android --mode=stagingDebug --appIdSuffix=staging",
+    "android:staging": "react-native run-android --mode=stagingDebug",
     "ios:staging": "ENVFILE=.env.staging react-native run-ios",
     "android:production": "react-native run-android --mode=production --appIdSuffix=production",
     "ios:production": "ENVFILE=.env.production react-native run-ios",
@@ -17,7 +17,10 @@
   "dependencies": {
     "@d11/react-native-fast-image": "^8.9.0",
     "@eva-design/eva": "^2.2.0",
+    "@notifee/react-native": "^9.1.8",
     "@react-native-async-storage/async-storage": "^2.1.2",
+    "@react-native-firebase/app": "^21.13.0",
+    "@react-native-firebase/messaging": "^21.13.0",
     "@react-navigation/bottom-tabs": "^7.2.0",
     "@react-navigation/native": "^7.0.12",
     "@react-navigation/stack": "^7.0.17",
@@ -31,7 +34,8 @@
     "react-native": "0.76.3",
     "react-native-chart-kit": "^6.12.0",
     "react-native-config": "^1.5.3",
-    "react-native-gesture-handler": "^2.21.2",
+    "react-native-gesture-handler": "^2.24.0",
+    "react-native-keychain": "^10.0.0",
     "react-native-qrcode-svg": "^6.3.15",
     "react-native-reanimated": "^3.16.6",
     "react-native-safe-area-context": "^4.14.0",
@@ -39,6 +43,8 @@
     "react-native-svg": "^15.11.2",
     "react-native-vector-icons": "^10.2.0",
     "react-native-vision-camera": "^4.6.3",
+    "react-native-webview": "^13.13.5",
+    "socket.io-client": "^4.8.1",
     "yup": "^1.6.1"
   },
   "devDependencies": {

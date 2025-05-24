@@ -1,4 +1,5 @@
 import { ERROR_TYPE } from '@app/constant';
+import { ChatReference } from '../constant/types';
 
 export type GenderType = 'MALE' | 'FEMALE';
 
@@ -14,17 +15,20 @@ export type ErrorProps = {
 };
 
 export type LoginPayload = {
-  username: string;
+  contact_number: string;
   password: string;
+  fcm_token: string;
 };
 
 export type LoginResponse = {
   user: {
-    id: string;
+    _id: string;
     username: string;
     first_name: string;
     last_name: string;
     gender: GenderType;
+    birth_date: string;
+    fcm_token: string;
   };
   accessToken: string;
   refreshToken: string;
@@ -38,19 +42,20 @@ export type SignupPayload = {
   gender: GenderType;
   birth_date: string;
   password: string;
+  fcm_token: string;
 };
 
 export type UserResponse = {
   user: {
-    id: string;
+    _id: string;
     username: string;
   };
   errors: ErrorProps[];
 };
 
 export type OtpVerifyPayload = {
-  user: string;
-  otp: string;
+  customer_id: string;
+  otp: number;
 };
 
 export type Price = {
@@ -61,7 +66,7 @@ export type Price = {
 };
 
 export type Service = {
-  id: string;
+  _id: string;
   title: string;
   description: string;
   image: string;
@@ -83,11 +88,12 @@ export type ServiceCount = {
 };
 
 export type Promos = {
-  id: string;
+  _id: string;
   percent: number;
   title: string;
   description: string;
   is_free: boolean;
+  is_active: boolean;
 };
 
 export type WashPointsResponse = {
@@ -102,7 +108,7 @@ export type WashPointsResponse = {
 };
 
 export type CustomerQueue = {
-  id: string;
+  _id: string;
   service_name: number;
   status: string;
   date: string;
@@ -111,17 +117,19 @@ export type CustomerQueue = {
 
 export type CustomerQueueResponse = {
   transactions: CustomerQueue[];
+  queue: number;
   errors: ErrorProps[];
 };
 
 export type ForgotPasswordVerifyPayload = {
-  user: string;
+  customer_id: string;
   password: string;
-  otp: string;
+  otp: number;
 };
 
 export type TransactionItem = {
-  id: string;
+  transaction_id: string;
+  transaction_availed_service_id: string;
   service_name: string;
   price: number;
   date: string;
@@ -129,5 +137,78 @@ export type TransactionItem = {
 
 export type TransactionResponse = {
   transactions: TransactionItem[];
+  errors: ErrorProps[];
+};
+
+export type Version = {
+  _id: string;
+  key: string;
+  version: string;
+};
+
+export type VersionResponse = {
+  versions: Version[];
+  errors: ErrorProps[];
+};
+
+export type UpdateProfileResponse = {
+  user: {
+    _id: string;
+    first_name: string;
+    last_name: string;
+  };
+  errors: ErrorProps[];
+};
+
+export type UpdateProfilePayload = {
+  first_name?: string;
+  last_name?: string;
+  password?: string;
+  current_password?: string;
+};
+
+export type TransactionDetailsResponse = {
+  transaction: Omit<
+    TransactionServiceDetailsResponse['transaction'],
+    'image' | 'status' | 'is_free' | 'is_paid'
+  > & {
+    first_name: string;
+    last_name: string;
+    vehicle_type: VehicleType;
+    model: string;
+    vehicle_size: string;
+    plate_number: string;
+  };
+  errors: ErrorProps[];
+};
+
+export type TransactionServiceEmployee = {
+  _id: string;
+  first_name: string;
+  last_name: string;
+  gender: string;
+};
+
+export type Message = {
+  _id: string;
+  customer_id: string;
+  message: string;
+  timestamp: string;
+  from: ChatReference;
+  is_read: number;
+};
+
+export type MessagesResponse = {
+  messages: Message[];
+  totalCount: number;
+  errors: ErrorProps[];
+};
+
+export type UpdateMessageStatePayload = {
+  view_by: ChatReference;
+};
+
+export type UpdateMessageStateResponse = {
+  _id: string;
   errors: ErrorProps[];
 };

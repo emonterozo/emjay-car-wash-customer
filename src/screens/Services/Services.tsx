@@ -7,7 +7,7 @@ import FastImage from '@d11/react-native-fast-image';
 import FilterOption from './FilterOption';
 import { SizeKey } from '../../types/constant/types';
 import { Price, ScreenStatusProps, Service } from '../../types/services/types';
-import { FilterIcon, FreeIcon, StarIcon } from '@app/icons';
+import { CustomerPresenceIcon, FilterIcon, FreeIcon, MessageIcon, StarIcon } from '@app/icons';
 import {
   AppHeaderImage,
   EmptyState,
@@ -51,7 +51,7 @@ const Services = () => {
 
   const fetchService = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getServicesRequest(user.accessToken, '_id', 'asc');
+    const response = await getServicesRequest(user.accessToken, user.refreshToken, '_id', 'asc');
     if (response.success && response.data) {
       setServices(response.data.services);
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
@@ -101,6 +101,7 @@ const Services = () => {
       size: 'Small',
       type,
     });
+    showPopover();
   };
 
   const onSelectedSize = (size: string) => {
@@ -108,6 +109,7 @@ const Services = () => {
       ...filter,
       size,
     });
+    showPopover();
   };
 
   const onCancel = () => {
@@ -182,39 +184,42 @@ const Services = () => {
         data={filteredServices}
         renderItem={({ item }) => (
           <View style={styles.card}>
-            <View style={styles.top}>
-              <FastImage
-                style={styles.image}
-                source={{
-                  uri: item.image,
-                  priority: FastImage.priority.normal,
-                }}
-                resizeMode={FastImage.resizeMode.cover}
-              />
+            <FastImage
+              style={styles.image}
+              source={{
+                uri: item.image,
+                priority: FastImage.priority.normal,
+              }}
+              resizeMode={FastImage.resizeMode.stretch}
+            />
+            <View style={styles.content}>
               <View style={styles.details}>
-                <Text style={styles.name}>{item.title}</Text>
-                <Text style={styles.description}>{item.description}</Text>
-                <View style={styles.content}>
-                  <View style={styles.ratingsContainer}>
-                    <StarIcon width={16} height={16} />
-                    <Text style={styles.ratings}>{item.ratings}</Text>
-                  </View>
+                <View style={styles.row}>
+                  <Text style={styles.name}>{item.title}</Text>
+                  <Text style={[styles.name, styles.priceValue]}>
+                    {getServicePrice(item.price_list)}
+                  </Text>
+                </View>
+                <View style={styles.row}>
                   <View style={styles.pointsContainer}>
-                    <FreeIcon />
                     <Text style={styles.points}>
                       {getServicePricePoints(item.price_list, 'points') > 0
-                        ? `${getServicePricePoints(item.price_list, 'points')} points`
-                        : '10 wash'}
+                        ? `${getServicePricePoints(item.price_list, 'points')}`
+                        : '10'}
                     </Text>
+                    <FreeIcon />
+                    <Text style={styles.points}>
+                      {getServicePricePoints(item.price_list, 'points') > 0 ? '| Points' : '| Wash'}
+                    </Text>
+                  </View>
+                  <View style={styles.ratingsContainer}>
+                    <Text style={styles.ratings}>{item.ratings}</Text>
+                    <StarIcon width={16} height={16} />
+                    <Text style={styles.ratings}>| 0 review</Text>
                   </View>
                 </View>
               </View>
-            </View>
-            <View style={styles.bottom}>
-              <View style={styles.bottomContent}>
-                <Text style={styles.priceLabel}>Price</Text>
-                <Text style={styles.priceValue}>{getServicePrice(item.price_list)}</Text>
-              </View>
+              <Text style={styles.description}>{item.description}</Text>
               <View style={styles.earningContainer}>
                 <Text style={styles.earningPoints}>
                   {getServicePricePoints(item.price_list, 'earning_points') > 0
@@ -225,21 +230,21 @@ const Services = () => {
             </View>
           </View>
         )}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         ItemSeparatorComponent={renderSeparator}
         ListEmptyComponent={<EmptyState />}
       />
       <FloatingActionButton
         additionalButtons={[
           {
-            icon: IMAGES.VIEW_CUSTOMER_PRESENCE,
-            label: 'View Customer Presence',
+            icon: <CustomerPresenceIcon width={25} height={25} fill="#ffffff" />,
+            label: 'View Customers in Queue',
             onPress: () => navigation.navigate('CustomerPresence'),
           },
           {
-            icon: IMAGES.MESSAGE,
+            icon: <MessageIcon width={25} height={25} fill="#ffffff" />,
             label: 'Message',
-            onPress: () => <></>, //console.log('Message action triggered'),
+            onPress: () => navigation.navigate('Message'),
           },
         ]}
       />
@@ -289,25 +294,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 5,
     elevation: 5,
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    gap: 24,
-  },
-  bottom: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-  },
-  priceLabel: {
-    ...font.regular,
-    fontSize: 16,
-    color: '#696969',
   },
   priceValue: {
-    ...font.regular,
-    fontSize: 16,
-    color: '#050303',
-    marginTop: 8,
+    textAlign: 'right',
   },
   earningContainer: {
     backgroundColor: '#1F93E1',
@@ -315,6 +304,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flex: 1,
     alignItems: 'center',
+    marginVertical: 16,
   },
   earningPoints: {
     ...font.regular,
@@ -322,18 +312,17 @@ const styles = StyleSheet.create({
     lineHeight: 16,
     color: '#F3F2EF',
   },
-  top: {
-    flexDirection: 'row',
-    gap: 12,
-  },
   name: {
     ...font.regular,
-    fontSize: 20,
+    fontSize: 24,
+    lineHeight: 24,
     color: '#000000',
+    flex: 1,
   },
   description: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#888888',
   },
   ratingsContainer: {
@@ -343,10 +332,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
+    justifyContent: 'center',
   },
   ratings: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#050303',
   },
   pointsContainer: {
@@ -356,30 +347,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 8,
-    flex: 1,
+    justifyContent: 'center',
   },
   points: {
     ...font.regular,
     fontSize: 16,
+    lineHeight: 16,
     color: '#050303',
-    flex: 1,
-  },
-  content: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    flex: 1,
-  },
-  details: {
-    gap: 8,
-    flex: 1,
   },
   image: {
-    width: 108,
-    borderRadius: 8,
+    height: 212,
+    borderTopRightRadius: 24,
+    borderTopLeftRadius: 24,
   },
-  bottomContent: {
-    flex: 1,
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  content: {
+    paddingHorizontal: 16,
+    gap: 24,
+    marginTop: 16,
+  },
+  details: {
+    gap: 16,
   },
 });
 

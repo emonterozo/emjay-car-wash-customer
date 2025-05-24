@@ -30,10 +30,10 @@ import {
 import { color, font } from '@app/styles';
 import { loginRequest } from '@app/services';
 import { verticalScale } from '@app/metrics';
-import { getUsername, removeUsername, storeUsername } from '@app/helpers';
+import { getCredentials, removeCredentials, storeCredentials } from '@app/helpers';
 
 const Login = () => {
-  const { setUser } = useContext(GlobalContext);
+  const { user, setUser } = useContext(GlobalContext);
   const navigation = useNavigation<UnAuthNavigationProp>();
   const [isPasswordSecure, setIsPasswordSecure] = useState(true);
   const [screenStatus, setScreenStatus] = useState<ScreenStatusProps>({
@@ -50,27 +50,33 @@ const Login = () => {
 
   const login = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await loginRequest({ username: input.username, password: input.password });
+    const response = await loginRequest({
+      contact_number: input.username,
+      password: input.password,
+      fcm_token: user.fcmToken,
+    });
 
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
 
     if (response.success && response.data) {
       switch (response.status) {
         case 201:
-          const { id, username } = response.data.user;
-          navigation.replace('RegistrationOtp', { user: id, username: username });
+          const { _id, username } = response.data.user;
+          navigation.navigate('RegistrationOtp', { user: _id, username: username });
           break;
         default:
-          const { user, accessToken, refreshToken } = response.data;
+          const { user: userData, accessToken, refreshToken } = response.data;
           if (isRemembered) {
-            storeUsername(user.username);
+            storeCredentials(input.username, input.password);
           } else {
-            removeUsername();
+            removeCredentials();
           }
           setUser({
-            ...user,
+            ...userData,
+            id: userData._id,
             accessToken,
             refreshToken,
+            fcmToken: user.fcmToken,
           });
           break;
       }
@@ -126,19 +132,19 @@ const Login = () => {
   };
 
   useEffect(() => {
-    const fetchUsername = async () => {
-      const storedUsername = await getUsername();
-      if (storedUsername) {
+    const fetchCredential = async () => {
+      const credential = await getCredentials();
+
+      if (credential) {
         setInput({
-          ...input,
-          username: storedUsername,
+          username: credential.username,
+          password: credential.password,
         });
         setIsRemembered(true);
       }
     };
 
-    fetchUsername();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchCredential();
   }, []);
 
   return (
@@ -173,7 +179,6 @@ const Login = () => {
               value={input.username}
               onChangeText={(value) => onChange('username', value)}
               keyboardType="number-pad"
-              onFocus={() => {}}
               maxLength={11}
             />
             <FormTextInput
@@ -182,7 +187,6 @@ const Login = () => {
               value={input.password}
               onChangeText={(value) => onChange('password', value)}
               secureTextEntry={isPasswordSecure}
-              onFocus={() => {}}
               maxLength={64}
               endIcon={
                 <Pressable onPress={toggleSecureEntry}>
@@ -246,6 +250,7 @@ const styles = StyleSheet.create({
   header: {
     ...font.bold,
     fontSize: 40,
+    lineHeight: 40,
     color: '#050303',
     textAlign: 'center',
   },

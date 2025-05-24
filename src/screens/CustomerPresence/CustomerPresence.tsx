@@ -1,16 +1,15 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { View, StyleSheet, SafeAreaView, StatusBar, Text, Image } from 'react-native';
+import { View, StyleSheet, SafeAreaView, StatusBar, Text, Image, FlatList } from 'react-native';
+import { format } from 'date-fns';
+import { useNavigation } from '@react-navigation/native';
 
 import { color, font } from '@app/styles';
 import { AppHeader, EmptyState, ErrorModal, LoadingAnimation } from '@app/components';
 import { CustomerQueue, ScreenStatusProps } from 'src/types/services/types';
 import GlobalContext from '@app/context';
-import { useNavigation } from '@react-navigation/native';
 import { NavigationProp } from 'src/types/navigation/types';
 import { ERR_NETWORK, IMAGES } from '@app/constant';
-import { FlatList } from 'react-native-gesture-handler';
 import { getCustomerQueue } from '@app/services';
-import { format } from 'date-fns';
 
 const renderSeparator = () => <View style={styles.separator} />;
 
@@ -23,12 +22,14 @@ const CustomerPresence = () => {
     type: 'error',
   });
   const [customerQueue, setCustomerQueue] = useState<CustomerQueue[]>([]);
+  const [queue, setQueue] = useState(0);
 
   const fetchCustomerQueue = async () => {
     setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-    const response = await getCustomerQueue(user.accessToken);
+    const response = await getCustomerQueue(user.accessToken, user.refreshToken);
     if (response.success && response.data) {
       setCustomerQueue(response.data.transactions);
+      setQueue(response.data.queue);
       setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
     } else {
       setScreenStatus({
@@ -69,7 +70,7 @@ const CustomerPresence = () => {
               {item.service_name}
             </Text>
             <Text style={[styles.textBold, styles.text16, styles.textDarkerGrey]}>
-              EmJay Customer
+              Emjay Customer
             </Text>
             <Text style={[styles.textRegular, styles.text16, styles.textGrey]}>
               {item.description}
@@ -120,9 +121,7 @@ const CustomerPresence = () => {
       <View style={styles.heading}>
         <Text style={[styles.text16, styles.textDarkerGrey]}>Customers in Queue</Text>
         <View style={styles.counterCard}>
-          <Text style={[styles.text16, styles.textWhite]}>
-            {customerQueue.length.toString().padStart(2, '0')}
-          </Text>
+          <Text style={[styles.text16, styles.textWhite]}>{queue}</Text>
         </View>
       </View>
       <FlatList
@@ -131,9 +130,15 @@ const CustomerPresence = () => {
         contentContainerStyle={styles.list}
         data={customerQueue}
         renderItem={cardItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         ItemSeparatorComponent={renderSeparator}
-        ListEmptyComponent={<EmptyState />}
+        ListEmptyComponent={
+          <EmptyState
+            source={IMAGES.VEHICLE}
+            title="Fresh lanes ahead!"
+            description="No one's in line just yet—your car's next in queue for that fresh, clean shine."
+          />
+        }
       />
     </SafeAreaView>
   );
@@ -149,10 +154,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     marginTop: 16,
-    marginBottom: 35,
+    marginBottom: 16,
     paddingHorizontal: 25,
   },
   text16: {
+    ...font.regular,
     fontSize: 16,
     lineHeight: 16,
   },
@@ -221,7 +227,6 @@ const styles = StyleSheet.create({
   list: {
     flexGrow: 1,
     paddingHorizontal: 25,
-    backgroundColor: color.background,
     paddingTop: 10,
     paddingBottom: 20,
   },

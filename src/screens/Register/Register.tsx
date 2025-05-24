@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   View,
   StyleSheet,
@@ -7,7 +7,8 @@ import {
   Text,
   ScrollView,
   Pressable,
-  Image,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
 import * as Yup from 'yup';
 import { ValidationError } from 'yup';
@@ -28,22 +29,23 @@ import {
   LoadingAnimation,
   Toast,
 } from '@app/components';
-import { EyeCloseIcon, EyeOpenIcon } from '@app/icons';
-import { ERR_NETWORK, IMAGES } from '@app/constant';
+import { EyeCloseIcon, EyeOpenIcon, FemaleIcon, MaleIcon } from '@app/icons';
+import { ERR_NETWORK } from '@app/constant';
 import { areObjectsEqual } from '@app/helpers';
 import { useNativeBackHandler } from '@app/hooks';
 import { UnAuthNavigationProp } from '../../types/navigation/types';
 import { signupRequest } from '@app/services';
+import GlobalContext from '@app/context';
 
 const GENDER_OPTIONS = [
   {
     id: '1',
-    icon: <Image source={IMAGES.MALE} resizeMode="contain" />,
+    icon: <MaleIcon width={25} height={25} fill="#2196f3" />,
     label: 'MALE',
   },
   {
     id: '2',
-    icon: <Image source={IMAGES.FEMALE} resizeMode="contain" />,
+    icon: <FemaleIcon width={25} height={25} fill="#f78f8f" />,
     label: 'FEMALE',
   },
 ];
@@ -91,6 +93,7 @@ const validationSchema = Yup.object({
 });
 
 const Register = () => {
+  const { user } = useContext(GlobalContext);
   const navigation = useNavigation<UnAuthNavigationProp>();
   const [passwordSecure, setPasswordSecure] = useState({
     password: true,
@@ -115,6 +118,7 @@ const Register = () => {
   const [toast, setToast] = useState({
     isVisible: false,
     message: '',
+    type: 'error',
   });
   const [isConfirmationVisible, setIsConfirmationVisible] = useState(false);
 
@@ -138,6 +142,7 @@ const Register = () => {
           gender: formValues.gender?.label as GenderType,
           birth_date: format(formValues.birthDate!, 'yyyy-MM-dd'),
           password: formValues.password!,
+          fcm_token: user.fcmToken,
         };
 
         const response = await signupRequest(payload);
@@ -145,14 +150,23 @@ const Register = () => {
         setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
 
         if (response.success && response.data) {
-          const { id, username } = response.data.user;
-          navigation.replace('RegistrationOtp', { user: id, username: username });
+          const { _id, username } = response.data.user;
+          setToast({
+            isVisible: true,
+            message:
+              "Account created successfully! We've sent a one-time password (OTP) to your contact details. Please enter the OTP to verify your account.",
+            type: 'success',
+          });
+          setTimeout(() => {
+            navigation.replace('RegistrationOtp', { user: _id, username: username });
+          }, 3100);
         } else {
           switch (response.status) {
             case 400:
               setToast({
                 isVisible: true,
-                message: 'The contact number is already in use. Please use a different number.',
+                message: 'The phone number is already in use. Please use a different number.',
+                type: 'error',
               });
               break;
             default:
@@ -174,6 +188,7 @@ const Register = () => {
         setToast({
           isVisible: true,
           message: 'Please complete the required fields before proceeding.',
+          type: 'error',
         });
       });
   };
@@ -202,7 +217,7 @@ const Register = () => {
     setFormValues({ ...formValues, [key]: value });
   };
 
-  const onToastClose = () => setToast({ isVisible: false, message: '' });
+  const onToastClose = () => setToast({ isVisible: false, message: '', type: 'error' });
 
   const handlePressBack = () => {
     if (areObjectsEqual(initialFormValues, formValues)) {
@@ -255,98 +270,105 @@ const Register = () => {
         isVisible={toast.isVisible}
         message={toast.message}
         duration={3000}
-        type="error"
+        type={toast.type as 'success' | 'error' | 'info'}
         onClose={onToastClose}
       />
       <View style={styles.heading}>
         <Text style={styles.label}>Create a new account</Text>
       </View>
-      <ScrollView bounces={false} contentContainerStyle={styles.scrollViewContent}>
-        <FormTextInput
-          label="First Name"
-          placeholder="Enter First Name"
-          error={errors.firstName}
-          value={formValues.firstName}
-          onChangeText={(value) => handleInputChange('firstName', value)}
-          onFocus={() => removeError('firstName')}
-          maxLength={64}
-        />
-        <FormTextInput
-          label="Last Name"
-          placeholder="Enter Last Name"
-          error={errors.lastName}
-          value={formValues.lastName}
-          onChangeText={(value) => handleInputChange('lastName', value)}
-          onFocus={() => removeError('lastName')}
-          maxLength={64}
-        />
-        <CalendarPickerTrigger
-          date={new Date()}
-          label="Date of Birth"
-          placeholder="Select Date of Birth"
-          value={getDateValue('birthDate', formValues.birthDate)}
-          error={errors.birthDate}
-          onSelectedDate={(selectedDate) => handleCalendarChange('birthDate', selectedDate)}
-          onPressOpen={() => removeError('birthDate')}
-        />
-        <Dropdown
-          label="Gender"
-          placeholder="Select Gender"
-          selected={formValues.gender}
-          options={GENDER_OPTIONS}
-          onSelected={(selectedOption) => handleDropdownChange('gender', selectedOption)}
-          optionMinWidth={196}
-          error={errors.gender}
-          onToggleOpen={() => removeError('gender')}
-        />
-        <FormTextInput
-          label="Phone Number"
-          placeholder="E.g 09123456789"
-          error={errors.contactNumber}
-          value={formValues.contactNumber}
-          onChangeText={(value) => handleInputChange('contactNumber', value)}
-          keyboardType="numeric"
-          onFocus={() => removeError('contactNumber')}
-          maxLength={11}
-        />
-        <FormTextInput
-          label="Password"
-          placeholder="Password"
-          error={errors.password}
-          value={formValues.password}
-          onChangeText={(value) => handleInputChange('password', value)}
-          onFocus={() => removeError('password')}
-          maxLength={64}
-          secureTextEntry={passwordSecure.password}
-          endIcon={
-            <Pressable onPress={() => toggleSecureEntry('password')}>
-              {passwordSecure.password ? <EyeCloseIcon /> : <EyeOpenIcon />}
-            </Pressable>
-          }
-        />
-        <FormTextInput
-          label="Confirm Password"
-          placeholder="Confirm Password"
-          error={errors.confirmPassword}
-          value={formValues.confirmPassword}
-          onChangeText={(value) => handleInputChange('confirmPassword', value)}
-          onFocus={() => removeError('confirmPassword')}
-          maxLength={64}
-          secureTextEntry={passwordSecure.confirmPassword}
-          endIcon={
-            <Pressable onPress={() => toggleSecureEntry('confirmPassword')}>
-              {passwordSecure.confirmPassword ? <EyeCloseIcon /> : <EyeOpenIcon />}
-            </Pressable>
-          }
-        />
-        <Button
-          title="Sign up"
-          variant="primary"
-          buttonStyle={styles.button}
-          textStyle={styles.textStyle}
-          onPress={handleSubmit}
-        />
-      </ScrollView>
+      <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+        <ScrollView
+          bounces={false}
+          contentContainerStyle={styles.scrollViewContent}
+          keyboardShouldPersistTaps="handled"
+        >
+          <FormTextInput
+            label="First Name"
+            placeholder="Enter First Name"
+            error={errors.firstName}
+            value={formValues.firstName}
+            onChangeText={(value) => handleInputChange('firstName', value)}
+            onFocus={() => removeError('firstName')}
+            maxLength={64}
+          />
+          <FormTextInput
+            label="Last Name"
+            placeholder="Enter Last Name"
+            error={errors.lastName}
+            value={formValues.lastName}
+            onChangeText={(value) => handleInputChange('lastName', value)}
+            onFocus={() => removeError('lastName')}
+            maxLength={64}
+          />
+          <CalendarPickerTrigger
+            date={formValues.birthDate ?? new Date()}
+            label="Date of Birth"
+            placeholder="Select Date of Birth"
+            value={getDateValue('birthDate', formValues.birthDate)}
+            error={errors.birthDate}
+            onSelectedDate={(selectedDate) => handleCalendarChange('birthDate', selectedDate)}
+            onPressOpen={() => removeError('birthDate')}
+            isDefaultCalendarSelection={false}
+          />
+          <Dropdown
+            label="Gender"
+            placeholder="Select Gender"
+            selected={formValues.gender}
+            options={GENDER_OPTIONS}
+            onSelected={(selectedOption) => handleDropdownChange('gender', selectedOption)}
+            optionMinWidth={196}
+            error={errors.gender}
+            onToggleOpen={() => removeError('gender')}
+          />
+          <FormTextInput
+            label="Phone Number"
+            placeholder="E.g 09123456789"
+            error={errors.contactNumber}
+            value={formValues.contactNumber}
+            onChangeText={(value) => handleInputChange('contactNumber', value)}
+            keyboardType="numeric"
+            onFocus={() => removeError('contactNumber')}
+            maxLength={11}
+          />
+          <FormTextInput
+            label="Password"
+            placeholder="Password"
+            error={errors.password}
+            value={formValues.password}
+            onChangeText={(value) => handleInputChange('password', value)}
+            onFocus={() => removeError('password')}
+            maxLength={64}
+            secureTextEntry={passwordSecure.password}
+            endIcon={
+              <Pressable onPress={() => toggleSecureEntry('password')}>
+                {passwordSecure.password ? <EyeCloseIcon /> : <EyeOpenIcon />}
+              </Pressable>
+            }
+          />
+          <FormTextInput
+            label="Confirm Password"
+            placeholder="Confirm Password"
+            error={errors.confirmPassword}
+            value={formValues.confirmPassword}
+            onChangeText={(value) => handleInputChange('confirmPassword', value)}
+            onFocus={() => removeError('confirmPassword')}
+            maxLength={64}
+            secureTextEntry={passwordSecure.confirmPassword}
+            endIcon={
+              <Pressable onPress={() => toggleSecureEntry('confirmPassword')}>
+                {passwordSecure.confirmPassword ? <EyeCloseIcon /> : <EyeOpenIcon />}
+              </Pressable>
+            }
+          />
+          <Button
+            title="Sign up"
+            variant="primary"
+            buttonStyle={styles.button}
+            textStyle={styles.textStyle}
+            onPress={handleSubmit}
+          />
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
@@ -375,7 +397,6 @@ const styles = StyleSheet.create({
   },
   scrollViewContent: {
     gap: 24,
-    paddingBottom: 62,
     paddingHorizontal: 25,
   },
   button: {
@@ -383,6 +404,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 16,
     borderRadius: 28,
+    marginBottom: 150,
   },
   textStyle: {
     ...font.regular,

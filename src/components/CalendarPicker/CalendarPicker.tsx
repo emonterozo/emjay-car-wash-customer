@@ -53,6 +53,7 @@ type CalendarPickerProps = {
   onClose: () => void;
   maxDate?: Date;
   minDate?: Date;
+  isDefaultCalendarSelection?: boolean;
 };
 
 const CalendarPicker = ({
@@ -62,6 +63,7 @@ const CalendarPicker = ({
   onClose,
   maxDate = getCurrentDateAtMidnightUTC(),
   minDate = getMinimumDateAtMidnightUTC(),
+  isDefaultCalendarSelection = true,
 }: CalendarPickerProps) => {
   const [days, setDays] = useState<number[]>([]);
   const [selectedDate, setSelectedDate] = useState(date);
@@ -73,7 +75,7 @@ const CalendarPicker = ({
       }
     | undefined
   >(undefined);
-  const [isDefaultSelection, setIsDefaultSelection] = useState(true);
+  const [isDefaultSelection, setIsDefaultSelection] = useState(isDefaultCalendarSelection);
   const [inputtedDate, setInputtedDate] = useState(format(date, 'MM/dd/yyyy'));
   const [inputError, setInputError] = useState<string | undefined>(undefined);
 

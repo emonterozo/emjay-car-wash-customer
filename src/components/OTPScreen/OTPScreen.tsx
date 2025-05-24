@@ -57,19 +57,21 @@ const OTPScreen = ({ length = 6, number, onSubmit, onResend }: OTPScreenProps) =
   const isOtpComplete = otp.every((digit) => digit.trim() !== '');
 
   useEffect(() => {
-    const countdown = setInterval(() => {
-      setTimer((prev) => {
-        if (prev <= 1) {
-          clearInterval(countdown);
-          setShowResend(true); // Show resend button after 5 minutes
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
+    if (timer > 0) {
+      const countdown = setInterval(() => {
+        setTimer((prev) => {
+          if (prev <= 1) {
+            clearInterval(countdown);
+            setShowResend(true); // Show resend button after 5 minutes
+            return 0;
+          }
+          return prev - 1;
+        });
+      }, 1000);
 
-    return () => clearInterval(countdown);
-  }, []);
+      return () => clearInterval(countdown);
+    }
+  }, [timer]);
 
   const formatTime = (time: number) => {
     const minutes = Math.floor(time / 60);
@@ -131,6 +133,8 @@ const OTPScreen = ({ length = 6, number, onSubmit, onResend }: OTPScreenProps) =
             onPress={() => {
               Keyboard.dismiss();
               onResend();
+              setTimer(300);
+              setShowResend(false);
               setOtp(new Array(length).fill(''));
             }}
           >
