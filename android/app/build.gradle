@@ -99,8 +99,8 @@ android {
         applicationId "com.quindigitalsolutions.emjayrewards"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 15
-        versionName "0.0.2"
+        versionCode 16
+        versionName "0.0.3"
         resValue 'string', 'build_config_package','com.quindigitalsolutions.emjayrewards'
     }
     flavorDimensions "env"

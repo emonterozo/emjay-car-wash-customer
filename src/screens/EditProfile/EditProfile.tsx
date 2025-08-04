@@ -1,9 +1,10 @@
 import React, { useContext, useState } from 'react';
-import { StyleSheet, SafeAreaView, StatusBar, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, StatusBar, Text, View, ScrollView } from 'react-native';
 import * as Yup from 'yup';
 import { ValidationError } from 'yup';
 import { format } from 'date-fns';
 import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import {
   AppHeader,
@@ -39,6 +40,10 @@ type FormValues = {
   birthDate: Date | undefined;
   gender: Option | undefined;
   contactNumber: string | undefined;
+  address: string | undefined;
+  barangay: string | undefined;
+  city: string | undefined;
+  province: string | undefined;
 };
 
 type Errors = {
@@ -55,6 +60,10 @@ const validationSchema = Yup.object({
       /^09[0-9]{9}$/,
       'Phone Number must be 11 digits long, starting with "09", and contain only numbers',
     ),
+  address: Yup.string().required('Address is required'),
+  barangay: Yup.string().required('Barangay is required'),
+  city: Yup.string().required('Municipality is required'),
+  province: Yup.string().required('Province is required'),
 });
 
 const EditProfile = () => {
@@ -63,6 +72,10 @@ const EditProfile = () => {
   const initialFormValues: FormValues = {
     firstName: user.first_name,
     lastName: user.last_name,
+    address: user.address ?? undefined,
+    barangay: user.barangay ?? undefined,
+    city: user.city ?? undefined,
+    province: user.city ?? undefined,
     birthDate: new Date(user.birth_date),
     gender: GENDER_OPTIONS.find((item) => item.label === user.gender),
     contactNumber: user.username,
@@ -102,6 +115,10 @@ const EditProfile = () => {
         const payload = {
           first_name: validData.firstName,
           last_name: validData.lastName,
+          address: validData.address,
+          barangay: validData.barangay,
+          city: validData.city,
+          province: validData.province,
         };
 
         const response = await updateProfile(user.accessToken, user.refreshToken, user.id, payload);
@@ -109,12 +126,16 @@ const EditProfile = () => {
         setIsLoading(false);
 
         if (response.success && response.data?.user) {
-          const { first_name, last_name } = response.data.user;
+          const { first_name, last_name, address, barangay, city, province } = response.data.user;
           setToast({ isVisible: true, message: 'Profile updated successfully.', type: 'success' });
           setUser({
             ...user,
             first_name,
             last_name,
+            address,
+            barangay,
+            city,
+            province,
           });
           navigation.goBack();
         } else {
@@ -168,6 +189,42 @@ const EditProfile = () => {
           value={formValues.lastName}
           onChangeText={(value) => handleInputChange('lastName', value)}
           onFocus={() => removeError('lastName')}
+          maxLength={64}
+        />
+        <FormTextInput
+          label="Address"
+          placeholder="Enter Address"
+          error={errors.address}
+          value={formValues.address}
+          onChangeText={(value) => handleInputChange('address', value)}
+          onFocus={() => removeError('address')}
+          maxLength={100}
+        />
+        <FormTextInput
+          label="Barangay"
+          placeholder="Enter Barangay"
+          error={errors.barangay}
+          value={formValues.barangay}
+          onChangeText={(value) => handleInputChange('barangay', value)}
+          onFocus={() => removeError('barangay')}
+          maxLength={64}
+        />
+        <FormTextInput
+          label="Municipality"
+          placeholder="Enter Municipality"
+          error={errors.city}
+          value={formValues.city}
+          onChangeText={(value) => handleInputChange('city', value)}
+          onFocus={() => removeError('city')}
+          maxLength={64}
+        />
+        <FormTextInput
+          label="Province"
+          placeholder="Enter Province"
+          error={errors.province}
+          value={formValues.province}
+          onChangeText={(value) => handleInputChange('province', value)}
+          onFocus={() => removeError('province')}
           maxLength={64}
         />
         <CalendarPickerTrigger

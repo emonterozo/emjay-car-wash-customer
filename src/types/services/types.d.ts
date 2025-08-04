@@ -4,6 +4,13 @@ import { ChatReference } from '../constant/types';
 export type GenderType = 'MALE' | 'FEMALE';
 export type BookingAction = 'BOOKED' | 'UNBOOKED';
 
+export type Address = {
+  address: string | null;
+  barangay: string | null;
+  city: string | null;
+  province: string | null;
+};
+
 export type ScreenStatusProps = {
   isLoading: boolean;
   hasError: boolean;
@@ -30,7 +37,7 @@ export type LoginResponse = {
     gender: GenderType;
     birth_date: string;
     fcm_token: string;
-  };
+  } & Address;
   accessToken: string;
   refreshToken: string;
   errors: ErrorProps[];
@@ -157,7 +164,7 @@ export type UpdateProfileResponse = {
     _id: string;
     first_name: string;
     last_name: string;
-  };
+  } & Address;
   errors: ErrorProps[];
 };
 
@@ -166,6 +173,10 @@ export type UpdateProfilePayload = {
   last_name?: string;
   password?: string;
   current_password?: string;
+  address?: string;
+  barangay?: string;
+  city?: string;
+  province?: string;
 };
 
 export type TransactionDetailsResponse = {

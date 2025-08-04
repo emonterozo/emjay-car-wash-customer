@@ -1,3 +1,5 @@
+import { Address } from '../services/types';
+
 export type TUser = {
   id: string;
   first_name: string;
@@ -8,7 +10,7 @@ export type TUser = {
   accessToken: string;
   refreshToken: string;
   fcmToken: string;
-};
+} & Address;
 
 export type NotificationType = 'promo' | 'transaction' | 'message';
 

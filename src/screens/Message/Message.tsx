@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef, useState } from 'react';
 import {
   View,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   FlatList,
   Text,
@@ -13,14 +12,19 @@ import {
   ActivityIndicator,
   Pressable,
   Linking,
+  Alert,
+  Platform,
 } from 'react-native';
 import { io } from 'socket.io-client';
 import Config from 'react-native-config';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import Clipboard from '@react-native-clipboard/clipboard';
+import Geolocation from '@react-native-community/geolocation';
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { color, font } from '@app/styles';
-import { EmptyState } from '@app/components';
+import { EmptyState, LoadingAnimation, Toast } from '@app/components';
 import GlobalContext from '@app/context';
 import { ChevronLeftIcon, SendIcon } from '@app/icons';
 import { CHAT_REFERENCE, ERR_NETWORK, IMAGES, LIMIT } from '@app/constant';
@@ -48,6 +52,11 @@ const Message = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<TMessage[]>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [toast, setToast] = useState({
+    isVisible: false,
+    message: '',
+    type: 'error',
+  });
 
   const updateMessage = async () => {
     await updateMessageStateRequest(user.accessToken, user.refreshToken, user.id, 'customer');
@@ -227,65 +236,136 @@ const Message = () => {
     setIsLoadingMore(false);
   };
 
-  return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar backgroundColor="#F4F9FD" barStyle="dark-content" />
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <ChevronLeftIcon />
-        </TouchableOpacity>
-        <View style={styles.avatarContainer}>
-          <Image source={IMAGES.AVATAR_BOY} style={styles.avatar} resizeMode="contain" />
-        </View>
-        <View style={styles.content}>
-          <Text style={styles.name} numberOfLines={1}>
-            Emjay Admin
-          </Text>
-          <Text style={styles.description} numberOfLines={1}>
-            Carwash attendant
-          </Text>
-        </View>
-      </View>
-      <View style={styles.separator} />
-      <FlatList
-        ref={flatListRef}
-        data={messages}
-        keyExtractor={(item) => item._id.toString()}
-        renderItem={renderBubble}
-        inverted={messages.length > 0}
-        onEndReached={loadMoreMessages}
-        ListFooterComponent={isLoadingMore ? <ActivityIndicator /> : null}
-        ListEmptyComponent={
-          screenStatus.isLoading ? undefined : (
-            <EmptyState
-              source={IMAGES.MESSAGING}
-              title="Nothing here yet"
-              description="Got car care on your mind? Send us a message and let's get your ride shining!"
-            />
-          )
+  const shareCurrentLocation = async () => {
+    const permission = Platform.select({
+      ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+      android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+    });
+
+    try {
+      let permissionStatus = await check(permission!);
+
+      if (permissionStatus !== RESULTS.GRANTED) {
+        permissionStatus = await request(permission!);
+        if (permissionStatus !== RESULTS.GRANTED) {
+          Alert.alert(
+            'Permission Denied',
+            'Location permission is required to share your location.',
+          );
+          return;
         }
-        contentContainerStyle={messages.length > 0 ? undefined : styles.empty}
-      />
-      <View style={styles.separator} />
-      <View style={styles.bottom}>
-        <View style={styles.inputContainer}>
-          <TextInput
-            value={message}
-            placeholder="Type your message..."
-            multiline
-            numberOfLines={8}
-            style={styles.input}
-            placeholderTextColor="#888888"
-            onChangeText={setMessage}
-            maxLength={1000}
-          />
+      }
+
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+      Geolocation.getCurrentPosition(
+        async (position) => {
+          const { latitude, longitude } = position.coords;
+
+          const browserUrl = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
+          setMessage(
+            `Hello Emjay! Just sending you my location for my scheduled booking so you can find me easily: ${browserUrl}`,
+          );
+
+          setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+        },
+        () => {
+          setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+          setToast({
+            isVisible: true,
+            message: 'Something went wrong while trying to share your location.',
+            type: 'error',
+          });
+        },
+        {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0,
+        },
+      );
+    } catch {
+      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
+      setToast({
+        isVisible: true,
+        message: 'Something went wrong while trying to share your location.',
+        type: 'error',
+      });
+    }
+  };
+
+  const onToastClose = () => setToast({ isVisible: false, message: '', type: 'error' });
+
+  return (
+    <SafeAreaView edges={['top']} style={styles.container}>
+      <StatusBar backgroundColor="#F4F9FD" barStyle="dark-content" />
+      <View style={styles.containerContent}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
+            <ChevronLeftIcon />
+          </TouchableOpacity>
+          <View style={styles.avatarContainer}>
+            <Image source={IMAGES.AVATAR_BOY} style={styles.avatar} resizeMode="contain" />
+          </View>
+          <View style={styles.content}>
+            <Text style={styles.name} numberOfLines={1}>
+              Emjay Admin
+            </Text>
+            <Text style={styles.description} numberOfLines={1}>
+              Carwash attendant
+            </Text>
+          </View>
         </View>
-        <Pressable
-          onPress={sendMessage}
-          style={({ pressed }) => [styles.send, pressed && { backgroundColor: '#46A6FF' }]}
-        >
-          <SendIcon width={40} height={40} fill="#FFFFFF" />
-        </Pressable>
+        <View style={styles.separator} />
+        <LoadingAnimation isLoading={screenStatus.isLoading} />
+        <Toast
+          isVisible={toast.isVisible}
+          message={toast.message}
+          duration={3000}
+          type={toast.type as 'error' | 'success' | 'info'}
+          onClose={onToastClose}
+        />
+        <FlatList
+          ref={flatListRef}
+          data={messages}
+          keyExtractor={(item) => item._id.toString()}
+          renderItem={renderBubble}
+          inverted={messages.length > 0}
+          onEndReached={loadMoreMessages}
+          ListFooterComponent={isLoadingMore ? <ActivityIndicator /> : null}
+          ListEmptyComponent={
+            screenStatus.isLoading ? undefined : (
+              <EmptyState
+                source={IMAGES.MESSAGING}
+                title="Nothing here yet"
+                description="Got car care on your mind? Send us a message and let's get your ride shining!"
+              />
+            )
+          }
+          contentContainerStyle={messages.length > 0 ? undefined : styles.empty}
+        />
+        <View style={styles.separator} />
+        <TouchableOpacity onPress={shareCurrentLocation}>
+          <Text style={styles.share}>Share my location?</Text>
+        </TouchableOpacity>
+        <View style={styles.bottom}>
+          <View style={styles.inputContainer}>
+            <TextInput
+              value={message}
+              placeholder="Type your message..."
+              multiline
+              numberOfLines={8}
+              style={styles.input}
+              placeholderTextColor="#888888"
+              onChangeText={setMessage}
+              maxLength={1000}
+            />
+          </View>
+          <Pressable
+            onPress={sendMessage}
+            style={({ pressed }) => [styles.send, pressed && { backgroundColor: '#46A6FF' }]}
+          >
+            <SendIcon width={40} height={40} fill="#FFFFFF" />
+          </Pressable>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -293,6 +373,10 @@ const Message = () => {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    backgroundColor: '#F4F9FD',
+  },
+  containerContent: {
     flex: 1,
     backgroundColor: color.background,
   },
@@ -306,13 +390,13 @@ const styles = StyleSheet.create({
   content: {
     marginLeft: 12,
     gap: 5,
+    flex: 1,
   },
   name: {
     ...font.regular,
     fontSize: 24,
     lineHeight: 24,
     color: color.black,
-    flex: 1,
   },
   description: {
     ...font.regular,
@@ -374,7 +458,7 @@ const styles = StyleSheet.create({
     width: screenWidth - 70 - 30 - 48,
     backgroundColor: '#F4F9FD',
     paddingHorizontal: 12,
-    paddingVertical: 23,
+    paddingVertical: 12,
     borderRadius: 24,
     minHeight: 71,
     maxHeight: 110,
@@ -386,7 +470,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 30,
-    marginVertical: 30,
+    marginBottom: 30,
   },
   separator: {
     marginBottom: 6,
@@ -423,6 +507,15 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   link: { textDecorationLine: 'underline' },
+  share: {
+    marginHorizontal: 30,
+    marginBottom: 10,
+    marginTop: 30,
+    ...font.regular,
+    fontSize: 16,
+    lineHeight: 16,
+    color: color.primary_pressed_state,
+  },
 });
 
 export default Message;

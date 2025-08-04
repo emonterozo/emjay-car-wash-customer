@@ -167,6 +167,10 @@ const Booking = () => {
     }
   };
 
+  const isNoAddress = () => {
+    return user.address === null || user.barangay === null || user.city === null;
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
@@ -196,7 +200,24 @@ const Booking = () => {
           {userBooking ? 'Upcoming Booked Service' : 'Start by Scheduling a Service'}
         </Text>
       </View>
-      {bookings.length > 0 && !userBooking && (
+      {isNoAddress() && (
+        <View style={styles.contentUpdate}>
+          <Text style={[styles.text16, styles.textDarkerGrey]}>
+            Please update your address first so our team can locate you for the car service booking.
+          </Text>
+          <Pressable
+            style={({ pressed }) => [styles.updateButton, pressed && styles.buttonPressed]}
+            onPress={() => navigation.navigate('EditProfile')}
+          >
+            {({ pressed }) => (
+              <Text style={[styles.buttonUpdateText, pressed && { color: color.primary }]}>
+                Click to Update Address
+              </Text>
+            )}
+          </Pressable>
+        </View>
+      )}
+      {!isNoAddress() && bookings.length > 0 && !userBooking && (
         <View style={styles.booking}>
           <CalendarPickerTrigger
             date={getFirstOpeningDate()}
@@ -383,6 +404,26 @@ const styles = StyleSheet.create({
   cover: {
     width: '100%',
     height: 200,
+  },
+  updateButton: {
+    backgroundColor: '#1F93E1',
+    padding: 10,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginBottom: 16,
+    justifyContent: 'center',
+    height: 50,
+  },
+  buttonUpdateText: {
+    ...font.regular,
+    fontSize: 20,
+    lineHeight: 20,
+    color: '#F3F2EF',
+  },
+  contentUpdate: {
+    marginTop: 10,
+    marginHorizontal: 25,
+    gap: 10,
   },
 });
 
