@@ -18,3 +18,4 @@ export { default as EditProfile } from './EditProfile/EditProfile';
 export { default as ChangePassword } from './ChangePassword/ChangePassword';
 export { default as TransactionDetails } from './TransactionDetails/TransactionDetails';
 export { default as Message } from './Message/Message';
+export { default as Booking } from './Booking/Booking';

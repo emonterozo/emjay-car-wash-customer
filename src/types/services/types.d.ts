@@ -2,6 +2,7 @@ import { ERROR_TYPE } from '@app/constant';
 import { ChatReference } from '../constant/types';
 
 export type GenderType = 'MALE' | 'FEMALE';
+export type BookingAction = 'BOOKED' | 'UNBOOKED';
 
 export type ScreenStatusProps = {
   isLoading: boolean;
@@ -210,5 +211,53 @@ export type UpdateMessageStatePayload = {
 
 export type UpdateMessageStateResponse = {
   _id: string;
+  errors: ErrorProps[];
+};
+
+export type Booking = {
+  _id: string;
+  date: string;
+  is_open: boolean;
+};
+
+export type Slot = {
+  _id: string;
+  start_time: string;
+  end_time: string;
+  customer_id: string | null;
+  is_completed: boolean;
+};
+
+export type UserBooking = {
+  _id: string;
+  date: string;
+  slots: Slot[];
+};
+
+export type BookingsResponse = {
+  bookings: Booking[];
+  user_booking: UserBooking;
+  errors: ErrorProps[];
+};
+
+export type UpdatingBookingPayload = {
+  slot_id: string;
+  action: BookingAction;
+};
+
+export type UpdateBookingResponse = {
+  date: string;
+  time: string;
+  slot_id: string;
+  errors: ErrorProps[];
+};
+
+export type BookingResponse = {
+  booking: {
+    _id: string;
+    date: string;
+    is_open: boolean;
+    slots: Slot[];
+  };
   errors: ErrorProps[];
 };

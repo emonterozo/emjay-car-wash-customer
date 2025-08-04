@@ -46,6 +46,11 @@ const getMaxDayForMonth = (selectedDate: Date, minDate: Date, maxDate: Date) => 
 // Days of the week
 const daysOfWeek = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
+export type DateConfig = {
+  date: string; // Date in 'yyyy-MM-dd' format
+  is_open: boolean; // Whether the date is open for booking
+};
+
 type CalendarPickerProps = {
   date: Date;
   isVisible?: boolean;
@@ -54,6 +59,8 @@ type CalendarPickerProps = {
   maxDate?: Date;
   minDate?: Date;
   isDefaultCalendarSelection?: boolean;
+  disabledCalendarChange?: boolean;
+  datesConfig?: DateConfig[];
 };
 
 const CalendarPicker = ({
@@ -64,6 +71,8 @@ const CalendarPicker = ({
   maxDate = getCurrentDateAtMidnightUTC(),
   minDate = getMinimumDateAtMidnightUTC(),
   isDefaultCalendarSelection = true,
+  disabledCalendarChange,
+  datesConfig,
 }: CalendarPickerProps) => {
   const [days, setDays] = useState<number[]>([]);
   const [selectedDate, setSelectedDate] = useState(date);
@@ -202,6 +211,12 @@ const CalendarPicker = ({
     setInputtedDate(cleaned);
   };
 
+  const disabledDateSet = new Set(
+    (datesConfig ?? [])
+      .filter((d) => d.is_open === false)
+      .map((d) => format(new Date(d.date), 'yyyy-MM-dd')),
+  );
+
   return (
     <View style={styles.container}>
       <Modal visible={isVisible} animationType="slide" transparent={true}>
@@ -220,6 +235,7 @@ const CalendarPicker = ({
               <TouchableOpacity
                 style={styles.content}
                 onPress={() => setIsDefaultSelection(!isDefaultSelection)}
+                disabled={disabledCalendarChange}
               >
                 <Text style={styles.date}>
                   {isDefaultSelection ? format(selectedDate, 'MMMM yyyy') : 'Date Manual Input'}
@@ -252,6 +268,17 @@ const CalendarPicker = ({
                       const maxDay = maxDate.getUTCDate();
                       const minDay = minDate.getUTCDate();
 
+                      const dayDate = new Date(
+                        Date.UTC(selectedDate.getFullYear(), selectedDate.getMonth(), day),
+                      );
+                      const dayString = format(dayDate, 'yyyy-MM-dd');
+                      const isDisabled =
+                        index < startingDay ||
+                        index >= startingDay + daysInCurrentMonth ||
+                        (day > maxDay && isSameMonth(selectedDate, maxDate)) ||
+                        (day < minDay && isSameMonth(selectedDate, minDate)) ||
+                        disabledDateSet.has(dayString);
+
                       return (
                         <View key={index} style={styles.dayCell}>
                           <TouchableOpacity
@@ -263,25 +290,18 @@ const CalendarPicker = ({
                                 index < startingDay + daysInCurrentMonth &&
                                 styles.selectedDay,
                             ]}
-                            disabled={
-                              index < startingDay ||
-                              index >= startingDay + daysInCurrentMonth ||
-                              (day > maxDay && isSameMonth(selectedDate, maxDate)) ||
-                              (day < minDay && isSameMonth(selectedDate, minDate))
-                            }
+                            disabled={isDisabled}
                             onPress={() => onSelectedDay(day)}
                           >
                             <Text
                               style={[
                                 styles.dayText,
                                 day === selectedDay && styles.selectedDayText,
-                                index < startingDay && styles.notActiveDate,
-                                index >= startingDay + daysInCurrentMonth && styles.notActiveDate,
-                                day > maxDay &&
-                                  isSameMonth(selectedDate, maxDate) &&
-                                  styles.notActiveDate,
-                                day < minDay &&
-                                  isSameMonth(selectedDate, minDate) &&
+                                (index < startingDay ||
+                                  index >= startingDay + daysInCurrentMonth ||
+                                  day > maxDay ||
+                                  day < minDay ||
+                                  isDisabled) &&
                                   styles.notActiveDate,
                               ]}
                             >

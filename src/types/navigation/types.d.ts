@@ -11,6 +11,7 @@ export type AuthStackParamList = {
   ChangePassword: undefined;
   TransactionDetails: { transactionId: string; transactionServiceId: string };
   Message: undefined;
+  Booking: undefined;
 };
 
 export type UnAuthStackParamList = {

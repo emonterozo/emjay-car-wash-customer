@@ -7,7 +7,14 @@ import FastImage from '@d11/react-native-fast-image';
 import FilterOption from './FilterOption';
 import { SizeKey } from '../../types/constant/types';
 import { Price, ScreenStatusProps, Service } from '../../types/services/types';
-import { CustomerPresenceIcon, FilterIcon, FreeIcon, MessageIcon, StarIcon } from '@app/icons';
+import {
+  CalendarIcon,
+  CustomerPresenceIcon,
+  FilterIcon,
+  FreeIcon,
+  MessageIcon,
+  StarIcon,
+} from '@app/icons';
 import {
   AppHeaderImage,
   EmptyState,
@@ -240,6 +247,11 @@ const Services = () => {
             icon: <CustomerPresenceIcon width={25} height={25} fill="#ffffff" />,
             label: 'View Customers in Queue',
             onPress: () => navigation.navigate('CustomerPresence'),
+          },
+          {
+            icon: <CalendarIcon width={25} height={25} fill="#ffffff" />,
+            label: 'Book Service',
+            onPress: () => navigation.navigate('Booking'),
           },
           {
             icon: <MessageIcon width={25} height={25} fill="#ffffff" />,

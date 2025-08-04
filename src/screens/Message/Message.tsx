@@ -12,10 +12,12 @@ import {
   TouchableOpacity,
   ActivityIndicator,
   Pressable,
+  Linking,
 } from 'react-native';
 import { io } from 'socket.io-client';
 import Config from 'react-native-config';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
+import Clipboard from '@react-native-clipboard/clipboard';
 
 import { color, font } from '@app/styles';
 import { EmptyState } from '@app/components';
@@ -24,6 +26,7 @@ import { ChevronLeftIcon, SendIcon } from '@app/icons';
 import { CHAT_REFERENCE, ERR_NETWORK, IMAGES, LIMIT } from '@app/constant';
 import { Message as TMessage, ScreenStatusProps } from '../../types/services/types';
 import { getMessagesRequest, updateMessageStateRequest } from '@app/services';
+import { ChatReference } from '../../types/constant/types';
 
 const socket = io(Config.API_BASE_URL, {
   transports: ['websocket'],
@@ -121,8 +124,55 @@ const Message = () => {
     setMessage('');
   };
 
+  const parseMessage = (text: string, from: ChatReference) => {
+    const regex = /((https?:\/\/)?[\w-]+(\.[\w-]+)+([/?#][^\s]*)?)/gi;
+    const elements: React.ReactNode[] = [];
+    let lastIndex = 0;
+    let match;
+
+    while ((match = regex.exec(text)) !== null) {
+      const start = match.index;
+      const end = regex.lastIndex;
+
+      // Add text before the link
+      if (start > lastIndex) {
+        elements.push(<Text key={lastIndex}>{text.slice(lastIndex, start)}</Text>);
+      }
+
+      const urlText = match[0];
+      const url = urlText.startsWith('http') ? urlText : `https://${urlText}`;
+
+      elements.push(
+        <Text
+          key={start}
+          style={[
+            styles.messageText,
+            styles.link,
+            from !== CHAT_REFERENCE.customer && { color: color.primary },
+          ]}
+          onPress={() => Linking.openURL(url)}
+        >
+          {urlText}
+        </Text>,
+      );
+
+      lastIndex = end;
+    }
+
+    // Add any remaining text
+    if (lastIndex < text.length) {
+      elements.push(<Text key={lastIndex}>{text.slice(lastIndex)}</Text>);
+    }
+
+    return elements;
+  };
+
   const renderBubble = ({ item }: { item: TMessage }) => {
     const { timestamp, from } = item;
+
+    const handleCopy = () => {
+      Clipboard.setString(message);
+    };
 
     return (
       <View
@@ -131,18 +181,20 @@ const Message = () => {
           from === CHAT_REFERENCE.customer ? styles.customerContainer : styles.emjayContainer,
         ]}
       >
-        <View
-          style={from === CHAT_REFERENCE.customer ? styles.messageSent : styles.messageReceived}
-        >
-          <Text
-            style={[
-              styles.messageText,
-              from === CHAT_REFERENCE.customer ? styles.customer : styles.emjay,
-            ]}
+        <Pressable onLongPress={handleCopy}>
+          <View
+            style={from === CHAT_REFERENCE.customer ? styles.messageSent : styles.messageReceived}
           >
-            {item.message}
-          </Text>
-        </View>
+            <Text
+              style={[
+                styles.messageText,
+                from === CHAT_REFERENCE.customer ? styles.customer : styles.emjay,
+              ]}
+            >
+              {parseMessage(item.message, from)}
+            </Text>
+          </View>
+        </Pressable>
         <Text
           style={[
             styles.timestamp,
@@ -370,6 +422,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  link: { textDecorationLine: 'underline' },
 });
 
 export default Message;

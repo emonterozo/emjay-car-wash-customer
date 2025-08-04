@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableWithoutFeedback } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from 'react-native-reanimated';
 
 import { font, color } from '@app/styles';
-import CalendarPicker from '../CalendarPicker/CalendarPicker';
+import CalendarPicker, { DateConfig } from '../CalendarPicker/CalendarPicker';
 import {
   getCurrentDateAtMidnightUTC,
   getMinimumDateAtMidnightUTC,
@@ -28,6 +28,8 @@ export type CalendarPickerTriggerProps = {
   minDate?: Date;
   onPressOpen?: () => void;
   isDefaultCalendarSelection?: boolean;
+  disabledCalendarChange?: boolean;
+  datesConfig?: DateConfig[];
 };
 
 const CalendarPickerTrigger = ({
@@ -47,6 +49,8 @@ const CalendarPickerTrigger = ({
   minDate = getMinimumDateAtMidnightUTC(),
   onPressOpen,
   isDefaultCalendarSelection,
+  disabledCalendarChange,
+  datesConfig,
 }: CalendarPickerTriggerProps) => {
   const getColor = () => {
     return isDisabled ? disabledColor : enableColor;
@@ -124,6 +128,8 @@ const CalendarPickerTrigger = ({
           maxDate={maxDate}
           minDate={minDate}
           isDefaultCalendarSelection={isDefaultCalendarSelection}
+          disabledCalendarChange={disabledCalendarChange}
+          datesConfig={datesConfig}
         />
       )}
     </View>
@@ -138,7 +144,7 @@ const styles = StyleSheet.create({
     ...font.regular,
     fontSize: 16,
     lineHeight: 16,
-    flex: 1,
+    //flex: 1,
   },
   container: {
     height: 48,

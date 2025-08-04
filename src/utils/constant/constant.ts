@@ -44,6 +44,11 @@ export const CONFIRM_TYPE = {
     title: 'Are you sure you want to Sign Out?',
     description: "Once confirmed, you'll be redirected to the Sign In screen.",
   },
+  CancelBooking: {
+    title: 'Are you sure you want to cancel this booking?',
+    description:
+      'If you cancel now, your reserved time slot will be released and cannot be recovered. This action cannot be undone.',
+  },
 };
 
 export const LIMIT = 50;

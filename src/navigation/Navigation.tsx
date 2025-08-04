@@ -2,7 +2,12 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { NavigationContainer } from '@react-navigation/native';
 import Config from 'react-native-config';
-import messaging from '@react-native-firebase/messaging';
+import {
+  getMessaging,
+  getToken,
+  getInitialNotification,
+  onNotificationOpenedApp,
+} from '@react-native-firebase/messaging';
 import notifee, { EventType } from '@notifee/react-native';
 import { PermissionsAndroid, Platform } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -23,6 +28,7 @@ import {
   ChangePassword,
   TransactionDetails,
   Message,
+  Booking,
 } from '@app/screens';
 
 import GlobalContext from '@app/context';
@@ -36,6 +42,7 @@ const UnAuthStack = createStackNavigator<UnAuthStackParamList>();
 const AuthStack = createStackNavigator<AuthStackParamList>();
 
 const Navigation = () => {
+  const messaging = getMessaging();
   const [isDone, setIsDone] = useState<boolean | null>(null);
   const [user, setUser] = useState<TUser>({
     id: '',
@@ -71,7 +78,7 @@ const Navigation = () => {
       await PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
     }
 
-    const token = await messaging().getToken();
+    const token = await getToken(messaging);
     setUser({
       ...user,
       fcmToken: token,
@@ -124,18 +131,7 @@ const Navigation = () => {
 
   useEffect(() => {
     //Killed state: Notification tapped
-    messaging()
-      .getInitialNotification()
-      .then(async (remoteMessage) => {
-        if (!remoteMessage) {
-          return;
-        }
-
-        const data = remoteMessage.data as TNotification;
-        setSelectedNotification({ type: data.type, id: data.id });
-      });
-
-    messaging().onNotificationOpenedApp(async (remoteMessage) => {
+    getInitialNotification(messaging).then(async (remoteMessage) => {
       if (!remoteMessage) {
         return;
       }
@@ -143,6 +139,16 @@ const Navigation = () => {
       const data = remoteMessage.data as TNotification;
       setSelectedNotification({ type: data.type, id: data.id });
     });
+
+    onNotificationOpenedApp(messaging, async (remoteMessage) => {
+      if (!remoteMessage) {
+        return;
+      }
+
+      const data = remoteMessage.data as TNotification;
+      setSelectedNotification({ type: data.type, id: data.id });
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (isDone === null) {
@@ -166,6 +172,7 @@ const Navigation = () => {
             <AuthStack.Screen name="ChangePassword" component={ChangePassword} />
             <AuthStack.Screen name="TransactionDetails" component={TransactionDetails} />
             <AuthStack.Screen name="Message" component={Message} />
+            <AuthStack.Screen name="Booking" component={Booking} />
           </AuthStack.Navigator>
         ) : hasUpdate ? (
           <Update />

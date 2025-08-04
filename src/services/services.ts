@@ -19,6 +19,11 @@ import {
   MessagesResponse,
   UpdateMessageStateResponse,
   UpdateMessageStatePayload,
+  BookingsResponse,
+  UpdatingBookingPayload,
+  UpdateBookingResponse,
+  BookingAction,
+  BookingResponse,
 } from '../types/services/types';
 import { ChatReference } from '../types/constant/types';
 
@@ -255,6 +260,56 @@ export const updateMessageStateRequest = (
       data: {
         view_by,
       },
+    },
+    refreshToken,
+  );
+};
+
+export const getBookingsRequest = (
+  accessToken: string,
+  refreshToken: string,
+): ApiResponse<BookingsResponse> => {
+  return apiRequest<null, BookingsResponse>(
+    `${Config.API_BASE_URL}/bookings/`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
+    },
+    refreshToken,
+  );
+};
+
+export const updateBookingRequest = (
+  accessToken: string,
+  refreshToken: string,
+  date: string,
+  slotId: string,
+  action: BookingAction,
+): ApiResponse<UpdateBookingResponse> => {
+  return apiRequest<UpdatingBookingPayload, UpdateBookingResponse>(
+    `${Config.API_BASE_URL}/bookings/${date}`,
+    {
+      method: 'patch',
+      headers: requestHeader(accessToken),
+      data: {
+        slot_id: slotId,
+        action,
+      },
+    },
+    refreshToken,
+  );
+};
+
+export const getBookingRequest = (
+  accessToken: string,
+  refreshToken: string,
+  date: string,
+): ApiResponse<BookingResponse> => {
+  return apiRequest<null, BookingResponse>(
+    `${Config.API_BASE_URL}/bookings/${date}`,
+    {
+      method: 'get',
+      headers: requestHeader(accessToken),
     },
     refreshToken,
   );

@@ -22,6 +22,7 @@ type ButtonProps = {
   buttonStyle?: ButtonStyle;
   textStyle?: TextStyle;
   onPress?: () => void;
+  flex?: number;
 };
 
 const Button = ({
@@ -39,6 +40,7 @@ const Button = ({
     fontWeight: 'regular',
   },
   onPress,
+  flex = 1,
 }: ButtonProps) => {
   const getButtonStyle = (pressed: boolean) => {
     let style = {
@@ -76,7 +78,7 @@ const Button = ({
 
   return (
     <Pressable
-      style={({ pressed }) => [getButtonStyle(pressed), buttonStyle, styles.button]}
+      style={({ pressed }) => [getButtonStyle(pressed), buttonStyle, styles.button, { flex: flex }]}
       onPress={onPress}
     >
       {({ pressed }) => (
@@ -103,7 +105,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     borderWidth: 1,
-    flex: 1,
   },
   buttonText: {
     textAlign: 'center',

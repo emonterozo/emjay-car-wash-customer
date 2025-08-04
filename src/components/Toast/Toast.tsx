@@ -46,16 +46,22 @@ const Toast = ({ isVisible, message, type = 'info', duration = 3000, onClose }: 
     }
   };
 
-  if (!isVisible) {
-    return null;
-  }
-
   return (
-    <Animated.View style={[styles.toast, { backgroundColor: getStatusColor(), opacity: fadeAnim }]}>
-      <View style={styles.content}>
-        <Text style={styles.message}>{message}</Text>
-      </View>
-    </Animated.View>
+    <View
+      pointerEvents="box-none"
+      style={StyleSheet.absoluteFill} // covers the screen but doesn't block touches
+    >
+      {isVisible && (
+        <Animated.View
+          pointerEvents="auto"
+          style={[styles.toast, { backgroundColor: getStatusColor(), opacity: fadeAnim }]}
+        >
+          <View style={styles.content}>
+            <Text style={styles.message}>{message}</Text>
+          </View>
+        </Animated.View>
+      )}
+    </View>
   );
 };
 
