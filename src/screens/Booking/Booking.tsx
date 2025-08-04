@@ -131,8 +131,12 @@ const Booking = () => {
   const onToastClose = () => setToast({ isVisible: false, message: '', type: 'error' });
 
   const getFirstOpeningDate = () => {
-    if (bookings.length === 0) {return new Date();}
-    if (selectedDate) {return new Date(selectedDate);}
+    if (bookings.length === 0) {
+      return new Date();
+    }
+    if (selectedDate) {
+      return new Date(selectedDate);
+    }
     const firstBookingDate = bookings.filter((booking) => booking.is_open)[0].date;
     return new Date(firstBookingDate);
   };

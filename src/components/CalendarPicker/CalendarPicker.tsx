@@ -2,12 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, Dimensions, Modal, StyleSheet, TouchableOpacity } from 'react-native';
 import {
   add,
+  differenceInDays,
   format,
   getDaysInMonth,
   isAfter,
   isBefore,
   isSameMonth,
   isValid,
+  parseISO,
   sub,
   subMonths,
 } from 'date-fns';
@@ -176,21 +178,47 @@ const CalendarPicker = ({
   };
 
   const onChevronClick = (action: 'inc' | 'dec') => {
-    if (action === 'inc') {
-      setSelectedDate((dateData) => {
-        const selected = add(dateData, { months: 1 });
-        const day = getMaxDayForMonth(selected, minDate, maxDate);
+    setSelectedDate((dateData) => {
+      const targetDate =
+        action === 'inc' ? add(dateData, { months: 1 }) : sub(dateData, { months: 1 });
 
-        return new Date(Date.UTC(selected.getFullYear(), selected.getMonth(), day));
-      });
-    } else {
-      setSelectedDate((dateData) => {
-        const selected = sub(dateData, { months: 1 });
-        const day = getMaxDayForMonth(selected, minDate, maxDate);
+      const targetMonth = targetDate.getMonth();
+      const targetYear = targetDate.getFullYear();
 
-        return new Date(Date.UTC(selected.getFullYear(), selected.getMonth(), day));
-      });
-    }
+      if (Array.isArray(datesConfig) && datesConfig.length > 0) {
+        const openDatesInMonth = datesConfig
+          .map(({ date: configDate, is_open }) => ({ date: parseISO(configDate), is_open }))
+          .filter(
+            ({ date: configDate, is_open }) =>
+              is_open &&
+              configDate.getFullYear() === targetYear &&
+              configDate.getMonth() === targetMonth,
+          );
+
+        if (openDatesInMonth.length > 0) {
+          let closestDate = openDatesInMonth[0].date;
+          let smallestDiff = Math.abs(differenceInDays(closestDate, targetDate));
+
+          for (let i = 1; i < openDatesInMonth.length; i++) {
+            const dateCurrent = openDatesInMonth[i].date;
+            const diff = Math.abs(differenceInDays(dateCurrent, targetDate));
+            if (diff < smallestDiff) {
+              closestDate = dateCurrent;
+              smallestDiff = diff;
+            }
+          }
+
+          // Return UTC midnight
+          return new Date(
+            Date.UTC(closestDate.getFullYear(), closestDate.getMonth(), closestDate.getDate()),
+          );
+        }
+      }
+
+      // Fallback if no open dates found
+      const day = getMaxDayForMonth(targetDate, minDate, maxDate);
+      return new Date(Date.UTC(targetDate.getFullYear(), targetDate.getMonth(), day));
+    });
   };
 
   const onSelectedDay = (day: number) => {
