@@ -285,6 +285,7 @@ export const updateBookingRequest = (
   date: string,
   slotId: string,
   action: BookingAction,
+  serviceId: string,
 ): ApiResponse<UpdateBookingResponse> => {
   return apiRequest<UpdatingBookingPayload, UpdateBookingResponse>(
     `${Config.API_BASE_URL}/bookings/${date}`,
@@ -293,6 +294,7 @@ export const updateBookingRequest = (
       headers: requestHeader(accessToken),
       data: {
         slot_id: slotId,
+        service_id: serviceId,
         action,
       },
     },

@@ -1,10 +1,12 @@
-import React, { useContext, useState } from 'react';
-import { StyleSheet, StatusBar, Text, View, ScrollView } from 'react-native';
+import React, { useContext, useEffect, useState } from 'react';
+import { StyleSheet, StatusBar, Text, View, ScrollView, Platform } from 'react-native';
 import * as Yup from 'yup';
 import { ValidationError } from 'yup';
 import { format } from 'date-fns';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Geolocation, { GeolocationResponse } from '@react-native-community/geolocation';
+import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 import {
   AppHeader,
@@ -87,6 +89,7 @@ const EditProfile = () => {
     message: '',
     type: 'error',
   });
+  const [coordinate, setCoordinate] = useState({ latitude: 0, longitude: 0 });
   const navigation = useNavigation();
 
   const removeError = (key: keyof typeof formValues) => {
@@ -119,6 +122,8 @@ const EditProfile = () => {
           barangay: validData.barangay,
           city: validData.city,
           province: validData.province,
+          latitude: coordinate.latitude,
+          longitude: coordinate.longitude,
         };
 
         const response = await updateProfile(user.accessToken, user.refreshToken, user.id, payload);
@@ -126,7 +131,8 @@ const EditProfile = () => {
         setIsLoading(false);
 
         if (response.success && response.data?.user) {
-          const { first_name, last_name, address, barangay, city, province } = response.data.user;
+          const { first_name, last_name, address, barangay, city, province, distance } =
+            response.data.user;
           setToast({ isVisible: true, message: 'Profile updated successfully.', type: 'success' });
           setUser({
             ...user,
@@ -136,12 +142,16 @@ const EditProfile = () => {
             barangay,
             city,
             province,
+            distance,
           });
           navigation.goBack();
         } else {
           setToast({
             isVisible: true,
-            message: 'Something went wrong. Please try again.',
+            message:
+              response.errors && response.errors?.length > 0
+                ? response.errors[0].message
+                : 'Something went wrong. Please try again.',
             type: 'error',
           });
         }
@@ -157,12 +167,66 @@ const EditProfile = () => {
 
   const onToastClose = () => setToast({ isVisible: false, message: '', type: 'error' });
 
+  const requestPermission = async () => {
+    const permission = Platform.select({
+      ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
+      android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
+    });
+
+    try {
+      let permissionStatus = await check(permission!);
+
+      if (permissionStatus !== RESULTS.GRANTED) {
+        permissionStatus = await request(permission!);
+        if (permissionStatus !== RESULTS.GRANTED) {
+          setToast({
+            isVisible: true,
+            message: 'Location permission is required to share your location.',
+            type: 'error',
+          });
+          return;
+        }
+      }
+
+      setIsLoading(true);
+      const position = await new Promise<GeolocationResponse>((resolve, reject) => {
+        Geolocation.getCurrentPosition(resolve, reject, {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0,
+        });
+      });
+
+      const { latitude, longitude } = position.coords;
+
+      setCoordinate({ latitude, longitude });
+      setIsLoading(false);
+    } catch {
+      setToast({
+        isVisible: true,
+        message: 'Something went wrong while trying to get your location.',
+        type: 'error',
+      });
+      setIsLoading(false);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    requestPermission();
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <AppHeader title="Edit Profile" />
       <View style={styles.heading}>
         <Text style={styles.label}>Update your profile</Text>
+        <Text style={styles.label}>
+          To ensure accurate distance calculations for your scheduled bookings, we’ll use your
+          current location. Please make sure you’re at home when updating your profile. Profile
+          updates are limited to once every 5 days to prevent spamming.
+        </Text>
       </View>
       <LoadingAnimation isLoading={isLoading} />
       <Toast
@@ -256,13 +320,15 @@ const EditProfile = () => {
           maxLength={11}
           textColor="#696969"
         />
-        <Button
-          title="Submit"
-          variant="primary"
-          buttonStyle={styles.button}
-          textStyle={styles.textStyle}
-          onPress={handleSubmit}
-        />
+        {!(coordinate.latitude === 0 || coordinate.longitude === 0) && (
+          <Button
+            title="Submit"
+            variant="primary"
+            buttonStyle={styles.button}
+            textStyle={styles.textStyle}
+            onPress={handleSubmit}
+          />
+        )}
       </ScrollView>
     </SafeAreaView>
   );
@@ -273,17 +339,15 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   heading: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     marginTop: 16,
     marginBottom: 24,
     paddingHorizontal: 25,
+    gap: 15,
   },
   label: {
     ...font.regular,
     fontSize: 16,
-    lineHeight: 16,
+    lineHeight: 18,
     color: '#696969',
   },
   scrollViewContent: {

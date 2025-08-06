@@ -1,6 +1,7 @@
 import React from 'react';
-import { StyleSheet, SafeAreaView, StatusBar } from 'react-native';
+import { StyleSheet, StatusBar } from 'react-native';
 import { WebView } from 'react-native-webview';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { color } from '@app/styles';
 import { AppHeader } from '@app/components';

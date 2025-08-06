@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
-import { View, StyleSheet, SafeAreaView, StatusBar, Image, Text, ScrollView } from 'react-native';
+import { View, StyleSheet, StatusBar, Image, Text, ScrollView } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import QRCode from 'react-native-qrcode-svg';
 
 import { color, font } from '@app/styles';

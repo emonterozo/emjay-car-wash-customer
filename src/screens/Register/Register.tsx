@@ -2,7 +2,6 @@ import React, { useContext, useState } from 'react';
 import {
   View,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   Text,
   ScrollView,
@@ -36,6 +35,7 @@ import { useNativeBackHandler } from '@app/hooks';
 import { UnAuthNavigationProp } from '../../types/navigation/types';
 import { signupRequest } from '@app/services';
 import GlobalContext from '@app/context';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 const GENDER_OPTIONS = [
   {

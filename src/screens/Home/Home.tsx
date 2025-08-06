@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useEffect, useRef, useState } from 'rea
 import {
   View,
   StyleSheet,
-  SafeAreaView,
   StatusBar,
   Image,
   Text,
@@ -13,6 +12,7 @@ import {
   RefreshControl,
 } from 'react-native';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { Promos, ScreenStatusProps, WashPointsResponse } from '../../types/services/types';
 import { color, font } from '@app/styles';
@@ -175,7 +175,7 @@ const Home = () => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView edges={[]} style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
       <LoadingAnimation isLoading={screenStatus.isLoading} type="modal" />
       <ErrorModal

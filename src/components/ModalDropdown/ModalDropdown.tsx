@@ -181,7 +181,7 @@ const styles = StyleSheet.create({
   },
   option: {
     width: '49%',
-    height: 164,
+    height: 170,
     gap: 8,
     padding: 12,
     backgroundColor: '#FAFAFA',

@@ -144,7 +144,6 @@ const styles = StyleSheet.create({
     ...font.regular,
     fontSize: 16,
     lineHeight: 16,
-    //flex: 1,
   },
   container: {
     height: 48,

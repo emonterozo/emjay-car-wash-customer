@@ -33,3 +33,5 @@ export { default as RotateIcon } from './RotateIcon';
 export { default as SendIcon } from './SendIcon';
 export { default as HighImportanceIcon } from './HighImportanceIcon';
 export { default as DiscountIcon } from './DiscountIcon';
+export { default as CarIcon } from './CarIcon';
+export { default as MotorcycleIcon } from './MotorcycleIcon';

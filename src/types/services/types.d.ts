@@ -9,6 +9,7 @@ export type Address = {
   barangay: string | null;
   city: string | null;
   province: string | null;
+  distance?: string | null;
 };
 
 export type ScreenStatusProps = {
@@ -177,6 +178,8 @@ export type UpdateProfilePayload = {
   barangay?: string;
   city?: string;
   province?: string;
+  latitude: number;
+  longitude: number;
 };
 
 export type TransactionDetailsResponse = {
@@ -235,7 +238,11 @@ export type Slot = {
   _id: string;
   start_time: string;
   end_time: string;
+  distance: string | null;
   customer_id: string | null;
+  service_id: string | null;
+  service_title: string | null;
+  service_image: string | null;
   is_completed: boolean;
 };
 
@@ -253,6 +260,7 @@ export type BookingsResponse = {
 
 export type UpdatingBookingPayload = {
   slot_id: string;
+  service_id: string;
   action: BookingAction;
 };
 

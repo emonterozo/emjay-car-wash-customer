@@ -239,11 +239,11 @@ const CalendarPicker = ({
     setInputtedDate(cleaned);
   };
 
-  const disabledDateSet = new Set(
-    (datesConfig ?? [])
-      .filter((d) => d.is_open === false)
-      .map((d) => format(new Date(d.date), 'yyyy-MM-dd')),
-  );
+  const disabledDateSet = datesConfig
+    ? new Set(
+        datesConfig.filter((d) => !d.is_open).map((d) => format(new Date(d.date), 'yyyy-MM-dd')),
+      )
+    : undefined;
 
   return (
     <View style={styles.container}>
@@ -293,19 +293,21 @@ const CalendarPicker = ({
                   {currentDate &&
                     days.map((day, index) => {
                       const { startingDay, daysInCurrentMonth } = currentDate;
-                      const maxDay = maxDate.getUTCDate();
-                      const minDay = minDate.getUTCDate();
+
+                      const isInCurrentMonth =
+                        index >= startingDay && index < startingDay + daysInCurrentMonth;
 
                       const dayDate = new Date(
                         Date.UTC(selectedDate.getFullYear(), selectedDate.getMonth(), day),
                       );
+
                       const dayString = format(dayDate, 'yyyy-MM-dd');
-                      const isDisabled =
-                        index < startingDay ||
-                        index >= startingDay + daysInCurrentMonth ||
-                        (day > maxDay && isSameMonth(selectedDate, maxDate)) ||
-                        (day < minDay && isSameMonth(selectedDate, minDate)) ||
-                        disabledDateSet.has(dayString);
+
+                      const isOutOfRange = isBefore(dayDate, minDate) || isAfter(dayDate, maxDate);
+
+                      const isDisabledByConfig = disabledDateSet?.has(dayString) ?? false;
+
+                      const isDisabled = !isInCurrentMonth || isOutOfRange || isDisabledByConfig;
 
                       return (
                         <View key={index} style={styles.dayCell}>
@@ -325,12 +327,7 @@ const CalendarPicker = ({
                               style={[
                                 styles.dayText,
                                 day === selectedDay && styles.selectedDayText,
-                                (index < startingDay ||
-                                  index >= startingDay + daysInCurrentMonth ||
-                                  day > maxDay ||
-                                  day < minDay ||
-                                  isDisabled) &&
-                                  styles.notActiveDate,
+                                isDisabled && styles.notActiveDate,
                               ]}
                             >
                               {day}

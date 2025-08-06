@@ -1,16 +1,9 @@
 import React, { useContext, useState } from 'react';
-import {
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  Text,
-  View,
-  ScrollView,
-  Pressable,
-} from 'react-native';
+import { StyleSheet, StatusBar, Text, View, ScrollView, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import * as Yup from 'yup';
 import { ValidationError } from 'yup';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { AppHeader, Button, FormTextInput, LoadingAnimation, Toast } from '@app/components';
 import { color, font } from '@app/styles';

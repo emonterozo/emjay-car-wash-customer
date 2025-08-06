@@ -12,19 +12,15 @@ import {
   ActivityIndicator,
   Pressable,
   Linking,
-  Alert,
-  Platform,
 } from 'react-native';
 import { io } from 'socket.io-client';
 import Config from 'react-native-config';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
 import Clipboard from '@react-native-clipboard/clipboard';
-import Geolocation from '@react-native-community/geolocation';
-import { check, request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { color, font } from '@app/styles';
-import { EmptyState, LoadingAnimation, Toast } from '@app/components';
+import { EmptyState, LoadingAnimation } from '@app/components';
 import GlobalContext from '@app/context';
 import { ChevronLeftIcon, SendIcon } from '@app/icons';
 import { CHAT_REFERENCE, ERR_NETWORK, IMAGES, LIMIT } from '@app/constant';
@@ -52,11 +48,6 @@ const Message = () => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState<TMessage[]>([]);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
-  const [toast, setToast] = useState({
-    isVisible: false,
-    message: '',
-    type: 'error',
-  });
 
   const updateMessage = async () => {
     await updateMessageStateRequest(user.accessToken, user.refreshToken, user.id, 'customer');
@@ -236,64 +227,6 @@ const Message = () => {
     setIsLoadingMore(false);
   };
 
-  const shareCurrentLocation = async () => {
-    const permission = Platform.select({
-      ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
-      android: PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION,
-    });
-
-    try {
-      let permissionStatus = await check(permission!);
-
-      if (permissionStatus !== RESULTS.GRANTED) {
-        permissionStatus = await request(permission!);
-        if (permissionStatus !== RESULTS.GRANTED) {
-          Alert.alert(
-            'Permission Denied',
-            'Location permission is required to share your location.',
-          );
-          return;
-        }
-      }
-
-      setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
-      Geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-
-          const browserUrl = `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`;
-          setMessage(
-            `Hello Emjay! Just sending you my location for my scheduled booking so you can find me easily: ${browserUrl}`,
-          );
-
-          setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
-        },
-        () => {
-          setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
-          setToast({
-            isVisible: true,
-            message: 'Something went wrong while trying to share your location.',
-            type: 'error',
-          });
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 15000,
-          maximumAge: 0,
-        },
-      );
-    } catch {
-      setScreenStatus({ ...screenStatus, hasError: false, isLoading: false });
-      setToast({
-        isVisible: true,
-        message: 'Something went wrong while trying to share your location.',
-        type: 'error',
-      });
-    }
-  };
-
-  const onToastClose = () => setToast({ isVisible: false, message: '', type: 'error' });
-
   return (
     <SafeAreaView edges={['top']} style={styles.container}>
       <StatusBar backgroundColor="#F4F9FD" barStyle="dark-content" />
@@ -316,13 +249,6 @@ const Message = () => {
         </View>
         <View style={styles.separator} />
         <LoadingAnimation isLoading={screenStatus.isLoading} />
-        <Toast
-          isVisible={toast.isVisible}
-          message={toast.message}
-          duration={3000}
-          type={toast.type as 'error' | 'success' | 'info'}
-          onClose={onToastClose}
-        />
         <FlatList
           ref={flatListRef}
           data={messages}
@@ -343,9 +269,6 @@ const Message = () => {
           contentContainerStyle={messages.length > 0 ? undefined : styles.empty}
         />
         <View style={styles.separator} />
-        <TouchableOpacity onPress={shareCurrentLocation}>
-          <Text style={styles.share}>Share my location?</Text>
-        </TouchableOpacity>
         <View style={styles.bottom}>
           <View style={styles.inputContainer}>
             <TextInput
@@ -470,7 +393,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 30,
-    marginBottom: 30,
+    marginVertical: 30,
   },
   separator: {
     marginBottom: 6,
@@ -507,15 +430,6 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   link: { textDecorationLine: 'underline' },
-  share: {
-    marginHorizontal: 30,
-    marginBottom: 10,
-    marginTop: 30,
-    ...font.regular,
-    fontSize: 16,
-    lineHeight: 16,
-    color: color.primary_pressed_state,
-  },
 });
 
 export default Message;

@@ -1,14 +1,7 @@
 import React, { useContext, useState } from 'react';
-import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  StatusBar,
-  Text,
-  TouchableOpacity,
-  ScrollView,
-} from 'react-native';
+import { View, StyleSheet, StatusBar, Text, TouchableOpacity, ScrollView } from 'react-native';
 import Config from 'react-native-config';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { color, font } from '@app/styles';
 import {
@@ -34,6 +27,10 @@ const defaultUser = {
   accessToken: '',
   refreshToken: '',
   fcmToken: '',
+  address: '',
+  barangay: '',
+  city: '',
+  province: '',
 };
 
 const More = () => {

@@ -94,11 +94,9 @@ const ModalDropdownTrigger = ({
 
   return (
     <View style={styles.content}>
-      <Text style={[styles.label, { color: labelColor }]}>{label}</Text>
+      <Text style={[styles.labelTop, { color: labelColor }]}>{label}</Text>
       <TouchableWithoutFeedback onPress={handlePressOpen} disabled={isDisabled}>
-        <Animated.View
-          style={[styles.container, { backgroundColor: getDropdownColor() }, animatedStyle]}
-        >
+        <Animated.View style={[styles.container, animatedStyle]}>
           {selected.length > 0 ? (
             <Text numberOfLines={1} style={[styles.label, { color: textColor }]}>
               {getSelectedTitle()}
@@ -147,16 +145,21 @@ const styles = StyleSheet.create({
   content: {
     gap: 8,
   },
+  labelTop: {
+    ...font.regular,
+    fontSize: 16,
+    lineHeight: 16,
+  },
   label: {
-    ...font.light,
+    ...font.regular,
     fontSize: 16,
     lineHeight: 16,
     flex: 1,
   },
   container: {
-    height: 54,
+    height: 48,
     borderWidth: 1,
-    borderRadius: 16,
+    borderRadius: 24,
     paddingHorizontal: 23,
     gap: 8,
     flexDirection: 'row',

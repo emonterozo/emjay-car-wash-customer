@@ -54,6 +54,11 @@ const Navigation = () => {
     accessToken: '',
     refreshToken: '',
     fcmToken: '',
+    address: null,
+    barangay: null,
+    city: null,
+    province: null,
+    distance: null,
   });
   const [selectedNotification, setSelectedNotification] = useState<TNotification | undefined>(
     undefined,
