@@ -120,7 +120,7 @@ const Booking = () => {
   }, []);
 
   const updateBooking = async (action: BookingAction) => {
-    setScreenStatus({ ...screenStatus, hasError: false, isLoading: true });
+    setScreenStatus({ isLoading: true, hasError: false, type: 'error' });
     const response = await updateBookingRequest(
       user.accessToken,
       user.refreshToken,
@@ -144,7 +144,6 @@ const Booking = () => {
       setSelectedSlot(undefined);
       setSlots([]);
       fetchData();
-      return;
     }
     if (!response.success) {
       let message = 'Something went wrong. Please try again.';
@@ -217,7 +216,7 @@ const Booking = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={color.background} barStyle="dark-content" />
-      <LoadingAnimation isLoading={screenStatus.isLoading} type="modal" />
+
       <Toast
         isVisible={toast.isVisible}
         message={toast.message}
@@ -238,11 +237,14 @@ const Booking = () => {
         onYes={() => handleConfirmationPress('yes')}
       />
       <AppHeader title="Book Service" />
+
       <View style={styles.heading}>
+        <LoadingAnimation isLoading={screenStatus.isLoading} type="modal" />
         <Text style={[styles.text16, styles.textDarkerGrey]}>
           {userBooking ? 'Upcoming Booked Service' : 'Start by Scheduling a Service'}
         </Text>
       </View>
+
       {isNoAddress() && (
         <View style={styles.contentUpdate}>
           <Text style={[styles.bookingDescription, styles.textDarkerGrey]}>
@@ -335,13 +337,20 @@ const Booking = () => {
               {format(new Date(userBooking.date), 'EEE, MMM dd, yyyy')}
             </Text>
             <View style={styles.serviceDetails}>
-              <Text
-                style={styles.description}
-              >{`Selected Service: ${userBooking.slots[0].service_title}`}</Text>
-              <Text
-                style={styles.description}
-              >{`Time Slot: ${userBooking.slots[0].start_time} - ${userBooking.slots[0].end_time}`}</Text>
-              <Text style={styles.description}>{`Selected Service: ${user.distance}`}</Text>
+              <View style={styles.row}>
+                <Text style={styles.description}>Selected Service:</Text>
+                <Text style={styles.value}>{`${userBooking.slots[0].service_title}`}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.description}>Time Slot:</Text>
+                <Text
+                  style={styles.value}
+                >{`${userBooking.slots[0].start_time} - ${userBooking.slots[0].end_time}`}</Text>
+              </View>
+              <View style={styles.row}>
+                <Text style={styles.description}>Estimated distance:</Text>
+                <Text style={styles.value}>{user.distance}</Text>
+              </View>
             </View>
             <Pressable
               style={({ pressed }) => [styles.button, pressed && styles.buttonPressed]}
@@ -415,12 +424,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     lineHeight: 24,
     color: '#000000',
-  },
-  description: {
-    ...font.regular,
-    fontSize: 16,
-    lineHeight: 16,
-    color: '#888888',
   },
   content: {
     paddingHorizontal: 16,
@@ -502,6 +505,23 @@ const styles = StyleSheet.create({
   },
   serviceDetails: {
     gap: 7,
+  },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 5,
+  },
+  description: {
+    ...font.bold,
+    color: color.black,
+    fontSize: 16,
+    lineHeight: 16,
+  },
+  value: {
+    ...font.regular,
+    fontSize: 16,
+    lineHeight: 16,
+    color: '#555',
   },
 });
 
